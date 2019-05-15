@@ -1,0 +1,262 @@
+package ase2019.mr.language;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import ase2019.mr.crawljax.WebInputCrawlJax;
+import ase2019.mr.crawljax.WebOutputCleaned;
+import ase2019.mr.crawljax.WebOutputSequence;
+import ase2019.mr.crawljax.WebProcessor;
+import ase2019.mr.language.actions.StandardAction;
+import ase2019.mr.test.ReplicateInputs;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+public class AugmentInput {
+//	static String configFile = "./testData/OTG_AUTHZ_002/jenkins-CVE-2018-1999046-2/jenkinsSysConfig.json";
+//	static String configFile = "./testData/Jenkins/simple/jenkinsSysConfig.json";
+	static String configFile = "./testData/Jenkins/fullWithAnonym/jenkinsSysConfigToAugment.json";
+//	static String configFile = "./testData/FINAL/sysConfig_Short_ToAugment.json";
+	
+
+	@SuppressWarnings("static-access")
+	public static void main(String[] args) {
+		WebProcessor webPro = ReplicateInputs.setupWebProcessor(configFile);
+		
+		
+		//1. run inputs: step by step (in loops)
+		List<WebInputCrawlJax> inputList = webPro.getInputList();
+		
+		ArrayList<WebInputCrawlJax> newInputsList = new ArrayList<WebInputCrawlJax>();
+		
+		for(WebInputCrawlJax input:inputList){
+			WebOutputSequence outSequence = webPro.output(input,true);
+			if(outSequence==null){
+				continue;
+			}
+			
+			ArrayList<WebInputCrawlJax> newInputs = generateNewInputs(input, outSequence);
+			if(newInputs!=null && newInputs.size()>0){
+				for(WebInputCrawlJax i:newInputs){
+					if(!newInputs.contains(i)){
+						newInputs.add(i);
+					}
+				}
+//				newInputsList.addAll(newInputs);
+			}
+		}
+		
+		//3. export all inputs (old and new) in a new input file
+		if(newInputsList.size()>0){
+			System.out.println("Number of new inputs: " +newInputsList.size());
+			for(WebInputCrawlJax i:newInputsList){
+				System.out.println("- " + i);
+			}
+	
+			for(WebInputCrawlJax i:newInputsList){
+				if(!inputList.contains(i)){
+					inputList.add(i);
+				}
+			}
+			inputList.addAll(newInputsList);
+			
+			String fileName = webPro.sysConfig.getInputFile();
+			if(fileName.endsWith(".json")){
+				fileName = fileName.substring(0, fileName.length()-5) + "_augmented.json";
+			}
+			
+			exportInputListToFile(fileName, inputList);
+		}
+		else{
+			System.out.println("no new input");
+		}
+	}
+
+
+	private static ArrayList<WebInputCrawlJax> generateNewInputs(
+			WebInputCrawlJax inputSequence, WebOutputSequence outSequence) {
+		return generateNewInputs(inputSequence, outSequence, false);
+	}
+	
+	private static ArrayList<WebInputCrawlJax> generateNewInputs(
+			WebInputCrawlJax inputSequence, WebOutputSequence outSequence, boolean outDomain) {
+		if(inputSequence==null || outSequence==null ||
+				outSequence.getOutputSequence()==null ||
+				inputSequence.size()<1 || 
+				outSequence.getOutputSequence().size()<1 ||
+				inputSequence.size()!=outSequence.getOutputSequence().size()){
+			return null;
+		}
+		
+		String domain = getDomainFromInputSequence(inputSequence);
+		
+		ArrayList<WebInputCrawlJax> res = new ArrayList<WebInputCrawlJax>();
+		
+		int order = -1;
+		
+		for(Object out:outSequence.getOutputSequence()){
+			order++;
+			WebOutputCleaned actOut = (WebOutputCleaned)out;
+			if(actOut.downloadedObjects==null || 
+					actOut.downloadedObjects.isEmpty()){
+				continue;
+			}
+			
+			for(String key : actOut.downloadedObjects.keySet()){
+				boolean execute = false;
+				
+				if(outDomain || 
+						hasSameDomain(key,domain)){
+					execute = true;
+				}
+				
+				if(execute){
+					WebInputCrawlJax newInput = new WebInputCrawlJax();
+					String currentURL = "";
+
+					//copy the previous actions
+					for(int i=0; i<=order; i++){
+						Action clonedAction;
+						try {
+							clonedAction = inputSequence.actions().get(i).clone();
+							newInput.addAction(clonedAction);
+
+							currentURL = inputSequence.actions().get(i).getUrl();
+						} catch (CloneNotSupportedException e) {
+							e.printStackTrace();
+						}
+
+					}
+
+					//create new action
+					StandardAction newAction = new StandardAction();
+					newAction.setText("augmented action");
+					newAction.setUrl(key);
+					newAction.setMethod(actOut.downloadedObjects.get(key));
+					newAction.setCurrentURL(currentURL);
+
+					newInput.addAction(newAction);
+
+					if(newInput.size()>0){
+						//FIXME: should check if the inputList and res already contain newInput before add it into res
+						if(!res.contains(newInput)){
+							res.add(newInput);
+						}
+					}
+				}
+			}
+			
+		}
+		return res;
+	}
+
+	private static boolean hasSameDomain(String url1, String url2) {
+		if(url1==null || url2==null ||
+				url1.isEmpty() || url2.isEmpty()){
+			return false;
+		}
+		
+		String u1 = url1.trim();
+		String u2 = url2.trim();
+		
+		while(u1.endsWith("/")){
+			u1 = u1.substring(0, u1.length()-1);
+		}
+		
+		while(u2.endsWith("/")){
+			u2 = u2.substring(0, u2.length()-1);
+		}
+		
+		String domain1 = getDomainFromURL(u1);
+		String domain2 = getDomainFromURL(u2);
+		
+		return domain1.equals(domain2);
+	}
+
+
+	private static String getDomainFromInputSequence(WebInputCrawlJax inputSequence) {
+		if(inputSequence==null ||
+				inputSequence.actions() ==null ||
+				inputSequence.actions().size()<1){
+			return null;
+		}
+		
+		String domain = null;
+		
+		//get domain from index action
+		for(Action act:inputSequence.actions()){
+			if(act.getEventType().equals(Action.ActionType.index)){
+				domain = act.getUrl();
+				break;
+			}
+		}
+		
+		//get domain from any action in the actions sequence
+		if(domain==null){
+			for(Action act:inputSequence.actions()){
+				domain = act.getUrl();
+				
+				if(domain!=null && !domain.isEmpty()){
+					break;
+				}
+			}
+		}
+		
+		domain = getDomainFromURL(domain);
+		
+		return domain;
+	}
+	
+	private static String getDomainFromURL(String url){
+		String domain = url;
+				
+		//keep only the protocol (e.g., http, https) and the domain name + port
+		if(domain!=null && !domain.isEmpty()){
+			try {
+				URI uri = new URI(domain);
+
+				if(uri.getScheme()!=null && uri.getAuthority()!=null){
+					domain = uri.getScheme() + "://" + uri.getAuthority();
+				}
+				else{
+					domain = domain.substring(0,domain.indexOf("/"));
+				}
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return domain;
+	}
+
+
+	static void exportInputListToFile(String fileName,
+			List<WebInputCrawlJax> inputList) {
+
+		JsonObject jsonResult = new JsonObject(); 	//containing all paths
+		for(int i=0; i<inputList.size(); i++){
+			String pathName = "path" + String.valueOf(i+1);
+			JsonArray path = inputList.get(i).toJson();
+			jsonResult.add(pathName, path);
+		}
+		
+		FileWriter writer;
+		try {
+			writer = new FileWriter(fileName);
+
+			
+			writer.write(jsonResult.toString());
+			
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+}
