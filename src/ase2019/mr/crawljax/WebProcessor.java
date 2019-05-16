@@ -2177,8 +2177,8 @@ public class WebProcessor {
 	}
 	
 	public void loadAdminRandomFilePath(String randomAdminFilePathCatalogFile ) throws IOException {
-		randomFilePath = new ArrayList<String>();
-		_loadRandomFilePath(randomAdminFilePathCatalogFile, randomFilePath);
+		randomAdminFilePath = new ArrayList<String>();
+		_loadRandomFilePath(randomAdminFilePathCatalogFile, randomAdminFilePath);
 	}
 	
 	public void _loadRandomFilePath(String randomFilePathCatalogFile, List<String> randomFilePath ) throws IOException {

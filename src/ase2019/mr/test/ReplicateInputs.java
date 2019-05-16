@@ -102,6 +102,7 @@ public class ReplicateInputs {
 		
 		try {
 			processor.loadRandomFilePath(processor.getSysConfig().getRandomFilePathFile());
+			processor.loadRandomAdminFilePath(processor.getSysConfig().getRandomAdminFilePathFile());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -19,6 +19,7 @@ public class SystemConfig {
 	private String outputFile;
 	private String outputStore;
 	private String randomFilePathFile;
+	private String randomAdminFilePathFile;
 	private String loginURL;
 	private String logoutURL;
 	private String userParameter;
@@ -43,6 +44,7 @@ public class SystemConfig {
 		this.outputFile = "";
 		this.outputStore = "";
 		this.randomFilePathFile = "";
+		this.randomAdminFilePathFile = "";
 		this.loginURL = "";
 		this.logoutURL = "";
 		this.userParameter = "";
@@ -104,6 +106,13 @@ public class SystemConfig {
 			}
 			else{
 				this.randomFilePathFile = "";
+			}
+			
+			if(jsonObject.keySet().contains("randomAdminFilePathFile")){
+				this.randomAdminFilePathFile = jsonObject.get("randomAdminFilePathFile").getAsString().trim();
+			}
+			else{
+				this.randomAdminFilePathFile = "";
 			}
 			
 			if(jsonObject.keySet().contains("loginURL")){
@@ -272,6 +281,32 @@ public class SystemConfig {
 
 	public void setRandomFilePathFile(String randomFilePathFile) {
 		this.randomFilePathFile = randomFilePathFile;
+	}
+
+	
+	
+	public String getRandomAdminFilePathFile() {
+		return randomAdminFilePathFile;
+	}
+
+	public void setRandomAdminFilePathFile(String randomAdminFilePathFile) {
+		this.randomAdminFilePathFile = randomAdminFilePathFile;
+	}
+
+	public String getLogoutURL() {
+		return logoutURL;
+	}
+
+	public void setLogoutURL(String logoutURL) {
+		this.logoutURL = logoutURL;
+	}
+
+	public JsonObject getSignup() {
+		return signup;
+	}
+
+	public void setSignup(JsonObject signup) {
+		this.signup = signup;
 	}
 
 	public String getProxyCertificate() {

@@ -41,7 +41,8 @@ public class WebOperationsProvider implements OperationsProvider {
 		impl.loadUsers();
 		
 		try {
-			impl.loadRandomFilePath(WebProcessor.getSysConfig().getRandomFilePathFile());
+			impl.loadRandomFilePath(impl.getSysConfig().getRandomFilePathFile());
+			impl.loadRandomAdminFilePath(impl.getSysConfig().getRandomAdminFilePathFile());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

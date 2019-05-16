@@ -67,14 +67,12 @@ public class Operations {
 	public static boolean TRUE( boolean a ){ return true == a; }
 	
 	/**
-	 * SMRL boolean operator.
 	 * @param a
 	 * @return a==null
 	 */
 	public static boolean NULL( Object a ){ return a == null; }
 	
 	/**
-	 * SMRL boolean operator.
 	 * @param a
 	 * @param b
 	 * @return true if a equals b or when a can be assigned using the value of b; false if a does not equal b, or cannot assign b to a.
@@ -437,6 +435,7 @@ public class Operations {
 	}
 	
 	/**
+	 * Web-specific function.
 	 * This method returns a DeleteCookies action.
 	 * 
 	 * @return An DeleteCookies action
@@ -607,6 +606,7 @@ public class Operations {
 	}
 	
 	/**
+	 * Web-specific function.
 	 * Returns a LogoutInAnotherTab action.
 	 * The LogoutInAnotherTab action will open a new tab in the web browser, then execute the logout action.
 	 * @return The LogoutInAnotherTab action
@@ -616,6 +616,7 @@ public class Operations {
 	}
 	
 	/**
+	 * Web-specific function.
 	 * Returns a wait action, which makes the framework sleep during the given time length "millis"
 	 * @param millis The time length in millisecond
 	 * @return The Wait action
@@ -678,6 +679,7 @@ public class Operations {
 	}
 	
 	/**
+	 * Data Representation Function.
 	 * Returns the output of the i-th element of an input sequence
 	 * 
 	 * @param input
@@ -689,6 +691,7 @@ public class Operations {
 	}
 
 	/**
+	 * Data Representation Function.
 	 * Returns the output produced by the last action in an input sequence
 	 * 
 	 * @param input
@@ -830,7 +833,7 @@ public class Operations {
 	 * Checks whether the parameter at the parpos position of the action a is for user.
 	 * 
 	 * @param a The action to check.
-	 * @param parpos The position of the parameter in the array of parermeters of the action a
+	 * @param parpos The position of the parameter in the array of parameters of the action a
 	 * @param user The user containing username, password parameters, which is used to check.
 	 * @return true if the parameter is for user.
 	 */
@@ -840,6 +843,7 @@ public class Operations {
 	
 	
 	/**
+	 * Web-specific function.
 	 * Returns a Login action with the given credential "user"
 	 * @param user The credential used for logging in
 	 * @return The Login action with the credential "user"
