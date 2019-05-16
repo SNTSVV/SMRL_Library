@@ -9,7 +9,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 import ase2019.mr.language.*;
+import ase2019.mr.language.actions.StandardAction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class WebOperationsProvider implements OperationsProvider {
@@ -628,6 +631,14 @@ public class WebOperationsProvider implements OperationsProvider {
 			return true;
 		}
 		
+		return false;
+	}
+
+	@Override
+	public boolean isFormInputForFilePath(Object fi) {
+		if ( fi instanceof JsonObject ) {
+			return StandardAction.isFormInputForFilePath((JsonObject) fi);
+		}
 		return false;
 	}
 

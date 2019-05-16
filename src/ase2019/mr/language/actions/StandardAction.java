@@ -631,7 +631,7 @@ public class StandardAction extends Action {
 		return false;
 	}
 
-	private boolean isFormInputForFilePath(JsonObject fi) {
+	public static boolean isFormInputForFilePath(JsonObject fi) {
 		if(fi==null || fi.size()==0){
 			return false;
 		}
@@ -659,7 +659,7 @@ public class StandardAction extends Action {
 		return false;
 	}
 
-	private boolean considerAsFile(String value) {
+	private static boolean considerAsFile(String value) {
 		if(value==null || value.isEmpty()){
 			return false;
 		}

@@ -198,4 +198,10 @@ public class BasicOperationsProvider implements OperationsProvider {
 		return false;
 	}
 
+	@Override
+	public boolean isFormInputForFilePath(Object fi) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

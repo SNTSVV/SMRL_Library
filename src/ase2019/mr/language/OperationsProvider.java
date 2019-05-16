@@ -72,6 +72,8 @@ public interface OperationsProvider {
 	ase2019.mr.language.Input Input(List<Action> actions);
 
 	boolean isAdmin(Object user);
+
+	boolean isFormInputForFilePath(Object fi);
 	
 
 }

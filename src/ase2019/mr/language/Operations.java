@@ -527,5 +527,9 @@ public class Operations {
 	public static boolean isAdmin( Object user) {
 		return MR.CURRENT.provider.isAdmin( user );
 	}
+	
+	public static boolean isFormInputForFilePath(Object fi) {
+		return MR.CURRENT.provider.isFormInputForFilePath(fi);
+	}
 }
 
