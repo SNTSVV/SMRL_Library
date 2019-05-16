@@ -466,6 +466,7 @@ public class Operations {
 		
 		if(valueArray.size()>0){
 			formInput.add("values", valueArray);
+			MR.CURRENT.setConsiderParameters();
 			return true;
 		}
 		return false;

@@ -6,12 +6,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import ase2019.mr.analysis.ASMUtil;
 import ase2019.mr.analysis.ASMUtil.ASM_MRData;
+import ase2019.mr.utils.URLUtil;
 
 
 public abstract class MR {
@@ -19,6 +24,8 @@ public abstract class MR {
 	public static MR CURRENT;
 	
 	private static final boolean COLLECT_ALL_FAILURES = true;
+
+	private static final boolean PERFORM_FILTERING = true;
 
 	OperationsProvider provider;
 	
@@ -196,7 +203,13 @@ public abstract class MR {
 
 
 	public void fail(){
+		
 		String msg = extractExecutionInformation();
+		
+		if ( msg == null ) {
+			System.out.println("(DUPLICATED FAILURE, ignoring)");
+			return;
+		}
 		
 		failures.add(msg);
 		System.out.println("FAILURE: "+msg);
@@ -206,8 +219,26 @@ public abstract class MR {
 		String msg = "";
 		
 		for ( MrDataDB db : sortedDBs ){
-			HashMap<String, Input> inputsMap = db.getProcessedInputs();
-			for ( Entry<String,Input> i : inputsMap.entrySet() ){
+			HashMap<String, Object> inputsMap = db.getProcessedInputs();
+			
+			boolean filteringApplied = false;
+			
+			for ( Entry<String,Object> i : inputsMap.entrySet() ){
+				
+				if ( PERFORM_FILTERING ) {
+					if ( i.getValue() instanceof Input ) {
+						if ( filteringApplied == false) { //filtering is done on the first returned follow-up input, which is the one submitted
+							Input inp = (Input) i;
+							boolean containsNewData = registerInput(inp );
+
+							if ( ! containsNewData ) {
+								return null;
+							}
+							filteringApplied = true;
+						}
+					}
+				}
+				
 				msg += i.getKey()+": "+i.toString()+"\n";
 			}	
 		}
@@ -225,6 +256,65 @@ public abstract class MR {
 		return msg;
 	}
 	
+	private boolean considerParameters = false;
+	
+	public void setConsiderParameters() {
+		considerParameters = true;
+	}
+	
+	private HashSet<String> observedInputKeys = new HashSet<>();
+	protected boolean registerInput(Input inp) {
+		boolean isNew = false;
+		for ( Action action : inp.actions() ) {
+			String url = action.getUrl().trim();
+			
+			url = URLUtil.extractActionURL(url);
+			
+			if ( considerParameters ) {
+				String pars = extractParametersString(action);
+				url = url +":"+pars;
+			}
+			
+			boolean isThisNew = observedInputKeys.add(url);
+			if ( isThisNew ) {
+				isNew = true;
+			}
+			
+		}
+		
+		return isNew;
+	}
+
+
+	private String extractParametersString(Action action) {
+		JsonArray formInputs = action.getFormInputs();
+		
+		String pars = "";
+		for(int i=0; i<formInputs.size(); i++){
+			JsonObject fi = formInputs.get(i).getAsJsonObject();
+			
+			if(fi.keySet().contains("type") &&
+					fi.keySet().contains("values")){
+				
+				String formType = fi.get("type").getAsString().toLowerCase();
+				JsonArray values = fi.get("values").getAsJsonArray();
+				if(values.size()>0 &&
+						(formType.startsWith("text") ||
+							formType.equals("password") || 
+							formType.equals("hidden") ||
+							formType.equals("file"))){
+					for(int iValue=0; iValue<values.size(); iValue++){
+						String value = values.get(iValue).getAsString().trim();
+						pars=pars+value+";";
+					}
+				}
+			}
+		}
+		
+		return pars;
+	}
+
+
 	public abstract boolean mr();
 	
 //	public I Input(int i){
