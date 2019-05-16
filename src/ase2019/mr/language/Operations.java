@@ -376,6 +376,12 @@ public class Operations {
 	}
 	
 	@MRDataProvider
+	public static Object RandomAdminFilePath(int x){ 
+//		return MR.CURRENT.getMRData("RandomValue:"+Path.class.getCanonicalName(),x);
+		return MR.CURRENT.getMRData("RandomAdminFilePath",x);
+	}
+	
+	@MRDataProvider
 	public static String HttpMethod(){ 
 		return RandomHttpMethod(1);
 	}
@@ -388,6 +394,11 @@ public class Operations {
 	@MRDataProvider
 	public static Object RandomFilePath(){ 
 		return RandomFilePath(1);
+	}
+	
+	@MRDataProvider
+	public static Object RandomAdminFilePath(){ 
+		return RandomAdminFilePath(1);
 	}
 	
 	@MRDataProvider

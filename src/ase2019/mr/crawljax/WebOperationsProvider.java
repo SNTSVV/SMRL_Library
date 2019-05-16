@@ -64,11 +64,14 @@ public class WebOperationsProvider implements OperationsProvider {
 		impl.loadUsers();
 	}
 	
-	public WebOperationsProvider(String inputFile, String outFile, String configFile, String randomFilePath) {
+	public WebOperationsProvider(String inputFile, String outFile, String configFile, String randomFilePath, String randomAdminFilePath) {
 		this(inputFile, outFile, configFile);
 		
 		try {
+			
 			impl.loadRandomFilePath(randomFilePath);
+			impl.loadRandomAdminFilePath(randomAdminFilePath);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -227,6 +230,10 @@ public class WebOperationsProvider implements OperationsProvider {
 	private List loadRandomFilePath() {
 		return impl.getRandomFilePath();
 	}
+	
+	private List loadRandomAdminFilePath() {
+		return impl.getRandomAdminFilePath();
+	}
 
 	@Override
 	public ase2019.mr.language.Input changeCredentials(ase2019.mr.language.Input input, Object user) {
@@ -272,6 +279,8 @@ public class WebOperationsProvider implements OperationsProvider {
 			return loadUsers();
 		case "RandomFilePath":
 			return loadRandomFilePath();
+		case "RandomAdminFilePath":
+			return loadRandomAdminFilePath();
 		}
 		return null;
 	}

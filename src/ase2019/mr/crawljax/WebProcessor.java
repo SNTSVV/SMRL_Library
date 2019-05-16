@@ -269,6 +269,7 @@ public class WebProcessor {
 	private static String ADMIN_USERNAME = "admin";
 	
 	private Account admin;
+	private ArrayList<String> randomAdminFilePath;
 
 	
 
@@ -2164,8 +2165,23 @@ public class WebProcessor {
 	public List<String> getRandomFilePath() {
 		return this.randomFilePath;
 	}
+	
+	public void loadRandomAdminFilePath(String randomFilePathCatalogFile ) throws IOException {
+		randomAdminFilePath = new ArrayList<String>();
+		_loadRandomFilePath(randomFilePathCatalogFile, randomAdminFilePath);
+	}
 
-	public void loadRandomFilePath(String randomFilePathCatalogFile) throws IOException {
+	public void loadRandomFilePath(String randomFilePathCatalogFile ) throws IOException {
+		randomFilePath = new ArrayList<String>();
+		_loadRandomFilePath(randomFilePathCatalogFile, randomFilePath);
+	}
+	
+	public void loadAdminRandomFilePath(String randomAdminFilePathCatalogFile ) throws IOException {
+		randomFilePath = new ArrayList<String>();
+		_loadRandomFilePath(randomAdminFilePathCatalogFile, randomFilePath);
+	}
+	
+	public void _loadRandomFilePath(String randomFilePathCatalogFile, List<String> randomFilePath ) throws IOException {
 		if(randomFilePathCatalogFile==null || randomFilePathCatalogFile.isEmpty()){
 			return;
 		}
@@ -2181,13 +2197,13 @@ public class WebProcessor {
 		
 		String line = br.readLine();
 		
-		this.randomFilePath = new ArrayList<String>();
+		
 		
 		while (line != null) {
 			if(!line.trim().isEmpty()){
 				String path = line.trim();
 				
-				this.randomFilePath.add(path);
+				randomFilePath.add(path);
 			}
 			line = br.readLine();
 		}
@@ -2214,6 +2230,11 @@ public class WebProcessor {
 			}
 		}
 		return admin;
+	}
+
+
+	public List getRandomAdminFilePath() {
+		return randomAdminFilePath;
 	}
 	
 }
