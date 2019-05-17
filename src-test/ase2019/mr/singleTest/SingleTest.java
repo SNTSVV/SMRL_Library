@@ -43,6 +43,9 @@ public class SingleTest extends MRBaseTest {
 	
 	
 	@Test
+	/**
+	  *This test case should detect CVE-2018-1999006"
+	  */
 	public void test_OTG_AUTHZ_001b() {
 		super.test(provider,OTG_AUTHZ_001b.class);
 	}
@@ -53,21 +56,33 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
+	/**
+	  *This test case should detect CVE-2018-1999004"
+	  */
 	public void test_OTG_AUTHZ_002a() {
 		super.test(provider,OTG_AUTHZ_002a.class);
 	}
 	
 	@Test
+	/**
+	  *This test case should detect CVE-2018-1999003"
+	  */
 	public void test_OTG_AUTHZ_002b() {
 		super.test(provider,OTG_AUTHZ_002b.class);
 	}
 	
 	@Test
+	/**
+	  *This test case should detect CVE-2018-1999046"
+	  */
 	public void test_OTG_AUTHZ_002c() {
 		super.test(provider,OTG_AUTHZ_002c.class);
 	}
 	
 	@Test
+	/**
+	  *This test case should detect CVE-2018-1000406"
+	  */
 	public void test_OTG_AUTHZ_002d() {
 		super.test(provider,OTG_AUTHZ_002d.class);
 	}
@@ -78,6 +93,9 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
+	/**
+	  *This test case should detect CVE-2018-1000409"
+	  */
 	public void test_OTG_SESS_003() {
 		super.test(provider,OTG_SESS_003.class);
 	}
