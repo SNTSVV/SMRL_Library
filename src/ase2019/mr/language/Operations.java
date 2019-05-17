@@ -160,7 +160,7 @@ public class Operations {
 	}
 	
 	/**
-	 * Data Representation Function. 
+	 * Web-specific function. 
 	 * Add an action at the position pos in a input sequence.
 	 * 
 	 * @param input The source input.
@@ -183,7 +183,7 @@ public class Operations {
 	
 	
 	/**
-	 * Data Representation Function. 
+	 * Web-specific function. 
 	 * Copy the action at the position "from" to the position "to" in the input sequence.
 	 * 
 	 * @param input The source input sequence.
@@ -205,7 +205,7 @@ public class Operations {
 	}
 	
 	/**
-	 * Data Representation Function. 
+	 * Web-specific function. 
 	 * Add an action at the end of the input sequence.
 	 * 
 	 * @param input The source input sequence.
@@ -312,6 +312,7 @@ public class Operations {
 	}
 	
 	/**
+	 * Web-specific funtion.
 	 * Return the corresponding class of a value pattern.
 	 * 
 	 * @param value The value pattern (e.g., "123", "123.45", "./file.txt", "word").
@@ -337,7 +338,7 @@ public class Operations {
 	}
 
 	/**
-	 * Data Representation Function.
+	 * Web-specific function.
 	 * Derive a random data based on a value pattern.
 	 * 
 	 * @param value The value pattern.
@@ -483,26 +484,26 @@ public class Operations {
 	private static HashSet<String> visibleWithoutLogin;
 	
 	/**
-	 * Web-specific function.
+	 * 
 	 * Check whether a URL is not available before logging in.
 	 * The result depends on the inputs sequences under test.
 	 * 
 	 * @param url The URL to be checked.
 	 * @return true if the URL is not available before logging in.
 	 */
-	public static boolean _notVisibleWithoutLoggingIn(String url) {
+	private static boolean _notVisibleWithoutLoggingIn(String url) {
 		return ! _visibleWithoutLoggingIn(url);
 	}
 	
 	/**
-	 * Web-specific function.
+	 * 
 	 * Check whether a URL is visible before logging in.
 	 * The result depends on the inputs sequences under test.
 	 * 
 	 * @param url The url to be checked.
 	 * @return true if the URL is visible before logging in
 	 */
-	public static boolean _visibleWithoutLoggingIn(String url) {
+	private static boolean _visibleWithoutLoggingIn(String url) {
 		try {
 			return MR.CURRENT.provider.notVisibleWithoutLoggingIn(url);
 		} catch ( Throwable t ) {
@@ -564,14 +565,14 @@ public class Operations {
 	private static HashSet<Action> urlChangesOverMultipleExecutions;
 	
 	/**
-	 * Web-specific function.
+	 * 
 	 * Check if the URL of the action at the pos position in the input sequence changes over different executions. 
 	 * 
 	 * @param i The input sequence to check.
 	 * @param pos The index of the action to check.
 	 * @return true if the the URL of the pos-th action changes over different executions
 	 */
-	public static boolean _urlOfActionChangesInDifferentExecutions(Input i, int pos) {
+	private static boolean _urlOfActionChangesInDifferentExecutions(Input i, int pos) {
 		try {
 			return MR.CURRENT.provider.urlOfActionChangesInDifferentExecutions(i,pos);
 		} catch ( Throwable t ) {
@@ -643,6 +644,7 @@ public class Operations {
 	 * 
 	 * @return
 	 */
+	@MRDataProvider
 	public static Object File() {
 		return MR.CURRENT.getMRData("File",1);
 	}
@@ -702,6 +704,7 @@ public class Operations {
 	}
 	
 	/**
+	 * Web-specific function.
 	 * Returns the output produced by the last action in an input sequence
 	 * 
 	 * @param input
@@ -903,6 +906,7 @@ public class Operations {
 	}
 
 	/**
+	 * Web-specific function.
 	 * Combine a path with a given URL.
 	 * @param url The original URL to combine.
 	 * @param addedPath The path to add.
