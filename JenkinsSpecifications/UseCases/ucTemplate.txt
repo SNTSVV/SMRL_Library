@@ -1,0 +1,18 @@
+Name: 
+Description:
+Precondition:
+Primary Actor:
+Secondary Actors:
+Dependency:
+Generalization:
+** Basic Flow:
+1.
+2.
+3.
+Postcondition:
+** Specific Alternative Flow:
+RFS 
+1.
+2.
+3.
+Postcondition:

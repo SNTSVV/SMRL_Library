@@ -159,7 +159,7 @@ public abstract class MR {
 			}
 			
 			
-			String msg = extractExecutionInformation();
+			String msg = extractExecutionInformation(false);
 			System.out.println("Executed with: "+msg);
 			
 			executions++;
@@ -211,7 +211,7 @@ public abstract class MR {
 		
 		LOGGER.log(Level.INFO,"FAILURE");
 		
-		String msg = extractExecutionInformation();
+		String msg = extractExecutionInformation(true);
 		
 		if ( msg == null ) {
 			System.out.println("(DUPLICATED FAILURE, ignoring)");
@@ -222,7 +222,7 @@ public abstract class MR {
 		System.out.println("FAILURE: "+msg);
 	}
 	
-	private String extractExecutionInformation() {
+	private String extractExecutionInformation(boolean performFiltring) {
 		String msg = "";
 		
 		for ( MrDataDB db : sortedDBs ){
@@ -232,7 +232,7 @@ public abstract class MR {
 			
 			for ( Entry<String,Object> i : inputsMap.entrySet() ){
 				
-				if ( PERFORM_FILTERING ) {
+				if ( performFiltring && PERFORM_FILTERING ) {
 					Object value = i.getValue();
 					if ( value instanceof Input ) {
 						if ( filteringApplied == false) { //filtering is done on the first returned follow-up input, which is the one submitted
@@ -240,8 +240,12 @@ public abstract class MR {
 							boolean containsNewData = registerInput(inp );
 
 							if ( ! containsNewData ) {
+//								System.out.println("!!! Does not contain new data");
 								return null;
-							}
+							} 
+//							else {
+//								System.out.println("!!! Contains new data");
+//							}
 							filteringApplied = true;
 						}
 					}
@@ -272,6 +276,9 @@ public abstract class MR {
 	
 	private HashSet<String> observedInputKeys = new HashSet<>();
 	protected boolean registerInput(Input inp) {
+		
+//		System.out.println("!!!Register input "+inp);
+		
 		boolean isNew = false;
 		for ( Action action : inp.actions() ) {
 			String url = action.getUrl();

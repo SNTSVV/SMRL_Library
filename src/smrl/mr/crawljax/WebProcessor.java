@@ -1,5 +1,7 @@
 package smrl.mr.crawljax;
 
+import static org.junit.Assert.fail;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -86,6 +88,25 @@ public class WebProcessor {
 	//- second one is the action has the url which will be updated (from the first one)
 	private HashMap<Long, Long> updateUrlMap;	
 	
+
+	HashMap<String,HashSet<String>> urlsAccessedByUsers = new HashMap<String, HashSet<String>>();
+	private static String WRONG_USERNAME = "wrong";
+	private Set<String> URLsAcessedByEveryUser;
+
+	private boolean autoDetectConfirmation = true;
+	private boolean alwaysConfirm = true;
+	private boolean prioritizeButton=true;
+//	private String[] confirmationTexts = {"You must use POST method to trigger builds", 
+//	"The URL you're trying to access requires that requests be sent using POST (like a form submission)"};
+
+	
+	private static String ADMIN_USERNAME = "admin";
+	
+	private Account admin;
+	private ArrayList<String> randomAdminFilePath;
+	private boolean headless=false;
+	private boolean backToRightPageBeforeAction=true;
+	
 	
 	
 	public WebProcessor() {
@@ -104,6 +125,31 @@ public class WebProcessor {
 		this.updateUrlMap = new HashMap<Long, Long>();
 	}
 	
+
+	public boolean isHeadless() {
+		return headless;
+	}
+
+
+	public void setHeadless(boolean headless) {
+		this.headless = headless;
+	}
+
+
+	public boolean isAutoDetectConfirmation() {
+		return autoDetectConfirmation;
+	}
+
+
+	public boolean isAlwaysConfirm() {
+		return alwaysConfirm;
+	}
+
+
+	public boolean isPrioritizeButton() {
+		return prioritizeButton;
+	}
+
 
 	public void resetUpdateUrlMap(){
 		this.updateUrlMap.clear();
@@ -255,21 +301,6 @@ public class WebProcessor {
 	
 	
 	
-	HashMap<String,HashSet<String>> urlsAccessedByUsers = new HashMap<String, HashSet<String>>();
-	private static String WRONG_USERNAME = "wrong";
-	private Set<String> URLsAcessedByEveryUser;
-
-	private boolean autoDetectConfirmation = false; //true;
-	private boolean alwaysConfirm = true;
-	private boolean prioritizeButton=true;
-	private String[] confirmationTexts = {"You must use POST method to trigger builds", 
-	"The URL you're trying to access requires that requests be sent using POST (like a form submission)"};
-
-	
-	private static String ADMIN_USERNAME = "admin";
-	
-	private Account admin;
-	private ArrayList<String> randomAdminFilePath;
 
 	
 
@@ -361,7 +392,7 @@ public class WebProcessor {
 			}
 		}
 		
-		System.out.println("!!!NOT THERE "+url);
+//		System.out.println("!!!NOT THERE "+url);
 
 		return false;
 	}
@@ -505,15 +536,27 @@ public class WebProcessor {
 			//FIXME: add certificate to driver if needed
 		}
 		
+		if(headless) {
+			chOptions.addArguments("headless");
+		}
+		
 		driver = new ChromeDriver(chOptions);
 		
 		List<Action> actions = input.actions();
+		
+		HashMap<Long,String> actionUrls = new HashMap<Long, String>();
 		
 		int timeOfConfirm=0;
 		for(int i=0; i<actions.size(); i++){
 			Action act = actions.get(i);
 			String text = "index";
 			String aURL = act.getUrl();
+			
+			if(act.getUrl()!=null && 
+					!act.getUrl().trim().isEmpty() && 
+					!actionUrls.containsKey(act.getActionID())) {
+				actionUrls.put(act.getActionID(), act.getUrl());
+			}
 			
 			ActionType type = act.getEventType();
 			
@@ -627,15 +670,17 @@ public class WebProcessor {
 				//If this action is the POST one, 
 				// check if the current URL (from browser) is similar with the currentURL
 				// if not -> go back to the currentURL before execute the action
-				if(act.getMethod().toLowerCase().trim().equals("post")){
-					String actCurrentURL = ((StandardAction)act).getCurrentURL();
-					if(!actCurrentURL.isEmpty()){
-						String browserURL = driver.getCurrentUrl().trim();
-						if(!actCurrentURL.equals(browserURL)){
-							//go back to the actCurrentURL
-							driver.get(actCurrentURL);
+				if(backToRightPageBeforeAction) {
+//					if(act.getMethod().toLowerCase().trim().equals("post")){
+						String actCurrentURL = ((StandardAction)act).getCurrentURL();
+						if(actCurrentURL!=null && !actCurrentURL.isEmpty()){
+							String browserURL = driver.getCurrentUrl().trim();
+							if(!actCurrentURL.equals(browserURL)){
+								//go back to the actCurrentURL
+								driver.get(actCurrentURL);
+							}
 						}
-					}
+//					}
 				}
 				
 				//Filling inputs in form
@@ -752,7 +797,7 @@ public class WebProcessor {
 					//check the conformance between the xpath ID and URL
 					String newURL = null;
 					newURL = getElementURL(driver, eleToClick);
-					checkUpdateUrlMap(act, newURL);
+					checkUpdateUrlMap(act, actionUrls, newURL);
 					
 					//Click on the found element
 					try{
@@ -769,7 +814,15 @@ public class WebProcessor {
 					System.out.println("\n\t\t!!! NOT FOUND: " + elementID);
 					if(!aURL.isEmpty()){
 						System.out.print("\t\t--> access directly the element URL (" + aURL + ")");
-						driver.get(aURL);
+						
+						String urlToGet = aURL;
+
+						//update urlToGet, if actionUrls contains the url of the action
+						if(actionUrls.containsKey(act.getActionID())) {
+							urlToGet = actionUrls.get(act.getActionID());
+						}
+						
+						driver.get(urlToGet);
 						clicked = true;
 						System.out.println(" --> DONE");
 					}
@@ -916,15 +969,18 @@ public class WebProcessor {
 					//always click on yes
 					if(alwaysConfirm){
 						alert.accept();
+						System.out.print("\n\t\t!!Auto confirmed dialog!");
 					}
 					else{
 						String alertText = alert.getText();
 						
 						if(containConfirmationText(alertText)){
 							alert.accept();
+							System.out.print("\n\t\t!!Confirmed dialog!");
 						}
 						else{
 							alert.dismiss();
+							System.out.print("\n\t\t!!Dismissed dialog!");
 						}
 					}
 					confirmed = true;
@@ -1017,7 +1073,7 @@ public class WebProcessor {
 				
 				if(confirmed){
 					timeOfConfirm++;
-					System.out.println("\t- automatically confirm --> DONE");
+					System.out.println("\t\t!! automatically confirm --> DONE");
 					try {
 						Thread.sleep(sysConfig.getWaitTimeAfterAction());
 					} catch (InterruptedException e) {
@@ -1029,6 +1085,10 @@ public class WebProcessor {
 				
 			//Add result to the outputSequence
 			if(doneAction){
+//				if(redirectURL!=null && !redirectURL.isEmpty()) {
+//					System.out.println("\t\t!!! Redirect URL: " + redirectURL);
+//				}
+				
 				//Execute inner actions if they exist
 				executeInnerActions(driver, act);
 				
@@ -1143,8 +1203,12 @@ public class WebProcessor {
 	}
 	
 	private boolean containConfirmationText(String text) {
-		for(int iText=0; iText<confirmationTexts.length; iText++){
-			if(text.indexOf(confirmationTexts[iText]) >0){
+		List<String> conTexts = sysConfig.getConfirmationTexts();
+		if(conTexts==null || conTexts.size()<1) {
+			return false;
+		}
+		for(int iText=0; iText<conTexts.size(); iText++){
+			if(text.indexOf(conTexts.get(iText)) >0){
 				return true;
 			}
 		}
@@ -1507,7 +1571,7 @@ public class WebProcessor {
 	 * @param act
 	 * @param newURL
 	 */
-	private void checkUpdateUrlMap(Action act, String newURL) {
+	private void checkUpdateUrlMap(Action act, HashMap<Long, String> actionUrls, String newURL) {
 		String actURL = act.getUrl();
 		if(newURL!=null && actURL!=null && 
 				!actURL.isEmpty() &&
@@ -1519,7 +1583,12 @@ public class WebProcessor {
 			//e.g., if there exist already (a, b), do not add (c,b)
 			if(prevActID!=null &&
 					!updateUrlMap.containsValue(act.getActionID())){
+				//Update updateUrlMap
 				updateUrlMap.put(prevActID, act.getActionID());
+				
+				//Update actionUrls hashmap
+				actionUrls.put(act.getActionID(), newURL);
+				
 				System.out.println("\t  updateUrlMap: " + updateUrlMap);
 			}
 		}

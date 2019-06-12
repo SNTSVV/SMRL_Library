@@ -34,6 +34,7 @@ public class SystemConfig {
 	private long waitTimeAfterAction;	//in milisecond
 	private JsonObject errorSigns;
 	private JsonObject signup;
+	private List<String> confirmationTexts;
 	
 	
 	static final int DEFAULT_WAIT_TIME = 1000;
@@ -59,6 +60,7 @@ public class SystemConfig {
 		this.waitTimeAfterAction = DEFAULT_WAIT_TIME;
 		this.errorSigns = new JsonObject();
 		this.signup = new JsonObject();
+		this.confirmationTexts = new ArrayList<String>();
 	}
 	
 	public SystemConfig(String configFile){
@@ -238,6 +240,19 @@ public class SystemConfig {
 				this.signup = new JsonObject();
 			}
 			
+			if(jsonObject.keySet().contains("confirmationTexts")){
+				ArrayList<String> conTexts = new ArrayList<String>();
+				JsonArray jArray = jsonObject.get("confirmationTexts").getAsJsonArray();
+				for(int i=0; i<jArray.size(); i++){
+					String cText = jArray.get(i).getAsString().trim();
+					conTexts.add(cText);
+				}
+				this.confirmationTexts = conTexts;
+			}
+			else{
+				this.confirmationTexts = new ArrayList<String>();
+			}
+			
 		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -287,6 +302,15 @@ public class SystemConfig {
 	
 	public String getRandomAdminFilePathFile() {
 		return randomAdminFilePathFile;
+	}
+	
+
+	public List<String> getConfirmationTexts() {
+		return confirmationTexts;
+	}
+
+	public void setConfirmationTexts(List<String> confirmationTexts) {
+		this.confirmationTexts = confirmationTexts;
 	}
 
 	public void setRandomAdminFilePathFile(String randomAdminFilePathFile) {

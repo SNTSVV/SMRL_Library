@@ -1,0 +1,4 @@
+Common errors:
+
+1. import sun.reflect.generics.reflectiveObjects.NotImplementedException; --> error
+	- 

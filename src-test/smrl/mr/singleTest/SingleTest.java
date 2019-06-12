@@ -1,15 +1,16 @@
-package ase2019.mr.singleTest;
+package smrl.mr.singleTest;
 
-import ase2019.mr.crawljax.WebOperationsProvider;
-import ase2019.mr.language.MRBaseTest;
-import ase2019.mr.owasp.OTG_AUTHZ_001b;
-import ase2019.mr.owasp.OTG_AUTHZ_002;
-import ase2019.mr.owasp.OTG_AUTHZ_002a;
-import ase2019.mr.owasp.OTG_AUTHZ_002b;
-import ase2019.mr.owasp.OTG_AUTHZ_002c;
-import ase2019.mr.owasp.OTG_AUTHZ_002d;
-import ase2019.mr.owasp.OTG_INPVAL_004;
-import ase2019.mr.owasp.OTG_SESS_003;
+import smrl.mr.crawljax.WebOperationsProvider;
+import smrl.mr.language.MRBaseTest;
+//import smrl.mr.owasp.OTG_AUTHZ_001b;
+//import smrl.mr.owasp.OTG_AUTHZ_002;
+//import smrl.mr.owasp.OTG_AUTHZ_002a;
+//import smrl.mr.owasp.OTG_AUTHZ_002b;
+//import smrl.mr.owasp.OTG_AUTHZ_002c;
+//import smrl.mr.owasp.OTG_AUTHZ_002d;
+//import smrl.mr.owasp.OTG_INPVAL_004;
+//import smrl.mr.owasp.OTG_SESS_003;
+import smrl.mr.owasp.OTG_AUTHZ_002a;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,19 +43,12 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	
-	@Test
-	/**
-	  *This test case should detect CVE-2018-1999006"
-	  */
-	public void test_OTG_AUTHZ_001b() {
-		super.test(provider,OTG_AUTHZ_001b.class);
-	}
-	
-	@Test
-	public void test_OTG_AUTHZ_002() {
-		super.test(provider,OTG_AUTHZ_002.class);
-	}
-	
+
+//	@Test
+//	public void test_OTG_AUTHZ_002() {
+//		super.test(provider,OTG_AUTHZ_002.class);
+//	}
+//	
 	@Test
 	/**
 	  *This test case should detect CVE-2018-1999004"
@@ -62,42 +56,42 @@ public class SingleTest extends MRBaseTest {
 	public void test_OTG_AUTHZ_002a() {
 		super.test(provider,OTG_AUTHZ_002a.class);
 	}
-	
-	@Test
-	/**
-	  *This test case should detect CVE-2018-1999003"
-	  */
-	public void test_OTG_AUTHZ_002b() {
-		super.test(provider,OTG_AUTHZ_002b.class);
-	}
-	
-	@Test
-	/**
-	  *This test case should detect CVE-2018-1999046"
-	  */
-	public void test_OTG_AUTHZ_002c() {
-		super.test(provider,OTG_AUTHZ_002c.class);
-	}
-	
-	@Test
-	/**
-	  *This test case should detect CVE-2018-1000406"
-	  */
-	public void test_OTG_AUTHZ_002d() {
-		super.test(provider,OTG_AUTHZ_002d.class);
-	}
-	
-	@Test
-	public void test_OTG_INPVAL_004() {
-		super.test(provider,OTG_INPVAL_004.class);
-	}
-	
-	@Test
-	/**
-	  *This test case should detect CVE-2018-1000409"
-	  */
-	public void test_OTG_SESS_003() {
-		super.test(provider,OTG_SESS_003.class);
-	}
-	
+//	
+//	@Test
+//	/**
+//	  *This test case should detect CVE-2018-1999003"
+//	  */
+//	public void test_OTG_AUTHZ_002b() {
+//		super.test(provider,OTG_AUTHZ_002b.class);
+//	}
+//	
+//	@Test
+//	/**
+//	  *This test case should detect CVE-2018-1999046"
+//	  */
+//	public void test_OTG_AUTHZ_002c() {
+//		super.test(provider,OTG_AUTHZ_002c.class);
+//	}
+//	
+//	@Test
+//	/**
+//	  *This test case should detect CVE-2018-1000406"
+//	  */
+//	public void test_OTG_AUTHZ_002d() {
+//		super.test(provider,OTG_AUTHZ_002d.class);
+//	}
+//	
+//	@Test
+//	public void test_OTG_INPVAL_004() {
+//		super.test(provider,OTG_INPVAL_004.class);
+//	}
+//	
+//	@Test
+//	/**
+//	  *This test case should detect CVE-2018-1000409"
+//	  */
+//	public void test_OTG_SESS_003() {
+//		super.test(provider,OTG_SESS_003.class);
+//	}
+//	
 }

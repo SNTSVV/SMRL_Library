@@ -673,9 +673,9 @@ public class Operations {
 	public static boolean cannotReachThroughGUI(Object user, String URL){
 		boolean res = MR.CURRENT.provider.cannotReachThroughGUI(user, URL);
 		
-		if ( ! res ){
-			System.out.println("!!!!Canot reach "+URL); //This should be "CAN reach"
-		}
+//		if ( res ){
+//			System.out.println("!!!!Cannot reach (" + user + ", "+URL +")"); 
+//		}
 		
 		return res;
 	}
