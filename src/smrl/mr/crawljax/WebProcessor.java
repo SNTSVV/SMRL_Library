@@ -104,7 +104,7 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=false;
+	private boolean headless=true;
 	private boolean backToRightPageBeforeAction=true;
 	
 	
@@ -1771,12 +1771,24 @@ public class WebProcessor {
 		//For the case there is an alert on the browser
 //		Alert alert = driver.switchTo().alert();
 
-		if(isDialogPresent(driver)){
+		if(isDialogPresent(driver) || requestedURL==null){
 			return res;
 		}
 		
-		String currentURL = driver.getCurrentUrl().trim();;
-		if(currentURL.equals(requestedURL.trim())){
+		String currentURL = driver.getCurrentUrl().trim();
+		while(currentURL.endsWith("/")) 
+		{
+			currentURL = currentURL.substring(0, currentURL.length()-1);
+		}
+		
+		String _requestedURL = requestedURL.trim();
+		while(_requestedURL.endsWith("/"))
+		{
+			_requestedURL = _requestedURL.substring(0, _requestedURL.length()-1);
+		}
+		
+		
+		if(currentURL.equals(_requestedURL)){
 			res = "";
 		}
 		else{
