@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -2316,6 +2317,105 @@ public class WebProcessor {
 
 	public List getRandomAdminFilePath() {
 		return randomAdminFilePath;
+	}
+	
+	/**
+	 * Check if the user_1 covers all URLs dedicated to user_2
+	 * @param username1
+	 * @param username2
+	 * @return
+	 */
+	public boolean coverAllUrls(String username1, String username2) {
+		if(username1==null || username2==null ||
+				username1.isEmpty() || username2.isEmpty()) {
+			return false;
+		}
+		
+		if(userList==null || userList.size()<1 ||
+				inputList==null || inputList.size()<1) {
+			System.out.println("Need to load inputs before calling this function!");
+			return false;
+		}
+		
+		//Firstly check if both of two usernames exist
+		boolean u1Exist = false;
+		boolean u2Exist = false;
+		
+		String anonym = "anonym";
+		
+		//list all urls accessed by each user
+		Map<String, HashSet<String>> allUserUrls = new HashMap<String, HashSet<String>>();
+		allUserUrls.put(anonym, new HashSet<String>());
+		
+		String u1 = username1.trim();
+		String u2 = username2.trim();
+		
+		for(Account user:userList) {
+			if(user.getUsername()!=null) {
+				String un = user.getUsername().trim();
+				if(un.equals(u1)) {
+					u1Exist = true;
+				}
+				else if(un.equals(u2)) {
+					u2Exist = true;
+				}
+				
+				allUserUrls.put(un, new HashSet<String>());
+			}
+			
+		}
+		
+		if(!(u1Exist && u2Exist)) {
+			return false;
+		}
+		
+		for(WebInputCrawlJax input:inputList) {
+			if(input==null ||
+					input.actions()==null ||
+					input.actions().size()<1) {
+				continue;
+			}
+			
+			for(Action act:input.actions()) {
+				String url = act.getUrl();
+				if(url!=null && !url.trim().isEmpty()) {
+					url = url.trim();
+					if(url.endsWith("/")) {
+						url = url.substring(0, url.length()-1);
+					}
+					Account user = (Account)act.getUser();
+					String username = user.getUsername();
+					
+					if(username==null || username.trim().isEmpty()) {
+						username = anonym;
+					}
+
+					if(username.equals(u1) || username.equals(u2)) {
+						allUserUrls.get(username).add(url);
+					}
+				}
+			}
+		}
+		
+		List<String> diff = new ArrayList<String>();
+		
+		for(String u2Url:allUserUrls.get(u2)) {
+			if(!allUserUrls.get(u1).contains(u2Url)) {
+				diff.add(u2Url);
+			}
+		}
+		
+		if(diff.size()<1) {
+			return true;
+		}
+		
+		System.out.println("List of URLs accessed by " + u2 + 
+				" but not accessed by " + u1 +": ");
+		for(String u:diff) {
+			System.out.println("\t- " + u);
+		}
+		
+		return false;
 	}
 	
 }

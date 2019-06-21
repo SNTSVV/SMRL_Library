@@ -14,8 +14,11 @@ import smrl.mr.crawljax.WebProcessor;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.test.ReplicateInputs;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 
 public class AugmentInput {
 //	static String configFile = "./testData/OTG_AUTHZ_002/jenkins-CVE-2018-1999046-2/jenkinsSysConfig.json";
@@ -245,12 +248,16 @@ public class AugmentInput {
 			jsonResult.add(pathName, path);
 		}
 		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String prettyJson = gson.toJson(jsonResult);
+		
 		FileWriter writer;
 		try {
 			writer = new FileWriter(fileName);
 
 			
-			writer.write(jsonResult.toString());
+//			writer.write(jsonResult.toString());
+			writer.write(prettyJson);
 			
 			writer.close();
 		} catch (IOException e) {

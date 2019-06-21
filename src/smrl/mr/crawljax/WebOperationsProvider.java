@@ -643,6 +643,8 @@ public class WebOperationsProvider implements OperationsProvider {
 		return false;
 	}
 
-
+	public boolean coverAllUrls(String username1, String username2) {
+		return impl.coverAllUrls(username1, username2);
+	}
 
 }
