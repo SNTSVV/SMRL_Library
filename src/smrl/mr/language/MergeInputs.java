@@ -29,9 +29,11 @@ import smrl.mr.crawljax.WebProcessor;
 
 public class MergeInputs {
 	public static void main(String[] args) {
-		String listFileName = "./testData/Jenkins/collectedData/listInputFiles.txt";
+//		String listFileName = "./testData/Jenkins/collectedData/listInputFiles.txt";
+		String listFileName = "./testData/Jenkins/collectedData/listInputFiles_180mins.txt";
+		
 		String configFile = "./testData/Jenkins/collectedData/jenkinsSysConfig.json";
-		String outFileName = "./testData/Jenkins/collectedData/input.json";
+		String outFileName = "./testData/Jenkins/collectedData/input_180mins.json";
 		boolean jenkinsSystem = true;
 
 		

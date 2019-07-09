@@ -2409,8 +2409,11 @@ public class WebProcessor {
 			return true;
 		}
 		
+		System.out.println("num of " + u1 + ": " +allUserUrls.get(u1).size());
+		System.out.println("num of " + u2 + ": " +allUserUrls.get(u2).size());
+		
 		System.out.println("List of URLs accessed by " + u2 + 
-				" but not accessed by " + u1 +": ");
+				" but not accessed by " + u1 +": (" + diff.size() + ")");
 		for(String u:diff) {
 			System.out.println("\t- " + u);
 		}

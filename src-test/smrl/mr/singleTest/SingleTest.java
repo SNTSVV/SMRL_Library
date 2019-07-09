@@ -16,6 +16,9 @@ import smrl.mr.owasp.OTG_AUTHZ_002a;
 import smrl.mr.owasp.OTG_AUTHZ_002b;
 import smrl.mr.owasp.OTG_AUTHZ_002c;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +34,8 @@ public class SingleTest extends MRBaseTest {
 	public static void setUpBeforeClass() throws Exception {
 		
 		//by default, the SUT is the Jenkins
-		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+//		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+		String configFile = "./testData/Jenkins/collectedData/jenkinsSysConfig.json";
 		
 		if(SingleTest.system.equals("iws")){
 			configFile = "./testData/IWS/iwsSysConfig.json";
@@ -104,4 +108,8 @@ public class SingleTest extends MRBaseTest {
 //		super.test(provider,OTG_SESS_003.class);
 //	}
 //	
+	@Test
+	public void test_cover_urls() {
+		assertTrue(provider.coverAllUrls("user2", "user1"));
+	}
 }
