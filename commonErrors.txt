@@ -1,4 +1,6 @@
 Common errors:
 
 1. import sun.reflect.generics.reflectiveObjects.NotImplementedException; --> error
-	- 
+	--> remove "JRE System Library" from the "Libraries" in Java Build Path -> Apply and Close
+	--> add Library, add JRE System Library [JavaSE-1.8]
+	
