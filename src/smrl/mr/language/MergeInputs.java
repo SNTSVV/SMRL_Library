@@ -31,10 +31,10 @@ public class MergeInputs {
 	public static void main(String[] args) {
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles.txt";
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles_180mins.txt";
-		String listFileName = "./testData/Jenkins/collectedData/300mins/listInputFiles.txt";
+		String listFileName = "./testData/Jenkins/collectedData/300mins_new/listInputFiles.txt";
 		
 		String configFile = "./testData/Jenkins/collectedData/jenkinsSysConfig.json";
-		String outFileName = "./testData/Jenkins/collectedData/input_300mins.json";
+		String outFileName = "./testData/Jenkins/collectedData/input_300mins_new.json";
 		boolean jenkinsSystem = true;
 
 		
