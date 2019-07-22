@@ -222,7 +222,8 @@ public class IndexAction extends Action {
 		IndexAction that = (IndexAction)obj;
 		return (
 				this.method.equals(that.method) &&
-				this.url.equals(that.url) &&
+				this.hasTheSameUrl(that) &&
+//				this.url.equals(that.url) &&
 				this.eventType.equals(that.eventType) &&
 				((this.user==null && that.user==null) || this.user.equals(that.user)));
 	}

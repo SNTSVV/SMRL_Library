@@ -2,6 +2,8 @@ package smrl.mr.language;
 
 import java.util.List;
 
+import smrl.mr.crawljax.Account;
+
 public interface OperationsProvider {
 
 	
@@ -74,6 +76,8 @@ public interface OperationsProvider {
 	boolean isAdmin(Object user);
 
 	boolean isFormInputForFilePath(Object fi);
+
+	boolean isSupervisorOf(Object user1, Object user2);
 	
 
 }

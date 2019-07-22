@@ -3,6 +3,7 @@ package smrl.mr.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import smrl.mr.crawljax.Account;
 import smrl.mr.language.Action;
 import smrl.mr.language.BasicUser;
 import smrl.mr.language.Input;
@@ -200,6 +201,12 @@ public class BasicOperationsProvider implements OperationsProvider {
 
 	@Override
 	public boolean isFormInputForFilePath(Object fi) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isSupervisorOf(Object user1, Object user2) {
 		// TODO Auto-generated method stub
 		return false;
 	}

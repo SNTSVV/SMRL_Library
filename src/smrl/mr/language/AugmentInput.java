@@ -18,13 +18,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializer;
 
 public class AugmentInput {
 //	static String configFile = "./testData/OTG_AUTHZ_002/jenkins-CVE-2018-1999046-2/jenkinsSysConfig.json";
 //	static String configFile = "./testData/Jenkins/simple/jenkinsSysConfig.json";
-	static String configFile = "./testData/Jenkins/fullWithAnonym/jenkinsSysConfigToAugment.json";
+//	static String configFile = "./testData/Jenkins/fullWithAnonym/jenkinsSysConfigToAugment.json";
 //	static String configFile = "./testData/FINAL/sysConfig_Short_ToAugment.json";
+	static String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 	
 
 	@SuppressWarnings("static-access")
@@ -37,6 +37,7 @@ public class AugmentInput {
 		
 		ArrayList<WebInputCrawlJax> newInputsList = new ArrayList<WebInputCrawlJax>();
 		
+		int count = 1;
 		for(WebInputCrawlJax input:inputList){
 			WebOutputSequence outSequence = webPro.output(input,true);
 			if(outSequence==null){
@@ -46,12 +47,13 @@ public class AugmentInput {
 			ArrayList<WebInputCrawlJax> newInputs = generateNewInputs(input, outSequence);
 			if(newInputs!=null && newInputs.size()>0){
 				for(WebInputCrawlJax i:newInputs){
-					if(!newInputs.contains(i)){
-						newInputs.add(i);
+					if(!newInputsList.contains(i)){
+						newInputsList.add(i);
 					}
 				}
 //				newInputsList.addAll(newInputs);
 			}
+			count++;
 		}
 		
 		//3. export all inputs (old and new) in a new input file
@@ -66,7 +68,7 @@ public class AugmentInput {
 					inputList.add(i);
 				}
 			}
-			inputList.addAll(newInputsList);
+//			inputList.addAll(newInputsList);
 			
 			String fileName = webPro.sysConfig.getInputFile();
 			if(fileName.endsWith(".json")){
@@ -113,8 +115,10 @@ public class AugmentInput {
 			for(String key : actOut.downloadedObjects.keySet()){
 				boolean execute = false;
 				
-				if(outDomain || 
-						hasSameDomain(key,domain)){
+				if((outDomain || 
+						hasSameDomain(key,domain)) &&
+						!ignoreUrl(key) &&
+						!containUrl(res,key)){
 					execute = true;
 				}
 				
@@ -146,7 +150,7 @@ public class AugmentInput {
 					newInput.addAction(newAction);
 
 					if(newInput.size()>0){
-						//FIXME: should check if the inputList and res already contain newInput before add it into res
+						//should check if res already contain newInput before add it into res
 						if(!res.contains(newInput)){
 							res.add(newInput);
 						}
@@ -158,6 +162,45 @@ public class AugmentInput {
 		return res;
 	}
 
+	private static boolean containUrl(ArrayList<WebInputCrawlJax> inputsList, String url) {
+		if(inputsList==null || url==null) {
+			return false;
+		}
+		
+		for(WebInputCrawlJax input:inputsList) {
+			if(input.contain(url)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+
+	private static boolean ignoreUrl(String url) {
+		
+		if(url==null || url.trim().isEmpty()) {
+			return false;
+		}
+		
+		String path = "";
+		
+		try {
+			URI uri = new URI(url);
+			path = uri.getPath();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		if(path.endsWith(".js") ||
+				path.endsWith(".css")) {
+			return true;
+		}
+		
+		return false;
+	}
+
+
 	private static boolean hasSameDomain(String url1, String url2) {
 		if(url1==null || url2==null ||
 				url1.isEmpty() || url2.isEmpty()){
@@ -167,11 +210,13 @@ public class AugmentInput {
 		String u1 = url1.trim();
 		String u2 = url2.trim();
 		
-		while(u1.endsWith("/")){
+		while(u1.endsWith("/") ||
+				u1.endsWith("#")){
 			u1 = u1.substring(0, u1.length()-1);
 		}
 		
-		while(u2.endsWith("/")){
+		while(u2.endsWith("/") ||
+				u2.endsWith("#")){
 			u2 = u2.substring(0, u2.length()-1);
 		}
 		
@@ -215,7 +260,7 @@ public class AugmentInput {
 		return domain;
 	}
 	
-	private static String getDomainFromURL(String url){
+	public static String getDomainFromURL(String url){
 		String domain = url;
 				
 		//keep only the protocol (e.g., http, https) and the domain name + port

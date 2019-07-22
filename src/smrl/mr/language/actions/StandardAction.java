@@ -328,11 +328,15 @@ public class StandardAction extends Action {
 	@Override
 	public boolean setMethod(String method) {
 		for(HTTPMethod m : HTTPMethod.values()){
-			if (m.toString().toLowerCase().equals(method.toLowerCase())){
-				this.method = method.toLowerCase();
+			if (m.toString().toLowerCase().equals(method.trim().toLowerCase())){
+				//if this action applied already the "method", do not to set it again
+				if(this.method!=null && this.method.toLowerCase().equals(method.trim().toLowerCase())) {
+					return false;
+				}
+				this.method = method.trim().toLowerCase();
 				return true;
 			}
-		}
+		} 
 		return false;
 	}
 
@@ -545,6 +549,7 @@ public class StandardAction extends Action {
 				this.method.equals(that.method) &&
 //				this.element.equals(that.element) &&
 //				this.elementURL.equals(that.elementURL) &&
+				this.hasTheSameUrl(that) &&
 				this.eventType.equals(that.eventType) &&
 				this.formInputs.equals(that.formInputs) &&
 				this.id.equals(that.id) &&

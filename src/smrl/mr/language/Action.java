@@ -389,8 +389,11 @@ public abstract class Action implements Cloneable {
 	
 	public boolean contain(String url){
 		String currentURL = this.getUrl();
-		if(currentURL != null){
-			return currentURL.trim().toLowerCase().equals(url.trim().toLowerCase());
+		if(currentURL != null && url!=null){
+			currentURL = standardUrl(currentURL);
+			url = standardUrl(url);
+			
+			return currentURL.equals(url);
 		}
 		return false;
 	}
@@ -460,8 +463,34 @@ public abstract class Action implements Cloneable {
 
 	public abstract boolean containFormInput();
 
-	public abstract JsonArray getFormInputs();
-
+	public abstract JsonArray getFormInputs(); 
+	
 	public abstract boolean containFormInputForFilePath();
+	
+	public boolean hasTheSameUrl(Action act) {
+		if (getUrl()==null || act.getUrl()==null) {
+			return false;
+		}
+		
+		String thisUrl = getUrl();
+		String thatUrl = act.getUrl();
+		
+		thisUrl = standardUrl(thisUrl);
+		thatUrl = standardUrl(thatUrl);
+		
+		return thisUrl.equals(thatUrl);
+	}
+
+	private String standardUrl(String url) {
+		if(url==null) {
+			return null;
+		}
+		url = url.trim().toLowerCase();
+		while(url.endsWith("/") ||
+				url.endsWith("#")) {
+			url = url.substring(0, url.length()-1);
+		}
+		return url;
+	}
 	
 }

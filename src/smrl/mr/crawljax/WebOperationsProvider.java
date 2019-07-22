@@ -647,4 +647,9 @@ public class WebOperationsProvider implements OperationsProvider {
 		return impl.coverAllUrls(username1, username2);
 	}
 
+	@Override
+	public boolean isSupervisorOf(Object user1, Object user2) {
+		return impl.isSupervisorOf(user1, user2);
+	}
+
 }

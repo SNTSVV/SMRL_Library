@@ -14,6 +14,7 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import smrl.mr.crawljax.Account;
 import smrl.mr.language.actions.WaitAction;
 
 public class Operations {
@@ -997,6 +998,10 @@ public class Operations {
 	 */
 	public static boolean isFormInputForFilePath(Object formInput) {
 		return MR.CURRENT.provider.isFormInputForFilePath(formInput);
+	}
+	
+	public static boolean isSupervisorOf(Object user1, Object user2) {
+		return MR.CURRENT.provider.isSupervisorOf(user1, user2);
 	}
 }
 

@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -35,6 +37,8 @@ public class SystemConfig {
 	private JsonObject errorSigns;
 	private JsonObject signup;
 	private List<String> confirmationTexts;
+	private Map<String, ArrayList<String>> supervisedUser;
+	private boolean headless;
 	
 	
 	static final int DEFAULT_WAIT_TIME = 1000;
@@ -61,6 +65,8 @@ public class SystemConfig {
 		this.errorSigns = new JsonObject();
 		this.signup = new JsonObject();
 		this.confirmationTexts = new ArrayList<String>();
+		this.supervisedUser = new HashMap<String, ArrayList<String>>();
+		this.headless = false;
 	}
 	
 	public SystemConfig(String configFile){
@@ -253,6 +259,49 @@ public class SystemConfig {
 				this.confirmationTexts = new ArrayList<String>();
 			}
 			
+			if(jsonObject.keySet().contains("supervisedUser")){
+				HashMap<String, ArrayList<String>> sUser = new HashMap<String, ArrayList<String>>();
+				
+				JsonObject suObject = jsonObject.get("supervisedUser").getAsJsonObject();
+				if(suObject!=null && suObject.size()>0) {
+					for(String key:suObject.keySet()) {
+						JsonArray ls = suObject.get(key).getAsJsonArray();
+						if(ls!=null && ls.size()>0) {
+							ArrayList<String> listWeakUsers = new ArrayList<String>();
+							for(int i=0; i<ls.size(); i++) {
+								String username = ls.get(i).getAsString();
+								if(username!=null && !username.isEmpty()) {
+									listWeakUsers.add(username);
+								}
+							}
+							
+							if(listWeakUsers.size()>0) {
+								sUser.put(key, listWeakUsers);
+							}
+						}
+					}
+				}
+				
+				ArrayList<String> conTexts = new ArrayList<String>();
+				JsonArray jArray = jsonObject.get("confirmationTexts").getAsJsonArray();
+				for(int i=0; i<jArray.size(); i++){
+					String cText = jArray.get(i).getAsString().trim();
+					conTexts.add(cText);
+				}
+				
+				this.supervisedUser = sUser;
+			}
+			else{
+				this.supervisedUser = new HashMap<String, ArrayList<String>>();
+			}
+			
+			if(jsonObject.keySet().contains("headless")){
+				this.headless = jsonObject.get("headless").getAsBoolean();
+			}
+			else{
+				this.headless = false;
+			}
+			
 		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -315,6 +364,14 @@ public class SystemConfig {
 
 	public void setRandomAdminFilePathFile(String randomAdminFilePathFile) {
 		this.randomAdminFilePathFile = randomAdminFilePathFile;
+	}
+
+	public Map<String, ArrayList<String>> getSupervisedUser() {
+		return supervisedUser;
+	}
+
+	public void setSupervisedUser(Map<String, ArrayList<String>> supervisedUser) {
+		this.supervisedUser = supervisedUser;
 	}
 
 	public String getLogoutURL() {
@@ -523,6 +580,32 @@ public class SystemConfig {
 			return false;
 		}
 		return equalURL(this.logoutURL, url);		
+	}
+
+	
+	
+	public boolean isHeadless() {
+		return headless;
+	}
+
+	public void setHeadless(boolean headless) {
+		this.headless = headless;
+	}
+
+	public boolean isSupervisorOf(String username1, String username2) {
+		if(username1==null || username2==null) {
+			return false;
+		}
+		
+		boolean isSuper = false;
+		if(supervisedUser.containsKey(username1)) {
+			ArrayList<String> listUsers = supervisedUser.get(username1);
+			if(listUsers!=null && listUsers.contains(username2)) {
+				isSuper = true;
+			}
+		}
+		
+		return isSuper;
 	}
 	
 	

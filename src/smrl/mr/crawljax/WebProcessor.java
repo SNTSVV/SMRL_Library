@@ -72,7 +72,7 @@ public class WebProcessor {
 	private List<WebInputCrawlJax> inputList;
 	private Iterator<WebInputCrawlJax> inputIter;
 	private List<String> randomFilePath;
-	private String currentUrl;
+	private String latestUrl;
 	private String currentUsername;
 	private String changedUsername;
 	private File outputFile;
@@ -105,7 +105,7 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=true;
+	private boolean headless=false;
 	private boolean backToRightPageBeforeAction=true;
 	
 	
@@ -115,7 +115,7 @@ public class WebProcessor {
 		this.setInputList(new ArrayList<WebInputCrawlJax>());
 		this.inputIter = this.getInputList().iterator();
 		this.randomFilePath = new ArrayList<String>();
-		this.currentUrl = "";
+		this.latestUrl = "";
 		this.currentUsername = "";
 		this.changedUsername = "";
 		this.outputFile = null;
@@ -173,7 +173,7 @@ public class WebProcessor {
 	}
 
 	public String getCurrentUrl() {
-		return currentUrl;
+		return latestUrl;
 	}
 
 	public String getCurrentUsername() {
@@ -449,14 +449,14 @@ public class WebProcessor {
 			String url = actions.get(i).getUrl();
 			if(url!= null){
 				if (!url.isEmpty()){
-					this.currentUrl = url;
+					this.latestUrl = url;
 					gotURL = true;
 					break;
 				}
 			}
 		}
 		if(!gotURL){
-			this.currentUrl = "";
+			this.latestUrl = "";
 		}
 
 		return input.changeCredential(user2);
@@ -512,6 +512,8 @@ public class WebProcessor {
 	public WebOutputSequence output(WebInputCrawlJax input, boolean checkDownloadedObjects) {
 		WebOutputSequence outputSequence = new WebOutputSequence();
 		
+		String latestUrl = "";
+		
 		//call web browser
 		String exePath = "/usr/local/bin/chromedriver";
 		System.setProperty("webdriver.chrome.driver", exePath);
@@ -536,6 +538,7 @@ public class WebProcessor {
 			chOptions.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
 			//FIXME: add certificate to driver if needed
 		}
+		
 		
 		if(headless) {
 			chOptions.addArguments("headless");
@@ -674,11 +677,19 @@ public class WebProcessor {
 				if(backToRightPageBeforeAction) {
 //					if(act.getMethod().toLowerCase().trim().equals("post")){
 						String actCurrentURL = ((StandardAction)act).getCurrentURL();
-						if(actCurrentURL!=null && !actCurrentURL.isEmpty()){
+						if(actCurrentURL!=null 
+//								&& !actCurrentURL.isEmpty() &&
+//								!actCurrentURL.trim().equals("/")
+								){
 							String browserURL = driver.getCurrentUrl().trim();
 							if(!actCurrentURL.equals(browserURL)){
-								//go back to the actCurrentURL
-								driver.get(actCurrentURL);
+								
+								actCurrentURL = processUrlBeforeRequest(driver, actCurrentURL);
+								
+								if(actCurrentURL!=null) {
+									//go back to the actCurrentURL
+									driver.get(actCurrentURL);
+								}
 							}
 						}
 //					}
@@ -823,9 +834,14 @@ public class WebProcessor {
 							urlToGet = actionUrls.get(act.getActionID());
 						}
 						
-						driver.get(urlToGet);
-						clicked = true;
-						System.out.println(" --> DONE");
+						urlToGet = processUrlBeforeRequest(driver, urlToGet);
+						
+						if(urlToGet!=null) {
+							driver.get(urlToGet);
+							clicked = true;
+							System.out.println(" --> DONE");
+						}
+						
 					}
 				}
 				
@@ -1086,6 +1102,7 @@ public class WebProcessor {
 				
 			//Add result to the outputSequence
 			if(doneAction){
+				latestUrl = driver.getCurrentUrl();
 //				if(redirectURL!=null && !redirectURL.isEmpty()) {
 //					System.out.println("\t\t!!! Redirect URL: " + redirectURL);
 //				}
@@ -1203,6 +1220,26 @@ public class WebProcessor {
 		return outputSequence;
 	}
 	
+	private String processUrlBeforeRequest(ChromeDriver driver, String urlToGet) {
+		if(urlToGet==null) {
+			return "";
+		}
+		
+		String tempUrl = driver.getCurrentUrl();
+		
+		if(tempUrl!=null && !tempUrl.isEmpty()) {
+			try {
+				URI uri = new URI(tempUrl);
+				return uri.resolve(urlToGet).toString();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
+
+
 	private boolean containConfirmationText(String text) {
 		List<String> conTexts = sysConfig.getConfirmationTexts();
 		if(conTexts==null || conTexts.size()<1) {
@@ -2419,6 +2456,22 @@ public class WebProcessor {
 		}
 		
 		return false;
+	}
+	
+	
+
+
+	public boolean isSupervisorOf(Object user1, Object user2) {
+		if(user1==null || user2==null ||
+				!(user1 instanceof Account) ||
+				!(user2 instanceof Account)) {
+			return false;
+		}
+		
+		String username1 = ((Account)user1).getUsername();
+		String username2 = ((Account)user2).getUsername();
+		
+		return sysConfig.isSupervisorOf(username1, username2);
 	}
 	
 }
