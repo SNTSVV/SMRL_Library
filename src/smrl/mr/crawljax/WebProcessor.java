@@ -62,6 +62,7 @@ import smrl.mr.language.actions.AlertAction;
 import smrl.mr.language.actions.InnerAction;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.language.actions.WaitAction;
+import smrl.mr.utils.URLUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -1272,14 +1273,20 @@ public class WebProcessor {
 				
 				String headers = ((ApiResponseElement) msgSet.getValue("requestHeader")).getValue();
 				int id = Integer.parseInt(msgSet.getValue("id").toString());
-				String url = getURLFromRequestHeaders(headers);
+				String url = URLUtil.standardUrl(getURLFromRequestHeaders(headers));
 				String method = getHttpMethodFromRequestHeaders(headers).toLowerCase();
+				String responseBody = ((ApiResponseElement) msgSet.getValue("responseBody")).getValue();
+				
 				
 				if(id > startID &&
-						!url.toLowerCase().equals(lastURL.toLowerCase()) &&
-						(!redirectURL.isEmpty() && !url.toLowerCase().equals(redirectURL.toLowerCase())) &&
+						!URLUtil.hasTheSameUrl(url, lastURL) &&
+						(redirectURL.isEmpty() ||
+								(!redirectURL.isEmpty() && 
+								!URLUtil.hasTheSameUrl(url, redirectURL)) ) &&
 						!res.keySet().contains(url) &&
-						isNotIgnoredURL(url)){
+						isNotIgnoredURL(url) &&
+						responseBody!=null && !responseBody.isEmpty()
+						){
 					res.put(url, method);
 				}
 			}

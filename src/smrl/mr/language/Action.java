@@ -18,6 +18,7 @@ import smrl.mr.language.actions.IndexAction;
 import smrl.mr.language.actions.InnerAction;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.language.actions.WaitAction;
+import smrl.mr.utils.URLUtil;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -390,8 +391,8 @@ public abstract class Action implements Cloneable {
 	public boolean contain(String url){
 		String currentURL = this.getUrl();
 		if(currentURL != null && url!=null){
-			currentURL = standardUrl(currentURL);
-			url = standardUrl(url);
+			currentURL = URLUtil.standardUrl(currentURL);
+			url = URLUtil.standardUrl(url);
 			
 			return currentURL.equals(url);
 		}
@@ -472,25 +473,8 @@ public abstract class Action implements Cloneable {
 			return false;
 		}
 		
-		String thisUrl = getUrl();
-		String thatUrl = act.getUrl();
-		
-		thisUrl = standardUrl(thisUrl);
-		thatUrl = standardUrl(thatUrl);
-		
-		return thisUrl.equals(thatUrl);
+		return URLUtil.hasTheSameUrl(getUrl(), act.getUrl());
 	}
 
-	private String standardUrl(String url) {
-		if(url==null) {
-			return null;
-		}
-		url = url.trim().toLowerCase();
-		while(url.endsWith("/") ||
-				url.endsWith("#")) {
-			url = url.substring(0, url.length()-1);
-		}
-		return url;
-	}
 	
 }

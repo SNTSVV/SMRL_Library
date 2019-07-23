@@ -47,7 +47,8 @@ public class AugmentInput {
 			ArrayList<WebInputCrawlJax> newInputs = generateNewInputs(input, outSequence);
 			if(newInputs!=null && newInputs.size()>0){
 				for(WebInputCrawlJax i:newInputs){
-					if(!newInputsList.contains(i)){
+					if(!newInputsList.contains(i) &&
+							hasNewURL(inputList, i)){
 						newInputsList.add(i);
 					}
 				}
@@ -80,6 +81,23 @@ public class AugmentInput {
 		else{
 			System.out.println("no new input");
 		}
+		System.out.println("Done");
+	}
+
+
+	private static boolean hasNewURL(List<WebInputCrawlJax> inputsList, WebInputCrawlJax input) {
+		if((inputsList==null || inputsList.size()<1) &&
+				(input!=null && input.size()>0)) {
+			return true;
+		}
+		for(Action act:input.actions()) {
+			String url = act.getUrl();
+			if(url!=null && !url.isEmpty() &&
+					!containUrl(inputsList, url)) {
+			return true;
+			}
+		}
+		return false;
 	}
 
 
@@ -162,7 +180,7 @@ public class AugmentInput {
 		return res;
 	}
 
-	private static boolean containUrl(ArrayList<WebInputCrawlJax> inputsList, String url) {
+	private static boolean containUrl(List<WebInputCrawlJax> inputsList, String url) {
 		if(inputsList==null || url==null) {
 			return false;
 		}
@@ -191,6 +209,11 @@ public class AugmentInput {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		
+		if(path==null) {
+			return false;
+		}
+		
 		
 		if(path.endsWith(".js") ||
 				path.endsWith(".css")) {
