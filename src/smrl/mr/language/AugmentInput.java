@@ -25,6 +25,7 @@ public class AugmentInput {
 //	static String configFile = "./testData/Jenkins/fullWithAnonym/jenkinsSysConfigToAugment.json";
 //	static String configFile = "./testData/FINAL/sysConfig_Short_ToAugment.json";
 	static String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
+	public static String augmentedText = "augmented action";
 	
 
 	@SuppressWarnings("static-access")
@@ -37,7 +38,6 @@ public class AugmentInput {
 		
 		ArrayList<WebInputCrawlJax> newInputsList = new ArrayList<WebInputCrawlJax>();
 		
-		int count = 1;
 		for(WebInputCrawlJax input:inputList){
 			WebOutputSequence outSequence = webPro.output(input,true);
 			if(outSequence==null){
@@ -54,7 +54,6 @@ public class AugmentInput {
 				}
 //				newInputsList.addAll(newInputs);
 			}
-			count++;
 		}
 		
 		//3. export all inputs (old and new) in a new input file
@@ -81,7 +80,6 @@ public class AugmentInput {
 		else{
 			System.out.println("no new input");
 		}
-		System.out.println("Done");
 	}
 
 
@@ -160,7 +158,7 @@ public class AugmentInput {
 
 					//create new action
 					StandardAction newAction = new StandardAction();
-					newAction.setText("augmented action");
+					newAction.setText(augmentedText);
 					newAction.setUrl(key);
 					newAction.setMethod(actOut.downloadedObjects.get(key));
 					newAction.setCurrentURL(currentURL);
@@ -306,7 +304,7 @@ public class AugmentInput {
 	}
 
 
-	static void exportInputListToFile(String fileName,
+	public static void exportInputListToFile(String fileName,
 			List<WebInputCrawlJax> inputList) {
 
 		JsonObject jsonResult = new JsonObject(); 	//containing all paths
