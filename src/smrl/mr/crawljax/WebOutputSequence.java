@@ -119,7 +119,7 @@ public class WebOutputSequence implements Output {
 		// A webOutputSequence is an error if:
 		//1. it is an empty one
 		//2. it contains error signs, which are defined in the system configuration
-		//3. it contains 4xx or 5xx http response	--> next work
+		//3. it contains 4xx or 5xx http response
 		
 		if(this.seq == null || this.seq.size()==0){
 			return true;
@@ -245,6 +245,11 @@ public class WebOutputSequence implements Output {
 						return true;
 					}
 				}
+			}
+			
+			//Check http response status code
+			if( ((WebOutputCleaned)out).getStatusCode() >= 400){
+				return true;
 			}
 		}
 		

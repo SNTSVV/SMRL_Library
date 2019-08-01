@@ -17,6 +17,7 @@ public class WebOutputCleaned {
 	public String text;
 	public File downloadedFile;
 	public HashMap<String,String> downloadedObjects;
+	public int statusCode;
 	
 	
 	public WebOutputCleaned() {
@@ -26,6 +27,7 @@ public class WebOutputCleaned {
 		this.text = null;
 		this.downloadedFile = null;
 		this.downloadedObjects = null;
+		this.statusCode = -1;
 	}
 
 
@@ -120,6 +122,10 @@ public class WebOutputCleaned {
 			}
 		}
 		return null;
+	}
+	
+	public int getStatusCode() {
+		return statusCode;
 	}
 	
 }

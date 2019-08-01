@@ -78,6 +78,8 @@ public interface OperationsProvider {
 	boolean isFormInputForFilePath(Object fi);
 
 	boolean isSupervisorOf(Object user1, Object user2);
+
+	boolean isError(Object output);
 	
 
 }

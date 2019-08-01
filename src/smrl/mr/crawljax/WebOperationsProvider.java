@@ -652,4 +652,9 @@ public class WebOperationsProvider implements OperationsProvider {
 		return impl.isSupervisorOf(user1, user2);
 	}
 
+	@Override
+	public boolean isError(Object output) {
+		return impl.isError(output);
+	}
+
 }

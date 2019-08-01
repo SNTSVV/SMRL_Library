@@ -87,6 +87,7 @@ public class Operations {
 	 * @return true if a equals b or when a can be assigned using the value of b; false if a does not equal b, or cannot assign b to a.
 	 */
 	public static boolean EQUAL( Object a, Object b ){ 
+		MR.CURRENT.setLastEQUAL( a, b );
 		boolean eq = MR.CURRENT.equal(a, b);
 		
 		if ( ! eq ){
@@ -690,6 +691,7 @@ public class Operations {
 	 * @return
 	 */
 	public static Output Output(Input input, int pos){
+		MR.CURRENT.setLastInputProcessed( input,  pos );
 		return MR.CURRENT.provider.Output(input,pos);
 	}
 
@@ -701,6 +703,7 @@ public class Operations {
 	 * @return
 	 */
 	public static Output Output(Input input){
+		MR.CURRENT.setLastInputProcessed( input,  -1 );
 		return MR.CURRENT.provider.Output(input);
 	}
 	
@@ -1002,6 +1005,10 @@ public class Operations {
 	
 	public static boolean isSupervisorOf(Object user1, Object user2) {
 		return MR.CURRENT.provider.isSupervisorOf(user1, user2);
+	}
+	
+	public static boolean isError(Object output) {
+		return MR.CURRENT.provider.isError(output);
 	}
 }
 

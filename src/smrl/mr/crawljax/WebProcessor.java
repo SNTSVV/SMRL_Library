@@ -20,12 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
@@ -42,6 +45,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -106,8 +114,9 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=false;
+	private boolean headless=true;
 	private boolean backToRightPageBeforeAction=true;
+	private boolean checkStatusCode=false;
 	
 	
 	
@@ -520,12 +529,16 @@ public class WebProcessor {
 		System.setProperty("webdriver.chrome.driver", exePath);
 		ChromeDriver driver = null;
 		
+		LoggingPreferences logPrefs = new LoggingPreferences();
+		logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
+		
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.downloadFilePath);
 
 		ChromeOptions chOptions = new ChromeOptions();
 		chOptions.setExperimentalOption("prefs", chromePrefs);
+		chOptions.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
 		
 		if(sysConfig.isUsedProxy()){
 			String proxyAP = sysConfig.getProxyAddress().trim() + 
@@ -1135,6 +1148,12 @@ public class WebProcessor {
 				//normalize the new dom
 				WebOutputCleaned outObj = cleanUpOutPut(newDom);
 				outObj.resultedUrl = driver.getCurrentUrl();
+				
+				if(checkStatusCode) {
+					outObj.statusCode = getStatusCode(driver);
+				}
+				
+				
 
 				File file = findNewDownloadedFile();
 				if ( file != null ){
@@ -1219,6 +1238,50 @@ public class WebProcessor {
 		System.out.println("\tTimes of automatic confirmation: "+timeOfConfirm);
 		
 		return outputSequence;
+	}
+
+
+	private int getStatusCode(ChromeDriver driver) {
+		int status = -1;
+		LogEntries logs = driver.manage().logs().get("performance");
+//				System.out.println("Per logs: " + logs);
+
+		for (Iterator<LogEntry> it = logs.iterator(); it.hasNext();)
+		{
+		    LogEntry entry = it.next();
+
+		    try
+		    {
+		        JSONObject json = new JSONObject(entry.getMessage());
+
+//	                    System.out.println(json.toString());
+
+		        JSONObject message = json.getJSONObject("message");
+		        String method = message.getString("method");
+
+		        if (method != null
+		                && "Network.responseReceived".equals(method))
+		        {
+		            JSONObject params = message.getJSONObject("params");
+
+		            JSONObject response = params.getJSONObject("response");
+		            String messageUrl = response.getString("url");
+
+		            if (driver.getCurrentUrl().equals(messageUrl))
+		            {
+		                status = response.getInt("status");
+		                break;
+		            }
+		        }
+		    } catch (JSONException e)
+		    {
+		    	System.out.println("To use this function of ");
+		        e.printStackTrace();
+		    }
+		}
+
+//		System.out.println("\tstatus code: " + status);
+		return status;
 	}
 	
 	private String processUrlBeforeRequest(ChromeDriver driver, String urlToGet) {
@@ -2479,6 +2542,16 @@ public class WebProcessor {
 		String username2 = ((Account)user2).getUsername();
 		
 		return sysConfig.isSupervisorOf(username1, username2);
+	}
+	
+
+
+	public boolean isError(Object output) {
+		if(!(output instanceof WebOutputSequence)){
+			return false;
+		}
+		
+		return ((WebOutputSequence)output).isError();
 	}
 	
 }

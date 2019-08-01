@@ -255,6 +255,12 @@ public abstract class MR {
 			}	
 		}
 		
+		msg += " [Last input processed: "+lastInput+" position: "+lastInputPos+"] "+"[Last equal: "+lastEqual+"]";
+		
+		lastInput = null;
+		lastInputPos = -1;
+		lastEqual = null;
+		
 //		HashMap<String, I> inputsMap = inputsDB.getProcessedInputs();
 //		String msg = "";
 //		for ( Entry<String,I> i : inputsMap.entrySet() ){
@@ -547,6 +553,12 @@ public abstract class MR {
 	
 	int lineOfFirstME=-1;
 	int ifBlocksCounter = 0;
+
+	private int lastInputPos;
+	private String lastInput;
+
+	private String lastEqual;
+	
 	public void ifThenBlock() {
 		StackTraceElement[] st = Thread.currentThread().getStackTrace();
 		int pos = 2;
@@ -583,6 +595,18 @@ public abstract class MR {
 
 	public MrDataDB getDataDB(String string) {
 		return dataDBs.get(string);
+	}
+
+
+	public void setLastInputProcessed(Input input, int pos) {
+		this.lastInput = input.toString();
+		this.lastInputPos = pos;
+	}
+
+
+	public void setLastEQUAL(Object a, Object b) {
+		// TODO Auto-generated method stub
+		lastEqual = " "+a+ ", "+b;
 	}
 		
 

@@ -12,6 +12,7 @@ public class FilterInputs {
 	
 	static String configFile = "./testData/Jenkins/jenkinsSysConfig_filter.json";
 	static String[] avoidString = {"$stapler/bound/", "ajaxexecutors", "ajaxbuildqueue", "buildhistory/ajax"};
+	static boolean printAugmentedInput = true;
 
 	public static void main(String[] args) {
 		WebProcessor webPro = ReplicateInputs.setupWebProcessor(configFile);
@@ -32,6 +33,10 @@ public class FilterInputs {
 					(!containAugmentedAction(input) ||
 					!containAvoidString(input))) {
 				newInputsList.add(input);
+				
+				if(printAugmentedInput && containAugmentedAction(input)) {
+					System.out.println(input);
+				}
 			}
 		}
 		
@@ -41,7 +46,7 @@ public class FilterInputs {
 			
 			String fileName = webPro.sysConfig.getInputFile();
 			if(fileName.endsWith(".json")){
-				fileName = fileName.substring(0, fileName.length()-5) + "_augmented_filtered.json";
+				fileName = fileName.substring(0, fileName.length()-5) + "_filtered.json";
 			}
 			
 			AugmentInput.exportInputListToFile(fileName, newInputsList);

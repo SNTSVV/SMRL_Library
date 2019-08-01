@@ -211,4 +211,10 @@ public class BasicOperationsProvider implements OperationsProvider {
 		return false;
 	}
 
+	@Override
+	public boolean isError(Object output) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
