@@ -7,12 +7,13 @@ import java.util.HashMap;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 
+import smrl.mr.owasp.OTG_AUTHZ_001b;
+import smrl.mr.owasp.OTG_AUTHZ_002;
 import smrl.mr.owasp.OTG_AUTHZ_002a;
+import smrl.mr.owasp.OTG_AUTHZ_002c;
 import smrl.mr.crawljax.WebOperationsProvider;
 import smrl.mr.language.MRBaseTest;
 
@@ -27,7 +28,7 @@ public class SingleTest extends MRBaseTest {
 	public static void setUpBeforeClass() throws Exception {
 		
 		//by default, the SUT is the Jenkins
-		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
+		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
 //		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 //		String configFile = "./testData/Jenkins/collectedData/jenkinsSysConfig.json";
 		
@@ -45,18 +46,18 @@ public class SingleTest extends MRBaseTest {
 		setProvider(provider);
 	}
 	
-//	
-//	@Test
-//	public void test_OTG_AUTHZ_001b() {
-//		super.test(provider,OTG_AUTHZ_001b.class);
-//	}
-//	
-//
-//	@Test
-//	public void test_OTG_AUTHZ_002() {
-//		super.test(provider,OTG_AUTHZ_002.class);
-//	}
-//	
+	
+	@Test
+	public void test_OTG_AUTHZ_001b() {
+		super.test(provider,OTG_AUTHZ_001b.class);
+	}
+	
+
+	@Test
+	public void test_OTG_AUTHZ_002() {
+		super.test(provider,OTG_AUTHZ_002.class);
+	}
+	
 	@Test
 	/**
 	  *This test case should detect CVE-2018-1999004"
@@ -73,13 +74,13 @@ public class SingleTest extends MRBaseTest {
 //		super.test(provider,OTG_AUTHZ_002b.class);
 //	}
 //	
-//	@Test
-//	/**
-//	  *This test case should detect CVE-2018-1999046"
-//	  */
-//	public void test_OTG_AUTHZ_002c() {
-//		super.test(provider,OTG_AUTHZ_002c.class);
-//	}
+	@Test
+	/**
+	  *This test case should detect CVE-2018-1999046"
+	  */
+	public void test_OTG_AUTHZ_002c() {
+		super.test(provider,OTG_AUTHZ_002c.class);
+	}
 	
 //	@Test
 //	/**

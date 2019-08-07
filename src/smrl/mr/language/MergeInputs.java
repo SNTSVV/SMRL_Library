@@ -33,8 +33,8 @@ public class MergeInputs {
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles_180mins.txt";
 		String listFileName = "./testData/Jenkins/collectedData/300mins_new/listInputFiles.txt";
 		
-		String configFile = "./testData/Jenkins/collectedData/jenkinsSysConfig.json";
-		String outFileName = "./testData/Jenkins/collectedData/input_300mins_new.json";
+		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+		String outFileName = "./testData/Jenkins/input_FULL.json";
 		boolean jenkinsSystem = true;
 
 		
