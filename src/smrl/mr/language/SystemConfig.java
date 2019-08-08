@@ -509,10 +509,10 @@ public class SystemConfig {
 		
 		String u1 = url1.trim().toLowerCase();
 		String u2 = url2.trim().toLowerCase();
-		if(u1.endsWith("/")){
+		while(u1.endsWith("/")){
 			u1 = u1.substring(0, u1.length()-1);
 		}
-		if(u2.endsWith("/")){
+		while(u2.endsWith("/")){
 			u2 = u2.substring(0, u2.length()-1);
 		}
 		return u2.equals(u1);
