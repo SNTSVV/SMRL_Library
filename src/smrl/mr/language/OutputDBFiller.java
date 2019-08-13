@@ -25,7 +25,8 @@ public class OutputDBFiller {
 //		OutputDBFiller db = new OutputDBFiller(new File("./testData/OTG_AUTHZ_002/jenkins-agentLog/outputStore"));
 //		OutputDBFiller db = new OutputDBFiller(new File("./testData/OTG_AUTHZ_002/jenkins/outputStore"));
 //		OutputDBFiller db = new OutputDBFiller(new File("./testData/Jenkins/simple/outputStore"));
-		OutputDBFiller db = new OutputDBFiller(new File("./testData/Jenkins/fullWithAnonym/outputStore"));
+//		OutputDBFiller db = new OutputDBFiller(new File("./testData/Jenkins/fullWithAnonym/outputStore"));
+		OutputDBFiller db = new OutputDBFiller(new File("./testData/Jenkins/outputStore"));
 		
 		
 		DBPopulator mr = new DBPopulator(db);
@@ -34,7 +35,7 @@ public class OutputDBFiller {
 //		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins-1/jenkinsSysconfig.json");
 //		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins-agentLog/jenkinsSysconfig.json");
 //		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins/jenkinsSysconfig.json");
-		WebOperationsProvider provider = new WebOperationsProvider("./testData/Jenkins/fullWithAnonym/jenkinsSysConfig_toPopulate.json");
+		WebOperationsProvider provider = new WebOperationsProvider("./testData/Jenkins/jenkinsSysConfig.json");
 		
 		mr.setProvider(provider);
 		
