@@ -552,6 +552,7 @@ public abstract class MR {
 	}
 	
 	int lineOfFirstME=-1;
+	int lineOfLastME=-1;
 	int ifBlocksCounter = 0;
 
 	private int lastInputPos;
@@ -570,10 +571,20 @@ public abstract class MR {
 			lineOfFirstME = currentLine;	
 		}
 		
+		
+		
 		if ( currentLine == lineOfFirstME ) {
 			LOGGER.fine("new ME cycle "+currentLine);
 			cleanupReassignedData();
-		}
+		} 
+//		The following enables resetting reassigned data every time an internal loop is re-executed, 
+//		but I'm not sure it is what we may want.
+//		else if ( currentLine < lineOfLastME ) {
+//			LOGGER.fine("new ME sub-cycle "+currentLine);
+//			cleanupReassignedData();
+//		}
+//		
+//		lineOfLastME = currentLine;
 		
 		
 		ifBlocksCounter++;
