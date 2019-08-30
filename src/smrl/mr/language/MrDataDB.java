@@ -4,10 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -183,5 +186,47 @@ public class MrDataDB<D> {
 		}
 		
 		reassignedData.clear();
+	}
+
+	public int getUsedSourceInputs() {
+		return generatedData.size()-reassignedData.size();
+	}
+	
+	public int size() {
+		return inputs.size();
+	}
+	
+	List<D> unshuffled = null;
+	Random rnd = null;
+	public void shuffle() {
+		if ( unshuffled != null ) {
+			inputs = unshuffled;
+		} else {
+			rnd = new Random(0);
+		}
+		
+		int start = (START) % LEN;
+		
+		//we shuffle everything except the one at position start, which should remain at position start
+		
+		unshuffled = inputs;
+		inputs = new LinkedList<D>();
+		
+		LinkedList<D> toShuffle = new LinkedList<D>();
+		toShuffle.addAll(unshuffled);
+		
+		D first = toShuffle.remove(start);
+		
+		Collections.shuffle(toShuffle, rnd);
+		
+		inputs.addAll(toShuffle);
+		inputs.add(start, first);
+	}
+
+	public void unshuffle() {
+		if ( unshuffled != null ) {
+			inputs = unshuffled;
+		}
+		unshuffled = null;
 	}
 }

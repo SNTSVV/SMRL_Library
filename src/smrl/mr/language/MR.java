@@ -194,12 +194,53 @@ public abstract class MR {
 		MrDataDB db = sortedDBs.get(i);
 		db.resetTestsCounter();
 		while ( db.hasMore() && ( COLLECT_ALL_FAILURES || FAILED==false ) ){
-			iterateMR(sortedDBs, i+1);
+			
+			int expectedSrcInputs = expectedSourceInputsOfType(db);
+			if ( expectedSrcInputs > 1 ) {
+				if ( true ) {
+					throw new IllegalStateException("This is a debug message, this code should be executed for SESS_003, never tested");
+				}
+				iterateMRshuffling(sortedDBs, db, i);
+			} else {
+				iterateMR(sortedDBs, i+1);
+			}
+			
+			traceSourceInputsOfSameType(db);
+			
 			db.nextTest();
 			provider.nextTest();
 		}
 	}
 
+
+	private void iterateMRshuffling(List<MrDataDB> sortedDBs, MrDataDB db, int i) {
+		int max = db.size() < 100 ? db.size() : 100;
+		for ( int j = 0; j < max; j++ ) {
+			db.shuffle();
+			iterateMR(sortedDBs, i+1);
+			db.unshuffle();
+		}
+	}
+
+	private int expectedSourceInputsOfType(MrDataDB db) {
+		if ( ! usedSourceInputsMap.containsKey(db) ) {
+			return 1;
+		}
+		return usedSourceInputsMap.get(db);
+	}
+
+	private void traceSourceInputsOfSameType(MrDataDB db) {
+		int usedSrcInputs = db.getUsedSourceInputs();
+		int lastUsedSrcInputs = 0;
+		if ( usedSourceInputsMap.containsKey(db) ) {
+			lastUsedSrcInputs = usedSourceInputsMap.get(db);
+		}
+		if ( usedSrcInputs > lastUsedSrcInputs ) {
+			usedSourceInputsMap.put(db,lastUsedSrcInputs);
+		}
+	}
+
+	HashMap<MrDataDB,Integer> usedSourceInputsMap = new HashMap<MrDataDB,Integer>();
 
 	LinkedList<String> failures = new LinkedList<String>();
 	public LinkedList<String> getFailures() {
@@ -386,7 +427,7 @@ public abstract class MR {
 					} else {
 						_rhs = (MRData) rhs;
 					}
-
+					
 					return inputsDB().reassign(lhs,_rhs);
 				}
 			}
