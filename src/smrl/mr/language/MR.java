@@ -31,6 +31,10 @@ public abstract class MR {
 
 	private static final boolean PERFORM_FILTERING = true;
 
+	private static final int MAX_SHUFFLING = 10;
+
+	private static boolean MEexecutedAtLeastOnce = false;
+
 	OperationsProvider provider;
 	
 
@@ -195,17 +199,34 @@ public abstract class MR {
 		db.resetTestsCounter();
 		while ( db.hasMore() && ( COLLECT_ALL_FAILURES || FAILED==false ) ){
 			
+//			int expectedSrcInputs = expectedSourceInputsOfType(db);
+//			if ( expectedSrcInputs > 1 ) {
+////				if ( true ) {
+////					throw new IllegalStateException("This is a debug message, this code should be executed for SESS_003, never tested");
+////				}
+//				
+//				iterateMRshuffling(sortedDBs, db, i);
+//			} else {
+//				iterateMR(sortedDBs, i+1);
+//			}
+			
 			int expectedSrcInputs = expectedSourceInputsOfType(db);
-			if ( expectedSrcInputs > 1 ) {
-				if ( true ) {
-					throw new IllegalStateException("This is a debug message, this code should be executed for SESS_003, never tested");
-				}
-				iterateMRshuffling(sortedDBs, db, i);
-			} else {
+			
+			if ( expectedSrcInputs <= 1 ) {
 				iterateMR(sortedDBs, i+1);
+				traceSourceInputsOfSameType(db);
+				expectedSrcInputs = expectedSourceInputsOfType(db);
 			}
 			
-			traceSourceInputsOfSameType(db);
+			
+			
+			if ( expectedSrcInputs > 1 ) {
+//				if ( true ) {
+//					throw new IllegalStateException("This is a debug message, this code should be executed for SESS_003, never tested");
+//				}
+				
+				iterateMRshuffling(sortedDBs, db, i);
+			}
 			
 			db.nextTest();
 			provider.nextTest();
@@ -214,12 +235,13 @@ public abstract class MR {
 
 
 	private void iterateMRshuffling(List<MrDataDB> sortedDBs, MrDataDB db, int i) {
-		int max = db.size() < 100 ? db.size() : 100;
+		System.out.println("Shuffling "+db.dbName);
+		int max = db.size() < MAX_SHUFFLING ? db.size() : MAX_SHUFFLING;
 		for ( int j = 0; j < max; j++ ) {
 			db.shuffle();
 			iterateMR(sortedDBs, i+1);
-			db.unshuffle();
 		}
+		db.unshuffle();
 	}
 
 	private int expectedSourceInputsOfType(MrDataDB db) {
@@ -230,13 +252,24 @@ public abstract class MR {
 	}
 
 	private void traceSourceInputsOfSameType(MrDataDB db) {
+		if ( usedSourceInputsMap.containsKey(db) ) {
+			System.out.println("OPTIMIZATION");
+			return; //This is an optimization, we just compute once per DB. We may change policy in the future.
+		}
 		int usedSrcInputs = db.getUsedSourceInputs();
+		System.out.println("!!Used source inputs of last execution for "+db.dbName+" "+usedSrcInputs);
 		int lastUsedSrcInputs = 0;
 		if ( usedSourceInputsMap.containsKey(db) ) {
+			System.out.println("!!Used source inputs for "+db.dbName+" "+usedSrcInputs);
 			lastUsedSrcInputs = usedSourceInputsMap.get(db);
 		}
-		if ( usedSrcInputs > lastUsedSrcInputs ) {
-			usedSourceInputsMap.put(db,lastUsedSrcInputs);
+		if ( MEexecutedAtLeastOnce ) {
+			if ( usedSrcInputs > lastUsedSrcInputs ) {
+				System.out.println("Updating inputs map");
+				usedSourceInputsMap.put(db,usedSrcInputs);
+			}
+		} else {
+			System.out.println("No ME executed");
 		}
 	}
 
@@ -584,6 +617,10 @@ public abstract class MR {
 //		System.out.println("resetPassingExpressionsCounter");
 		passingExpressions = 0;
 		ifBlocksCounter = 0;
+		
+		if ( lineOfFirstME > 0 ) {
+			MEexecutedAtLeastOnce = true;
+		}
 		lineOfFirstME = -1;
 	}
 	
@@ -606,13 +643,14 @@ public abstract class MR {
 		int pos = 2;
 		int currentLine = st[pos].getLineNumber();
 		
+		System.out.println("IF_THEN_BLOCK");
 		LOGGER.fine("Current line "+currentLine+" : "+st[pos].getClassName()+"."+st[pos].getMethodName());
 		
 		if ( lineOfFirstME == -1 ) {
 			lineOfFirstME = currentLine;	
 		}
 		
-		
+		System.out.println("lineOfFirstME: "+lineOfFirstME);
 		
 		if ( currentLine == lineOfFirstME ) {
 			LOGGER.fine("new ME cycle "+currentLine);

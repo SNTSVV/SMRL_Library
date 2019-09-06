@@ -41,6 +41,7 @@ public class MrDataDB<D> {
 		
 		
 		if ( generatedData.containsKey(key) ){
+			System.out.println("!!!Returning existing data "+key);
 			LOGGER.log(Level.FINE,"!!!Returning existing data "+key);
 			return generatedData.get(key);
 		}
@@ -120,6 +121,10 @@ public class MrDataDB<D> {
 	public void nextTest() {
 		LOGGER.log(Level.FINE,"!!!NEXT_TEST");
 		START++;
+		cleanUpGeneratedAndReassignedData();
+	}
+
+	public void cleanUpGeneratedAndReassignedData() {
 		generatedData.clear();
 		reassignedData.clear();
 	}
@@ -180,7 +185,7 @@ public class MrDataDB<D> {
 	public void cleanupReassignedData() {
 		
 		for (  Entry<String, D> e:  reassignedData.entrySet() ) {
-//			System.out.println("Deleting "+e.getKey());
+			System.out.println("Deleting "+e.getKey());
 			//No need to set D as not reassigned because it should never be referenced again; anyway, it would be unsafe.
 			generatedData.remove(e.getKey());	
 		}
@@ -202,10 +207,11 @@ public class MrDataDB<D> {
 		if ( unshuffled != null ) {
 			inputs = unshuffled;
 		} else {
-			rnd = new Random(0);
+			System.out.println("New random");
+			rnd = new Random(System.currentTimeMillis());
 		}
 		
-		int start = (START) % LEN;
+		int start = START % LEN;
 		
 		//we shuffle everything except the one at position start, which should remain at position start
 		
@@ -215,12 +221,30 @@ public class MrDataDB<D> {
 		LinkedList<D> toShuffle = new LinkedList<D>();
 		toShuffle.addAll(unshuffled);
 		
+		
+		
+		System.out.println("START "+START);
+		System.out.println("start "+start);
+		
+//		System.out.println("TOKEEP (before) "+toShuffle.get(start-1).hashCode()+" "+toShuffle.get(start-1));
+		System.out.println("TOKEEP  "+toShuffle.get(start).hashCode()+" "+toShuffle.get(start));
+		System.out.println("TOKEEP (after) "+toShuffle.get(start+1).hashCode()+" "+toShuffle.get(start+1));
+		
+		
 		D first = toShuffle.remove(start);
+		
+		
 		
 		Collections.shuffle(toShuffle, rnd);
 		
 		inputs.addAll(toShuffle);
 		inputs.add(start, first);
+		
+		System.out.println("ELEMENT-1 "+inputs.get(start).hashCode()+" "+inputs.get(start));
+		System.out.println("ELEMENT-2 "+inputs.get(start+1).hashCode()+" "+inputs.get(start+1));
+		
+		cleanUpGeneratedAndReassignedData();
+		
 	}
 
 	public void unshuffle() {
