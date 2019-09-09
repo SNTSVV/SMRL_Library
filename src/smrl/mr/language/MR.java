@@ -235,7 +235,7 @@ public abstract class MR {
 
 
 	private void iterateMRshuffling(List<MrDataDB> sortedDBs, MrDataDB db, int i) {
-		System.out.println("Shuffling "+db.dbName);
+//		System.out.println("Shuffling "+db.dbName);
 		int max = db.size() < MAX_SHUFFLING ? db.size() : MAX_SHUFFLING;
 		for ( int j = 0; j < max; j++ ) {
 			db.shuffle();
@@ -253,24 +253,25 @@ public abstract class MR {
 
 	private void traceSourceInputsOfSameType(MrDataDB db) {
 		if ( usedSourceInputsMap.containsKey(db) ) {
-			System.out.println("OPTIMIZATION");
+//			System.out.println("OPTIMIZATION");
 			return; //This is an optimization, we just compute once per DB. We may change policy in the future.
 		}
 		int usedSrcInputs = db.getUsedSourceInputs();
-		System.out.println("!!Used source inputs of last execution for "+db.dbName+" "+usedSrcInputs);
+//		System.out.println("!!Used source inputs of last execution for "+db.dbName+" "+usedSrcInputs);
 		int lastUsedSrcInputs = 0;
 		if ( usedSourceInputsMap.containsKey(db) ) {
-			System.out.println("!!Used source inputs for "+db.dbName+" "+usedSrcInputs);
+//			System.out.println("!!Used source inputs for "+db.dbName+" "+usedSrcInputs);
 			lastUsedSrcInputs = usedSourceInputsMap.get(db);
 		}
 		if ( MEexecutedAtLeastOnce ) {
 			if ( usedSrcInputs > lastUsedSrcInputs ) {
-				System.out.println("Updating inputs map");
+//				System.out.println("Updating inputs map");
 				usedSourceInputsMap.put(db,usedSrcInputs);
 			}
-		} else {
-			System.out.println("No ME executed");
-		}
+		} 
+//		else {
+//			System.out.println("No ME executed");
+//		}
 	}
 
 	HashMap<MrDataDB,Integer> usedSourceInputsMap = new HashMap<MrDataDB,Integer>();
@@ -643,14 +644,14 @@ public abstract class MR {
 		int pos = 2;
 		int currentLine = st[pos].getLineNumber();
 		
-		System.out.println("IF_THEN_BLOCK");
+//		System.out.println("IF_THEN_BLOCK");
 		LOGGER.fine("Current line "+currentLine+" : "+st[pos].getClassName()+"."+st[pos].getMethodName());
 		
 		if ( lineOfFirstME == -1 ) {
 			lineOfFirstME = currentLine;	
 		}
 		
-		System.out.println("lineOfFirstME: "+lineOfFirstME);
+//		System.out.println("lineOfFirstME: "+lineOfFirstME);
 		
 		if ( currentLine == lineOfFirstME ) {
 			LOGGER.fine("new ME cycle "+currentLine);
