@@ -327,6 +327,38 @@ public class WebOutputSequence implements Output {
 		this.sessionSequence.add(session);
 	}
 
+
+
+
+
+	@Override
+	public boolean isEmptyFile() {
+		//true if the last output containing an empty file:
+		//- no output: false
+		//- output without downloaded file: false
+		//- output with an empty file: true
+		//- output with a nonempty file: false
+		
+		if(seq.size()<1) {
+			System.out.println("\t!!! no output");
+			return false;
+		}
+		
+		WebOutputCleaned lastOutput = (WebOutputCleaned)seq.get(seq.size()-1);
+		if(lastOutput==null || lastOutput.downloadedFile==null) {
+			System.out.println("\t!!! no downloaded file");
+			return false;
+		}
+		
+		if(lastOutput.downloadedFile.isFile() && lastOutput.downloadedFile.length()<=0) {
+			System.out.println("\t!!! downloaded file is EMPTY");
+			return true;
+		}
+		
+		System.out.println("\t!!! downloaded file is NONempty");
+		return false;
+	}
+
 	
 
 	

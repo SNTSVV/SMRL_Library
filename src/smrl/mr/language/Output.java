@@ -9,6 +9,12 @@ public interface Output {
 	
 	public boolean isError();
 	
+	/**
+	 * Check if the last output contains an empty file
+	 * @return true if the last output containing an empty file
+	 */
+	public boolean isEmptyFile();
+	
 	public boolean hasStrictTransportSecurityHeader();
 	
 	public String getChannel();

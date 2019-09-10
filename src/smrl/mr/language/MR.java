@@ -180,6 +180,7 @@ public abstract class MR {
 			
 			try {
 				Runtime.getRuntime().exec("killall chromedriver");
+				Runtime.getRuntime().exec("killall Google Chrome");
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -392,6 +393,11 @@ public abstract class MR {
 		JsonArray formInputs = action.getFormInputs();
 		
 		String pars = "";
+		
+		if(formInputs==null) {
+			return pars;
+		}
+		
 		for(int i=0; i<formInputs.size(); i++){
 			JsonObject fi = formInputs.get(i).getAsJsonObject();
 			

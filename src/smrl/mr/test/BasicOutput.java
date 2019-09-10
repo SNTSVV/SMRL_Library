@@ -51,5 +51,11 @@ public class BasicOutput implements Output {
 		return null;
 	}
 
+	@Override
+	public boolean isEmptyFile() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 	
 }

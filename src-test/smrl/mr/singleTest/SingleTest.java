@@ -20,6 +20,7 @@ import smrl.mr.owasp.OTG_AUTHZ_002b;
 import smrl.mr.owasp.OTG_AUTHZ_002c;
 import smrl.mr.owasp.OTG_AUTHZ_002d;
 import smrl.mr.owasp.OTG_AUTHZ_002e;
+import smrl.mr.owasp.OTG_INPVAL_004;
 import smrl.mr.owasp.OTG_SESS_003;
 import smrl.mr.crawljax.WebOperationsProvider;
 import smrl.mr.language.MRBaseTest;
