@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import smrl.mr.owasp.OTG_AUTHZ_001a;
 import smrl.mr.owasp.OTG_AUTHZ_001b;
 import smrl.mr.owasp.OTG_AUTHZ_002;
 import smrl.mr.owasp.OTG_AUTHZ_002a;
@@ -60,6 +61,11 @@ public class SingleTest extends MRBaseTest {
     public static void printEndingTime() {
 		System.out.println("*** Ending time: " + getCurrentTime() + " ***");
     }   
+	
+	@Test
+	public void test_OTG_AUTHZ_001a() {
+		super.test(provider,OTG_AUTHZ_001a.class);
+	}
 	
 	@Test
 	public void test_OTG_AUTHZ_001b() {
