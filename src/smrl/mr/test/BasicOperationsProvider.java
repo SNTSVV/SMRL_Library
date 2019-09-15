@@ -110,11 +110,7 @@ public class BasicOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
-	@Override
-	public boolean userCanRetrieveContent(Object user, smrl.mr.language.Output output) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 
 	@Override
 	public boolean notAnonymous(Object user) {
@@ -213,6 +209,12 @@ public class BasicOperationsProvider implements OperationsProvider {
 
 	@Override
 	public boolean isError(Object output) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean userCanRetrieveContent(Object user, Object output) {
 		// TODO Auto-generated method stub
 		return false;
 	}
