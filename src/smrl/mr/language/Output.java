@@ -1,5 +1,7 @@
 package smrl.mr.language;
 
+import java.io.File;
+
 public interface Output {
 
 	/**
@@ -11,9 +13,20 @@ public interface Output {
 	
 	/**
 	 * Check if the last output contains an empty file
-	 * @return true if the last output containing an empty file
+	 * @return true if the last output contains an empty file
 	 */
 	public boolean isEmptyFile();
+	
+	/**
+	 * @return File of the last output
+	 */
+	public File file();
+	
+	/**
+	 * Check if the last output contains a file
+	 * @return true if the last output does not contain any file
+	 */
+	public boolean noFile();
 	
 	public boolean hasStrictTransportSecurityHeader();
 	

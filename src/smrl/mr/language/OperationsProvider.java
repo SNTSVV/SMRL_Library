@@ -49,7 +49,7 @@ public interface OperationsProvider {
 
 	Object deriveRandomData(String value);
 
-	boolean userCanRetrieveContent(Object user, Output output);
+	boolean userCanRetrieveContent(Object user, Object output);
 
 	boolean notAnonymous(Object user);
 

@@ -1,5 +1,7 @@
 package smrl.mr.test;
 
+import java.io.File;
+
 import smrl.mr.language.Output;
 import smrl.mr.language.Session;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -55,6 +57,18 @@ public class BasicOutput implements Output {
 	public boolean isEmptyFile() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	@Override
+	public boolean noFile() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public File file() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

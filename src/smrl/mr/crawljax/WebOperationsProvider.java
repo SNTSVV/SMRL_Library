@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 
 import smrl.mr.language.*;
@@ -357,23 +360,38 @@ public class WebOperationsProvider implements OperationsProvider {
 
 
 	@Override
-	public boolean userCanRetrieveContent(Object user, smrl.mr.language.Output output) {
-		if(loadOutputStore()==false){
+	public boolean userCanRetrieveContent(Object user, Object output) {
+		if(loadOutputStore()==false || output==null){
 			return false;
 		}
 
 		String username = ((Account)user).getUsername();
-		ArrayList<Object> outSequence = ((WebOutputSequence)output).getOutputSequence();
 		
-		//check Anonymous
-		if(userCanRetrieve("ANONYMOUS", outSequence)){
-			return true;
+		//if output is an instance of smrl.mr.language.Output
+		if(output instanceof smrl.mr.language.Output) {
+			ArrayList<Object> outSequence = ((WebOutputSequence)output).getOutputSequence();
+			
+			//check Anonymous
+			if(userCanRetrieve("ANONYMOUS", outSequence)){
+				return true;
+			}
+
+			//Check username
+			if(username!=null && !username.isEmpty() && 
+					userCanRetrieve(username, outSequence)){
+				return true;
+			}
 		}
 		
-		//Check username
-		if(username!=null && !username.isEmpty() && 
-				userCanRetrieve(username, outSequence)){
-			return true;
+		// if output is an instance of File
+		if(output instanceof File) {
+			try {
+				String fileContent = FileUtils.readFileToString((File)output, Charsets.UTF_8);
+
+				return userCanRetrieveContent(username, fileContent);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		
 		return false;
@@ -396,6 +414,22 @@ public class WebOperationsProvider implements OperationsProvider {
 				if(storedOutput.compare(newOutput)){
 					return true;
 				}
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean userCanRetrieveContent(String username, String content) {
+		if(username==null || username.isEmpty() || this.outputStore.isEmpty() || !this.outputStore.containsKey(username)){
+			return false;
+		}
+		HashMap<String, WebOutputCleaned> allOutputs = this.outputStore.get(username);
+		for(String key:allOutputs.keySet()){
+			WebOutputCleaned storedOutput = allOutputs.get(key);
+			
+			if(storedOutput.compare(content)){
+				return true;
 			}
 		}
 		

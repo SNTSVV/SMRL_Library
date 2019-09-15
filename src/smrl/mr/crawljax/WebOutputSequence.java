@@ -1,5 +1,6 @@
 package smrl.mr.crawljax;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -357,6 +358,44 @@ public class WebOutputSequence implements Output {
 		
 		System.out.println("\t!!! downloaded file is NONempty");
 		return false;
+	}
+
+
+
+
+
+	@Override
+	public boolean noFile() {
+		if(seq.size()<1) {
+			System.out.println("\t!!! no output");
+			return true;
+		}
+		
+		WebOutputCleaned lastOutput = (WebOutputCleaned)seq.get(seq.size()-1);
+		if(lastOutput==null || lastOutput.downloadedFile==null) {
+			System.out.println("\t!!! no downloaded file");
+			return true;
+		}
+		
+		return false;
+	}
+
+
+
+
+
+	@Override
+	public File file() {
+		if(seq.size()<1) {
+			return null;
+		}
+		
+		WebOutputCleaned lastOutput = (WebOutputCleaned)seq.get(seq.size()-1);
+		if(lastOutput==null) {
+			return null;
+		}
+
+		return lastOutput.downloadedFile;
 	}
 
 	

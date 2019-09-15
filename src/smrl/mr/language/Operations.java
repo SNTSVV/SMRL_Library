@@ -360,7 +360,7 @@ public class Operations {
 	 * @param output The output to check.
 	 * @return
 	 */
-	public static boolean userCanRetrieveContent(Object user, Output output) {
+	public static boolean userCanRetrieveContent(Object user, Object output) {
 		return MR.CURRENT.provider.userCanRetrieveContent(user,output);
 	}
 

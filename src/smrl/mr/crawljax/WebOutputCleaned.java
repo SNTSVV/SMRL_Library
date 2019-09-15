@@ -1,9 +1,20 @@
 package smrl.mr.crawljax;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+
+import com.google.common.base.Charsets;
 
 public class WebOutputCleaned {
 	
@@ -126,6 +137,35 @@ public class WebOutputCleaned {
 	
 	public int getStatusCode() {
 		return statusCode;
+	}
+	
+
+
+
+	public boolean compare(String content) {
+		if(content ==null) {
+			return false;
+		}
+		
+		// firstly conpare with page content
+		if (_compare(this.text, content, similarityThreshold_Text)) {
+			return true;
+		}
+
+		// compare with downloaded file (if having)
+		if ( this.downloadedFile != null ){ 
+			try {
+				String fileContent = FileUtils.readFileToString(this.downloadedFile, Charsets.UTF_8);
+
+				if(fileContent!=null && !fileContent.isEmpty()) {
+					return _compare(fileContent, content, similarityThreshold_Text);
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		return false;
 	}
 	
 }
