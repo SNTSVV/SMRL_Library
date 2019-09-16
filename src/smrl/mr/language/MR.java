@@ -151,14 +151,7 @@ public abstract class MR {
 				t.printStackTrace();
 				System.out.println("!!!!IGNORING EXCEPTION, sleep");
 				
-				//Kill all running chromedriver (and Google Chrome)
-				try {
-					Runtime.getRuntime().exec("killall chromedriver");
-					Runtime.getRuntime().exec("killall Google Chrome");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				killChromeDriver();
 				
 				//sleep 30s (for the case in which the web server restarts)
 				try {
@@ -186,13 +179,7 @@ public abstract class MR {
 				e.printStackTrace();
 			}
 			
-			try {
-				Runtime.getRuntime().exec("killall chromedriver");
-				Runtime.getRuntime().exec("killall Google Chrome");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			killChromeDriver();
 			
 			try {
 				Thread.sleep(1000);
@@ -239,6 +226,22 @@ public abstract class MR {
 			
 			db.nextTest();
 			provider.nextTest();
+		}
+	}
+
+	//Kill all running chromedriver (and Google Chrome)
+	private void killChromeDriver() {
+		int runCode = 0;
+		while(runCode==0) {
+			try {
+				runCode = 1;
+				runCode = (Runtime.getRuntime().exec("killall chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
+				runCode = (Runtime.getRuntime().exec("killall Google Chrome").waitFor()==0 || runCode==0) ? 0 : 1;
+				runCode = (Runtime.getRuntime().exec("pkill chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
+				runCode = (Runtime.getRuntime().exec("pkill Google Chrome").waitFor()==0 || runCode==0) ? 0 : 1;
+			} catch (IOException | InterruptedException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
