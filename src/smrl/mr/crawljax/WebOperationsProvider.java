@@ -387,8 +387,15 @@ public class WebOperationsProvider implements OperationsProvider {
 		if(output instanceof File) {
 			try {
 				String fileContent = FileUtils.readFileToString((File)output, Charsets.UTF_8);
+				
+				//check Anonymous
+				if(userCanRetrieveContent("ANONYMOUS", fileContent)){
+					return true;
+				}
 
+				
 				return userCanRetrieveContent(username, fileContent);
+					
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
