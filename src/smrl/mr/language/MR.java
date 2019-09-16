@@ -151,8 +151,16 @@ public abstract class MR {
 				t.printStackTrace();
 				System.out.println("!!!!IGNORING EXCEPTION, sleep");
 				
+				//Kill all running chromedriver (and Google Chrome)
+				try {
+					Runtime.getRuntime().exec("killall chromedriver");
+					Runtime.getRuntime().exec("killall Google Chrome");
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
-				
+				//sleep 30s (for the case in which the web server restarts)
 				try {
 					Thread.sleep(30000);
 				} catch (InterruptedException e) {

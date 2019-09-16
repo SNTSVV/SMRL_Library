@@ -341,22 +341,22 @@ public class WebOutputSequence implements Output {
 		//- output with a nonempty file: false
 		
 		if(seq.size()<1) {
-			System.out.println("\t!!! no output");
+			System.out.println("\t!!! no output (from isEmptyFile)");
 			return false;
 		}
 		
 		WebOutputCleaned lastOutput = (WebOutputCleaned)seq.get(seq.size()-1);
 		if(lastOutput==null || lastOutput.downloadedFile==null) {
-			System.out.println("\t!!! no downloaded file");
+			System.out.println("\t!!! no downloaded file (from isEmptyFile)");
 			return false;
 		}
 		
 		if(lastOutput.downloadedFile.isFile() && lastOutput.downloadedFile.length()<=0) {
-			System.out.println("\t!!! downloaded file is EMPTY");
+			System.out.println("\t!!! downloaded file is EMPTY (from isEmptyFile)");
 			return true;
 		}
 		
-		System.out.println("\t!!! downloaded file is NONempty");
+		System.out.println("\t!!! downloaded file is NONempty (from isEmptyFile)");
 		return false;
 	}
 
@@ -367,13 +367,13 @@ public class WebOutputSequence implements Output {
 	@Override
 	public boolean noFile() {
 		if(seq.size()<1) {
-			System.out.println("\t!!! no output");
+			System.out.println("\t!!! no output (from noFile)");
 			return true;
 		}
 		
 		WebOutputCleaned lastOutput = (WebOutputCleaned)seq.get(seq.size()-1);
 		if(lastOutput==null || lastOutput.downloadedFile==null) {
-			System.out.println("\t!!! no downloaded file");
+			System.out.println("\t!!! no downloaded file (from noFile)");
 			return true;
 		}
 		
