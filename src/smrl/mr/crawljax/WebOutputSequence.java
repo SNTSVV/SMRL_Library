@@ -372,6 +372,9 @@ public class WebOutputSequence implements Output {
 		}
 		
 		WebOutputCleaned lastOutput = (WebOutputCleaned)seq.get(seq.size()-1);
+		if ( lastOutput==null ) {
+			System.out.println("\t!!! no downloaded file (from noFile) null lastOutput");
+		}
 		if(lastOutput==null || lastOutput.downloadedFile==null) {
 			System.out.println("\t!!! no downloaded file (from noFile)");
 			return true;

@@ -38,9 +38,11 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -535,6 +537,8 @@ public class WebProcessor {
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.downloadFilePath);
+		
+//		System.out.println("Download file path: " + this.downloadFilePath);
 
 		ChromeOptions chOptions = new ChromeOptions();
 		chOptions.setExperimentalOption("prefs", chromePrefs);
@@ -553,12 +557,12 @@ public class WebProcessor {
 			//FIXME: add certificate to driver if needed
 		}
 		
-		
 		if(headless) {
 			chOptions.addArguments("headless");
 		}
 		
 		driver = new ChromeDriver(chOptions);
+		
 		
 		List<Action> actions = input.actions();
 		
@@ -1163,8 +1167,9 @@ public class WebProcessor {
 					File outFolderFile = new File( outFolder, folderName);
 					outFolderFile.mkdir();
 					
-					file.renameTo(new File( outFolderFile, file.getName() ) );
-					outObj.setDownloadedFile( file );
+					File newFile = new File( outFolderFile, file.getName() );
+					file.renameTo(newFile );
+					outObj.setDownloadedFile( newFile );
 				}
 				
 				//get list of relevant downloaded objects
@@ -1784,9 +1789,15 @@ public class WebProcessor {
 	private File findNewDownloadedFile() {
 		//assume Download is empty
 		File downloads = new File(this.downloadFilePath);
+		
+//		System.out.println("Download folder: " + downloads.getAbsolutePath());
+		
 		File[] filesD = downloads.listFiles();
-		if ( filesD.length == 0 )
+		if ( filesD.length == 0 ) {
+//			System.out.println("No file (findNewDownloadedFile)");
 			return null;
+		}
+//		System.out.println("HAVE file (findNewDownloadedFile) " + filesD[0]);
 		return filesD[0];
 	}
 
@@ -2134,7 +2145,7 @@ public class WebProcessor {
 		this.sysConfig = new SystemConfig(configFile);
 		this.configProxy();
 		
-		configDownloadFolder(sysConfig.getOutputStore());
+		configDownloadFolder(sysConfig.getOutputFile());
 		
 	}
 
@@ -2144,8 +2155,14 @@ public class WebProcessor {
 	private void configDownloadFolder(String path) {
 		//Config download folder
 		String filepath = path;
+		
 		if(filepath!=null && !filepath.isEmpty()){
-			if(filepath.endsWith(File.separator)){
+			File fileOfPath = new File(filepath);
+			if(fileOfPath.isFile()) {
+				filepath = filepath.substring(0, filepath.lastIndexOf(File.separator));
+			}
+			
+			if(path.endsWith(File.separator)){
 				filepath += "Downloads";
 			}
 			else{
@@ -2153,10 +2170,14 @@ public class WebProcessor {
 			}
 		}
 		else{
-			filepath = "./Downloads";
+//			filepath = "./Downloads";
+			filepath = "Downloads";
 		}
 		
-		this.downloadFilePath = filepath;
+		File f = new File(filepath);
+		
+		
+		this.downloadFilePath = f.getAbsolutePath();
 		
 		//Create download folder
 		File downloadFolder = new File(filepath);

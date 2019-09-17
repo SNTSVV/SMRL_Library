@@ -2,6 +2,8 @@ package smrl.mr.singleTest;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ public class SingleTest extends MRBaseTest {
 	private static WebOperationsProvider provider;
 	
 	private static String system = "jenkins";
+//	private static String system = "jenkins_trying";
 //	private static String system = "iws";
 
 	@BeforeClass
@@ -42,6 +45,10 @@ public class SingleTest extends MRBaseTest {
 		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
 //		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 //		String configFile = "./testData/Jenkins/collectedData/jenkinsSysConfig.json";
+		
+		if(SingleTest.system.equals("jenkins_trying")){
+			configFile = "./testData/Jenkins/jenkinsSysConfig_trying.json";
+		}
 		
 		if(SingleTest.system.equals("iws")){
 			configFile = "./testData/IWS/iwsSysConfig.json";
@@ -173,5 +180,20 @@ public class SingleTest extends MRBaseTest {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();  
 		return dtf.format(now).toString();  
+	}
+
+	@Test
+	public void check() {
+		String filepath = "testData/Jenkins";
+		
+		File f = new File(filepath);
+		
+		System.out.println(f.getAbsolutePath());
+		try {
+			System.out.println(f.getCanonicalPath());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
