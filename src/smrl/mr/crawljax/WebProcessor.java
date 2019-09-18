@@ -116,7 +116,7 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=true;
+	private boolean headless=false;
 	private boolean backToRightPageBeforeAction=true;
 	private boolean checkStatusCode=false;
 	
