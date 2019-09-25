@@ -37,6 +37,7 @@ public class SystemConfig {
 	private JsonObject errorSigns;
 	private JsonObject signup;
 	private List<String> confirmationTexts;
+	private List<String> confirmationButtons;
 	private Map<String, ArrayList<String>> supervisedUser;
 	private boolean headless;
 	
@@ -65,6 +66,7 @@ public class SystemConfig {
 		this.errorSigns = new JsonObject();
 		this.signup = new JsonObject();
 		this.confirmationTexts = new ArrayList<String>();
+		this.confirmationButtons = new ArrayList<String>();
 		this.supervisedUser = new HashMap<String, ArrayList<String>>();
 		this.headless = false;
 	}
@@ -259,6 +261,19 @@ public class SystemConfig {
 				this.confirmationTexts = new ArrayList<String>();
 			}
 			
+			if(jsonObject.keySet().contains("confirmationButtons")){
+				ArrayList<String> conButtons = new ArrayList<String>();
+				JsonArray jArray = jsonObject.get("confirmationButtons").getAsJsonArray();
+				for(int i=0; i<jArray.size(); i++){
+					String cText = jArray.get(i).getAsString().trim();
+					conButtons.add(cText);
+				}
+				this.confirmationButtons = conButtons;
+			}
+			else{
+				this.confirmationButtons = new ArrayList<String>();
+			}
+			
 			if(jsonObject.keySet().contains("supervisedUser")){
 				HashMap<String, ArrayList<String>> sUser = new HashMap<String, ArrayList<String>>();
 				
@@ -282,12 +297,12 @@ public class SystemConfig {
 					}
 				}
 				
-				ArrayList<String> conTexts = new ArrayList<String>();
-				JsonArray jArray = jsonObject.get("confirmationTexts").getAsJsonArray();
-				for(int i=0; i<jArray.size(); i++){
-					String cText = jArray.get(i).getAsString().trim();
-					conTexts.add(cText);
-				}
+//				ArrayList<String> conTexts = new ArrayList<String>();
+//				JsonArray jArray = jsonObject.get("confirmationTexts").getAsJsonArray();
+//				for(int i=0; i<jArray.size(); i++){
+//					String cText = jArray.get(i).getAsString().trim();
+//					conTexts.add(cText);
+//				}
 				
 				this.supervisedUser = sUser;
 			}
@@ -360,6 +375,14 @@ public class SystemConfig {
 
 	public void setConfirmationTexts(List<String> confirmationTexts) {
 		this.confirmationTexts = confirmationTexts;
+	}
+
+	public List<String> getConfirmationButtons() {
+		return confirmationButtons;
+	}
+
+	public void setConfirmationButtons(List<String> confirmationButtons) {
+		this.confirmationButtons = confirmationButtons;
 	}
 
 	public void setRandomAdminFilePathFile(String randomAdminFilePathFile) {

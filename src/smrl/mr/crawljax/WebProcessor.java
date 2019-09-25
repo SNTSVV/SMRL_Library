@@ -949,7 +949,7 @@ public class WebProcessor {
 							try {
 								driver.findElement(elementBy).click();
 							} catch ( Throwable t ){
-								System.out.print("!!!Ignored: "+elementURL);
+								System.out.print("!!!Ignored (cannot click): "+elementURL);
 
 							}
 							aURL = elementURL;
@@ -961,7 +961,7 @@ public class WebProcessor {
 
 						System.out.println("\t\t" + executeEle);
 					}catch( Throwable t ){
-						System.out.println("!!!Ignored");
+						System.out.println("!!!Ignored (cannot find element): " + elementBy);
 					}
 					
 				}
@@ -1023,7 +1023,9 @@ public class WebProcessor {
 				
 				//2. check if the current page contains confirmation request
 				String newDom = driver.getPageSource();
-				if(containConfirmationText(newDom)){
+				Element executeEle = confirmationButton(newDom);
+				
+				if(executeEle==null && containConfirmationText(newDom)){
 					//FIXME: these following instructs should be reused from the case of randomClick
 					
 					String prevDom = "";
@@ -1054,57 +1056,61 @@ public class WebProcessor {
 						
 						//randomly choose an element to click
 						int randomIndex = ThreadLocalRandom.current().nextInt(0, newElements.size());
-						Element executeEle = newElements.get(randomIndex);
-						executeEle.text();
-						String tagName = executeEle.tagName().toLowerCase();
-						By elementBy = null;
-						if(tagName.equals("a")){
-							if(executeEle.attributes().hasKey("href")){
-								String xpath = "//a[@href='" + executeEle.attr("href").trim() + "']";
-								elementBy = getByType("xpath", xpath);
-//								elementBy = getByType("linkText", executeEle.attr("href"));
-							}
-						}
-						else if (tagName.equals("button")){
-							if(executeEle.attributes().hasKey("id")){
-								 elementBy = getByType("id", executeEle.attr("id"));
-							}
-							else if(executeEle.text()!=null &&
-									!executeEle.text().isEmpty()){
-								elementBy = getByType("linkText", executeEle.text());
-							}
-							
-						}
-						
-						try{
-							List<WebElement> eles = driver.findElements(elementBy);
-
-							if(eles!=null && eles.size()>0){
-								String elementURL = getElementURL(driver, executeEle);
-								
-//								System.out.println("\t--Will click on: " + elementURL);
-
-								try {
-									driver.findElement(elementBy).click();
-								} catch ( Throwable t ){
-									System.out.print("!!!Ignored: "+elementURL);
-
-								}
-								confirmed = true;
-								aURL = elementURL;
-
-								
-								//get redirect URL
-								redirectURL = getRedirectUrl(driver, elementURL);
-							}
-
-//							System.out.println("\t\t" + executeEle);
-						}catch( Throwable t ){
-							System.out.println("!!!Ignored");
-						}
+						executeEle = newElements.get(randomIndex);
 						
 					}
 				}
+				
+				if(executeEle!=null) {
+//					executeEle.text();
+					String tagName = executeEle.tagName().toLowerCase();
+					By elementBy = null;
+					if(tagName.equals("a")){
+						if(executeEle.attributes().hasKey("href")){
+							String xpath = "//a[@href='" + executeEle.attr("href").trim() + "']";
+							elementBy = getByType("xpath", xpath);
+							//								elementBy = getByType("linkText", executeEle.attr("href"));
+						}
+					}
+					else if (tagName.equals("button")){
+						if(executeEle.attributes().hasKey("id")){
+							elementBy = getByType("id", executeEle.attr("id"));
+						}
+						else if(executeEle.text()!=null &&
+								!executeEle.text().isEmpty()){
+							elementBy = getByType("linkText", executeEle.text());
+						}
+
+					}
+
+					try{
+						List<WebElement> eles = driver.findElements(elementBy);
+
+						if(eles!=null && eles.size()>0){
+							String elementURL = getElementURL(driver, executeEle);
+
+							//								System.out.println("\t--Will click on: " + elementURL);
+
+							try {
+								driver.findElement(elementBy).click();
+							} catch ( Throwable t ){
+								System.out.print("!!!Ignored (auto confirmation cannot click): "+elementURL);
+
+							}
+							confirmed = true;
+							aURL = elementURL;
+
+
+							//get redirect URL
+							redirectURL = getRedirectUrl(driver, elementURL);
+						}
+
+						//							System.out.println("\t\t" + executeEle);
+					}catch( Throwable t ){
+						System.out.println("!!!Ignored (auto confirmation cannot find element): " + elementBy);
+					}
+				}
+
 				
 				if(confirmed){
 					timeOfConfirm++;
@@ -1321,6 +1327,72 @@ public class WebProcessor {
 		}
 		return false;
 	}
+	
+	private boolean containConfirmationButton(String dom) {
+		//If the current dom is empty, there is no button 
+		if (isEmptyHtml(dom) || 
+				sysConfig==null ||
+				sysConfig.getConfirmationButtons()==null ||
+				sysConfig.getConfirmationTexts().size()<=0){
+			return false;
+		}
+
+		//currentDOM is not null
+		Document currentDoc = Jsoup.parse(dom);
+		
+		//Get all elements of tags "button"
+		Elements buttonElements = currentDoc.getElementsByTag("button");
+		if(buttonElements.size()<=0) {
+			return false;
+		}
+		
+		for(Element button:buttonElements) {
+			String text = button.text();
+			if(text==null || text.trim().isEmpty()) {
+				continue; 
+			}
+			for(String conButton:sysConfig.getConfirmationButtons()) {
+				if(text.contains(conButton)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	private Element confirmationButton(String dom) {
+		//If the current dom is empty, there is no button 
+		if (isEmptyHtml(dom) || 
+				sysConfig==null ||
+				sysConfig.getConfirmationButtons()==null ||
+				sysConfig.getConfirmationTexts().size()<=0){
+			return null;
+		}
+
+		//currentDOM is not null
+		Document currentDoc = Jsoup.parse(dom);
+		
+		//Get all elements of tags "button"
+		Elements buttonElements = currentDoc.getElementsByTag("button");
+		if(buttonElements.size()<=0) {
+			return null;
+		}
+		
+		for(Element button:buttonElements) {
+			String text = button.text();
+			if(text==null || text.trim().isEmpty()) {
+				continue; 
+			}
+			for(String conButton:sysConfig.getConfirmationButtons()) {
+				if(text.contains(conButton)) {
+					return button;
+				}
+			}
+		}
+		
+		return null;
+	}
 
 	private HashMap<String, String> getDownloadedObjectsFromProxy(int startID, String lastURL, String redirectURL) {
 		HashMap<String,String> res = new HashMap<String,String>();	//url, method
@@ -1484,39 +1556,80 @@ public class WebProcessor {
 		Long actToChangeID = updateUrlMap.get(currentAction.getActionID());
 		Action actToChange = null;
 		
+		ArrayList<Action> listActToChange = new ArrayList<Action>();
 		for(Action a:input.actions()){
 			if(a.getActionID().equals(actToChangeID)){
-				actToChange = a;
-				break;
+				listActToChange.add(a);
 			}
 		}
 		
-		if(actToChange==null ||
-				!actToChange.getEventType().equals(Action.ActionType.click)){
+		if(listActToChange.isEmpty()) {
 			return;
 		}
 		
-		if(actToChange.getUrl()==null || actToChange.getUrl().trim().isEmpty()){
-			return;
+		for(Action act:listActToChange) {
+			if(act==null ||
+					!act.getEventType().equals(Action.ActionType.click)){
+				return;
+			}
+			
+			if(act.getUrl()==null || act.getUrl().trim().isEmpty()){
+				return;
+			}
+			
+			WebElement eleToFind = findElementMatchToAction(driver, (StandardAction)act);
+			System.out.println("\t  -- element to change: " + eleToFind);
+			
+			//if cannot find the relevant element, do nothing
+			if(eleToFind==null){
+				return;
+			}
+			
+			//get URL of the eleToFind
+			String newURL = getElementURL(driver, eleToFind);
+			System.out.println("\t  ** New URL: " + newURL);
+			
+			//update the URL of the actToChange, if it changed
+			if(newURL!=null &&
+					!newURL.equals(act.getUrl())){
+				act.updateUrl(newURL);
+			}
 		}
 		
-		WebElement eleToFind = findElementMatchToAction(driver, (StandardAction)actToChange);
-		System.out.println("\t  -- element to change: " + eleToFind);
 		
-		//if cannot find the relevant element, do nothing
-		if(eleToFind==null){
-			return;
-		}
+//		for(Action a:input.actions()){
+//			if(a.getActionID().equals(actToChangeID)){
+//				actToChange = a;
+//				break;
+//			}
+//		}
+//		
+//		if(actToChange==null ||
+//				!actToChange.getEventType().equals(Action.ActionType.click)){
+//			return;
+//		}
+//		
+//		if(actToChange.getUrl()==null || actToChange.getUrl().trim().isEmpty()){
+//			return;
+//		}
+//		
+//		WebElement eleToFind = findElementMatchToAction(driver, (StandardAction)actToChange);
+//		System.out.println("\t  -- element to change: " + eleToFind);
+//		
+//		//if cannot find the relevant element, do nothing
+//		if(eleToFind==null){
+//			return;
+//		}
 		
-		//get URL of the eleToFind
-		String newURL = getElementURL(driver, eleToFind);
-		System.out.println("\t  ** New URL: " + newURL);
-		
-		//update the URL of the actToChange, if it changed
-		if(newURL!=null &&
-				!newURL.equals(actToChange.getUrl())){
-			actToChange.updateUrl(newURL);
-		}
+//		//get URL of the eleToFind
+//		String newURL = getElementURL(driver, eleToFind);
+//		System.out.println("\t  ** New URL: " + newURL);
+//		
+//		//update the URL of the actToChange, if it changed
+//		if(newURL!=null &&
+//				!newURL.equals(actToChange.getUrl())){
+//			actToChange.updateUrl(newURL);
+//		}
 	}
 
 	private String getElementURL(WebDriver driver, Element element) {
