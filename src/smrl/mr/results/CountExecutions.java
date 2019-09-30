@@ -10,6 +10,20 @@ public class CountExecutions {
 
 	public static void main(String[] args) throws IOException {
 		File file = new File( args[0] );
+		
+		int followUpInput = -1;
+		if(args.length>1) {
+			followUpInput = Integer.parseInt(args[1]);
+		}
+		
+		String followUpString = "Input(";
+		if(followUpInput>1) {
+			followUpString += followUpInput + ")";
+		}
+		else {
+			followUpString += 2 + ")";
+		}
+		
 		BufferedReader r = new BufferedReader(new FileReader(file));
 		String line;
 		
@@ -20,7 +34,8 @@ public class CountExecutions {
 		int actions=0;
 		while ( ( line = r.readLine() ) != null ) {
 			if ( line.startsWith("Executed") ) {
-				if ( line.contains("Input(2)") ) {
+//				if ( line.contains("Input(2)") ) {
+				if ( line.contains(followUpString) ) {
 					System.out.println(line);
 					actions+=lastInputs*count(line,"Action");
 				}
