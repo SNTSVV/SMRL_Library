@@ -264,9 +264,6 @@ public class WebOutputSequence implements Output {
 		}
 		WebOutputCleaned lastOut = (WebOutputCleaned) seq.get(seq.size()-1);
 		return lastOut.hasStrictTransportSecurityHeader();
-		
-//		lu.svv.mr.Output last = (lu.svv.mr.Output) seq.get(seq.size()-1);
-//		return last.hasStrictTransportSecurityHeader();
 	}
 
 	@Override
@@ -276,9 +273,6 @@ public class WebOutputSequence implements Output {
 		}
 		WebOutputCleaned lastOut = (WebOutputCleaned) seq.get(seq.size()-1);
 		return lastOut.getChannel();
-		
-//		lu.svv.mr.Output last = (lu.svv.mr.Output) seq.get(seq.size());
-//		return last.getChannel();
 	}
 	
 	public ArrayList<Object> getOutputSequence(){

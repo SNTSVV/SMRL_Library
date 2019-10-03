@@ -224,12 +224,12 @@ public class WebProcessor {
 		}
 		
 		this.outputFile = new File(outFile);
-		try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.outputFile))) {
-			bw.write("Testing result:\n");
-			bw.close( );
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try (BufferedWriter bw = new BufferedWriter(new FileWriter(this.outputFile))) {
+//			bw.write("Testing result:\n");
+//			bw.close( );
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 		//clear folder doms
 		File folder = new File(this.outputFile.getParent()+"/doms");

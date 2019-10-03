@@ -2,11 +2,7 @@ package smrl.mr.language;
 
 import java.util.List;
 
-import smrl.mr.crawljax.Account;
-
 public interface OperationsProvider {
-
-	
 
 	Action DeleteCookies();
 

@@ -19,7 +19,6 @@ import smrl.mr.language.actions.StandardAction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class WebOperationsProvider implements OperationsProvider {
-//	WebBypassAuthorizationSchema impl;
 	WebProcessor impl;
 	HashMap<WebInputCrawlJax, WebOutputSequence> outputCache = new HashMap<WebInputCrawlJax, WebOutputSequence>();
 	
@@ -83,7 +82,6 @@ public class WebOperationsProvider implements OperationsProvider {
 			e.printStackTrace();
 		}
 	}
-
 
 	private boolean loadOutputStore(){
 		if(outputStore!=null && !outputStore.isEmpty()){
@@ -191,12 +189,10 @@ public class WebOperationsProvider implements OperationsProvider {
 		return content;
 	}
 
-
 	@Override
 	public boolean isLogin(Action action) {
 		return impl.isLogin(action);
 	}
-
 
 	public List<Account> loadUsers() {
 		//FIXME
@@ -257,7 +253,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		return impl.guiNotContain((Account) user, URL);
 	}
 
-
 	@Override
 	public Object Session(smrl.mr.language.Input input, int x) {
 		return Operations.Output(input, x).getSession();
@@ -268,10 +263,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
 
 	@Override
 	public List load(String dataName) {
@@ -292,32 +283,21 @@ public class WebOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
-
-
 	@Override
 	public boolean notVisibleWithoutLoggingIn(String url) {
 		return impl.notVisibleWithoutLoggingIn(url);
 		
 	}
 
-
 	@Override
 	public int[] parametersWithDifferentValues(Action action1, Action action2) {
 		return new int[0];
 	}
 
-
-
-
-
 	@Override
 	public boolean urlOfActionChangesInDifferentExecutions(smrl.mr.language.Input input, int x) {
 		throw new NotImplementedException();
 	}
-
-
-
-
 
 	@Override
 	public Action LogoutInAnotherTab() {
@@ -325,19 +305,11 @@ public class WebOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
-
-
-
-
 	@Override
 	public int[] extractUserRoleParameters(Action action1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
 
 	@Override
 	public boolean isReadEMailAction(Action action) {
@@ -346,18 +318,11 @@ public class WebOperationsProvider implements OperationsProvider {
 	}
 
 
-
-
-
 	@Override
 	public Object deriveRandomData(String value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
 
 	@Override
 	public boolean userCanRetrieveContent(Object user, Object output) {
@@ -404,10 +369,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		return false;
 	}
 
-
-
-
-
 	private boolean userCanRetrieve(String username, ArrayList<Object> outSequence) {
 		if(username==null || username.isEmpty() || this.outputStore.isEmpty() || !this.outputStore.containsKey(username)){
 			return false;
@@ -448,10 +409,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		throw new NotImplementedException();
 	}
 
-
-
-
-
 	@Override
 	public boolean isEncrypted(Action action) {
 		String channel = action.getChannel();
@@ -463,11 +420,8 @@ public class WebOperationsProvider implements OperationsProvider {
 	}
 
 
-
-
-
 	/* (non-Javadoc)
-	 * @see lu.svv.mr.language.OperationsProvider#Output(lu.svv.mr.language.Input, int)
+	 * @see smrl.mr.language.OperationsProvider#Output(smrl.mr.language.Input, int)
 	 */
 	@Override
 	public smrl.mr.language.Output Output(Input input, int pos) {
@@ -501,10 +455,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		return Output(input, pos);
 	}
 
-
-
-
-
 	@Override
 	public Output Output(Input input) {
 		if(outputCache.containsKey(input)){
@@ -528,10 +478,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		impl.resetUpdateUrlMap();
 //		throw new NotImplementedException();
 	}
-
-
-
-
 
 	@Override
 	public boolean afterLogin(Action action) {
@@ -559,10 +505,6 @@ public class WebOperationsProvider implements OperationsProvider {
 	public boolean isLogout(Action action) {
 		return impl.sysConfig.isLogoutUrl(action.getUrl());
 	}
-
-
-
-
 
 	@Override
 	public Input Input(Action[] as) {
@@ -603,9 +545,6 @@ public class WebOperationsProvider implements OperationsProvider {
 	}
 
 
-
-
-
 	@Override
 	public Action newLoginAction(Object user) {
 		Action res = null;
@@ -632,10 +571,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		
 		return res;
 	}
-
-
-
-
 
 	@Override
 	public smrl.mr.language.Input Input(Action action) {

@@ -14,7 +14,6 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import smrl.mr.crawljax.Account;
 import smrl.mr.language.actions.WaitAction;
 
 public class Operations {
@@ -227,8 +226,6 @@ public class Operations {
 		return null;
 	}
 	
-
-	
 	/**
 	 * Data Representation Function. 
 	 * Return the 1st user, with respect to the current data view.
@@ -314,7 +311,7 @@ public class Operations {
 	}
 	
 	/**
-	 * Web-specific funtion.
+	 * Web-specific function.
 	 * Return the corresponding class of a value pattern.
 	 * 
 	 * @param value The value pattern (e.g., "123", "123.45", "./file.txt", "word").
@@ -374,8 +371,6 @@ public class Operations {
 	public static boolean notAnonymous(Object user) {
 		return MR.CURRENT.provider.notAnonymous(user);
 	}
-	
-	
 	
 	/**
 	 * Web-specific function.
@@ -805,7 +800,6 @@ public class Operations {
 	}
 	
 	
-	
 	/**
 	 * Web-specific function.
 	 * Changes the protocol in the URL of the action a.
@@ -1003,10 +997,24 @@ public class Operations {
 		return MR.CURRENT.provider.isFormInputForFilePath(formInput);
 	}
 	
+	/**
+	 * Web-specific function.
+	 * Checks if user1 is a supervisor of user2.
+	 * E.g., an administrator is a supervisor of a normal user.
+	 * @param user1, the user who is expected as a supervisor
+	 * @param user2, the user who is supervised by user1
+	 * @return true if user1 is a supervisor of user2 
+	 */
 	public static boolean isSupervisorOf(Object user1, Object user2) {
 		return MR.CURRENT.provider.isSupervisorOf(user1, user2);
 	}
 	
+	/**
+	 * Web-specific function.
+	 * Checks whether the output contains an error message (e.g., HTTP 404)
+	 * @param output is the output of a sequence of actions
+	 * @return true if the output contains an error message
+	 */
 	public static boolean isError(Object output) {
 		return MR.CURRENT.provider.isError(output);
 	}
