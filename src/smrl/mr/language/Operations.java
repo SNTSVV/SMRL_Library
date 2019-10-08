@@ -14,6 +14,7 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import smrl.mr.crawljax.Account;
 import smrl.mr.language.actions.WaitAction;
 
 public class Operations {
@@ -958,11 +959,17 @@ public class Operations {
 	 * @return true if the "user" did not try to access "url".
 	 */
 	public static boolean notTried(Object user, String url) {
-		HashSet<String> setOfInputs = triedInputs.get(user);
+		if(!(user instanceof Account)) {
+			return true;
+		}
+		
+		String username = ((Account)user).getUsername();
+		
+		HashSet<String> setOfInputs = triedInputs.get(username);
 		
 		if ( setOfInputs == null ) {
 			setOfInputs = new HashSet<String>();
-			triedInputs.put( user, setOfInputs );
+			triedInputs.put( username, setOfInputs );
 		}
 		
 		if ( setOfInputs.contains(url) ) {
@@ -970,6 +977,19 @@ public class Operations {
 		}
 		
 		setOfInputs.add(url);
+		
+//		HashSet<String> setOfInputs = triedInputs.get(user);
+//		
+//		if ( setOfInputs == null ) {
+//			setOfInputs = new HashSet<String>();
+//			triedInputs.put( user, setOfInputs );
+//		}
+//		
+//		if ( setOfInputs.contains(url) ) {
+//			return false;
+//		}
+//		
+//		setOfInputs.add(url);
 		return true;
 	}
 	
