@@ -551,11 +551,14 @@ public class WebProcessor {
 			proxy.setHttpProxy(proxyAP).setSslProxy(proxyAP);
 			
 			chOptions.setProxy(proxy);
-			chOptions.addArguments("--ignore-certificate-errors");
-			chOptions.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-			chOptions.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-			//FIXME: add certificate to driver if needed
+			
 		}
+		
+		//To accept all SSL certificates, even insecure certificates, and ignore certificate errors
+		chOptions.addArguments("--ignore-certificate-errors");
+		chOptions.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		chOptions.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
+		//FIXME: add certificate to driver if needed
 		
 		if(headless) {
 			chOptions.addArguments("headless");
@@ -638,6 +641,8 @@ public class WebProcessor {
 				
 				//proxy.replace( act.getOldChannel(), act.getNewChannel() ) 
 			}
+			
+			//TODO Replace HTTP method using the proxy replacer
 			
 			//The max id of message in the proxy
 			int maxId = 0;
@@ -2533,6 +2538,8 @@ public class WebProcessor {
 		br.close();
 	}
 
+
+
 	public boolean isSignup(Action action) {
 		String url = action.getUrl();
 		if(url==null || url.isEmpty()){
@@ -2687,5 +2694,8 @@ public class WebProcessor {
 		
 		return ((WebOutputSequence)output).isError();
 	}
+
+
+	
 	
 }

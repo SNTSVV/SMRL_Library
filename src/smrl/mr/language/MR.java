@@ -92,7 +92,8 @@ public abstract class MR {
 					continue;
 				} 
 				
-				if ( dataName.equals("RandomHttpMethod") ) {
+//				if ( dataName.equals("RandomHttpMethod") ) {
+				if ( dataName.equals("HttpMethod") ) {
 					MrDataDBHttpMethod db = new MrDataDBHttpMethod(dataName);
 					dataDBs.put(dataName, db);
 					sortedDBs.add(db);

@@ -797,7 +797,8 @@ public class Operations {
 	 */
 	@MRDataProvider
 	public static String RandomHttpMethod(int x){ 
-		return (String) MR.CURRENT.getMRData("RandomHttpMethod",x);
+//		return (String) MR.CURRENT.getMRData("RandomHttpMethod",x);
+		return (String) MR.CURRENT.getMRData("HttpMethod",x);
 	}
 	
 	
