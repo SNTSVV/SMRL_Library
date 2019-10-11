@@ -1039,5 +1039,17 @@ public class Operations {
 	public static boolean isError(Object output) {
 		return MR.CURRENT.provider.isError(output);
 	}
+
+
+	
+	public static Object randomFilePath(int x){ 
+//		return MR.CURRENT.getMRData("RandomValue:"+Path.class.getCanonicalName(),x);
+		return MR.CURRENT.getMRData("RandomFilePath",x);
+	}
+	
+	public static int randomFilePathSize(){ 
+//		return MR.CURRENT.getMRData("RandomValue:"+Path.class.getCanonicalName(),x);
+		return MR.CURRENT.getMRDataSize("RandomFilePath");
+	}
 }
 

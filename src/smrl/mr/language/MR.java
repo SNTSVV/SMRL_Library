@@ -717,6 +717,12 @@ public abstract class MR {
 		// TODO Auto-generated method stub
 		lastEqual = " "+a+ ", "+b;
 	}
+
+
+	
+	public int getMRDataSize(String name) {
+		return dataDBs.get(name).size();
+	}
 		
 
 }
