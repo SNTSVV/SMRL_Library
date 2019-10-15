@@ -24,12 +24,23 @@ public class AugmentInput {
 //	static String configFile = "./testData/Jenkins/simple/jenkinsSysConfig.json";
 //	static String configFile = "./testData/Jenkins/fullWithAnonym/jenkinsSysConfigToAugment.json";
 //	static String configFile = "./testData/FINAL/sysConfig_Short_ToAugment.json";
-	static String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
+//	static String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 	public static String augmentedText = "augmented action";
 	
 
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
+		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
+		
+		if(args!=null && args.length>=1) {
+			configFile = args[0].trim();
+		}
+		else{
+			System.out.println("Usage: " + AugmentInput.class.getSimpleName() + 
+					" <path_to_system_config_file>");
+			return;
+		}
+		
 		WebProcessor webPro = ReplicateInputs.setupWebProcessor(configFile);
 		
 		
