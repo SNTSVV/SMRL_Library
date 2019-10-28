@@ -3,6 +3,7 @@ package smrl.mr.crawljax;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -19,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import smrl.mr.language.CookieSession;
+import smrl.mr.language.CollectionOfConcepts;
 import smrl.mr.language.Output;
 import smrl.mr.language.Session;
 import smrl.mr.language.SystemConfig;
@@ -394,6 +396,68 @@ public class WebOutputSequence implements Output {
 
 		return lastOutput.downloadedFile;
 	}
+
+
+
+
+
+	@Override
+	public boolean containListOfTags() {
+		List<CollectionOfConcepts> tagsList = listsOfTags();
+		
+		if(tagsList!=null && tagsList.size()>0) {
+			return true;
+		}
+		return false;
+	}
+
+
+
+
+
+	@Override
+	public List<CollectionOfConcepts> listsOfTags() {
+		if(this.seq==null || this.seq.size()<1) {
+			return null;
+		}
+		ArrayList<CollectionOfConcepts> result = new ArrayList<CollectionOfConcepts>();
+		
+		for(Object out:seq) {
+			if(!(out instanceof WebOutputCleaned)) {
+				continue;
+			}
+			ArrayList<CollectionOfConcepts> newList = ((WebOutputCleaned)out).getAllConcepts();
+			if(newList!=null && newList.size()>0) {
+				result.addAll(newList);
+			}
+		}
+		
+		return result;
+	}
+
+
+
+
+
+	@Override
+	public CollectionOfConcepts listOfTags(String key) {
+		List<CollectionOfConcepts> tagsList = listsOfTags();
+		if(tagsList==null || tagsList.size()<1) {
+			return null;
+		}
+		
+		for(CollectionOfConcepts cc:tagsList) {
+			if(cc.id.equals(key)) {
+				return cc;
+			}
+		}
+		
+		return null;
+	}
+
+
+
+
 
 	
 

@@ -1,7 +1,10 @@
 package smrl.mr.test;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
+import smrl.mr.language.CollectionOfConcepts;
 import smrl.mr.language.Output;
 import smrl.mr.language.Session;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -70,6 +73,26 @@ public class BasicOutput implements Output {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean containListOfTags() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List<CollectionOfConcepts> listsOfTags() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CollectionOfConcepts listOfTags(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 
 	
 }

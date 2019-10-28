@@ -1,7 +1,5 @@
 package smrl.mr.crawljax;
 
-import static org.junit.Assert.fail;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,7 +22,6 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONException;
@@ -38,11 +35,9 @@ import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriver.Options;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -51,7 +46,6 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -62,21 +56,21 @@ import org.zaproxy.clientapi.core.ApiResponseSet;
 import org.zaproxy.clientapi.core.ClientApi;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import smrl.mr.language.Action;
+import smrl.mr.language.Action.ActionType;
 import smrl.mr.language.CookieSession;
 import smrl.mr.language.MR;
 import smrl.mr.language.NoMoreInputsException;
 import smrl.mr.language.SystemConfig;
-import smrl.mr.language.Action.ActionType;
 import smrl.mr.language.actions.AlertAction;
 import smrl.mr.language.actions.InnerAction;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.language.actions.WaitAction;
 import smrl.mr.utils.URLUtil;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 public class WebProcessor {
 	private List<Account> userList;
@@ -1711,7 +1705,7 @@ public class WebProcessor {
 
 		//If the element is a button
 		if (tagName.equals("button")){
-			if(webElement.getAttribute("id")!=null){
+			if(webElement.getAttribute("id")!=null && !webElement.getAttribute("id").isEmpty()){
 				String buttonId = webElement.getAttribute("id");
 				currentE = currentDoc.getElementById(buttonId);
 			}

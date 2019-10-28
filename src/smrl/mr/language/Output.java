@@ -1,6 +1,7 @@
 package smrl.mr.language;
 
 import java.io.File;
+import java.util.List;
 
 public interface Output {
 
@@ -35,5 +36,11 @@ public interface Output {
 	public Session getSession();	// get the last session status
 	
 	public Session getSession(int pos);	//get the session status after executing the action at the pos position 
+
+	public boolean containListOfTags();	//check if the output contains lists of tags
+	
+	public List<CollectionOfConcepts> listsOfTags(); //get all list of tags from the output
+	
+	public CollectionOfConcepts listOfTags(String key); //get the list of tags with "key" name from the output
 
 }
