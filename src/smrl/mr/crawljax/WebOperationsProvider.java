@@ -428,7 +428,10 @@ public class WebOperationsProvider implements OperationsProvider {
 		if(pos<0){
 			return null;
 		}
-		if(outputCache.containsKey(input)){
+		
+		boolean CACHED = outputCache.containsKey(input);
+//		System.out.println("\t!!! CACHED:"+CACHED+" "+System.identityHashCode(input)+" "+input);
+		if(CACHED){
 			WebOutputSequence res = new WebOutputSequence();
 			
 			ArrayList<Object> listOutput = outputCache.get(input).getOutputSequence();

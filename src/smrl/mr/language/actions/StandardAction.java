@@ -205,6 +205,9 @@ public class StandardAction extends Action {
 	
 	@Override
 	public String toString() {
+		if(Operations.isLogin(this) && this.getUser()!=null) {
+			return "[Action " + actionID + " : log in with (" + ((Account)this.getUser()).getUsername() + "," + ((Account)this.getUser()).getPassword() + ") at " + elementURL +"]";
+		}
 		return "[Action " + actionID + " : " + eventType + " on " + elementURL +"]";
 	}
 

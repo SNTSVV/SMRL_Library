@@ -74,4 +74,10 @@ public abstract class Input extends MRData implements Cloneable {
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+	
+	
 }

@@ -65,6 +65,7 @@ import smrl.mr.language.Action.ActionType;
 import smrl.mr.language.CookieSession;
 import smrl.mr.language.MR;
 import smrl.mr.language.NoMoreInputsException;
+import smrl.mr.language.Operations;
 import smrl.mr.language.SystemConfig;
 import smrl.mr.language.actions.AlertAction;
 import smrl.mr.language.actions.InnerAction;
@@ -128,7 +129,7 @@ public class WebProcessor {
 		sysConfig = new SystemConfig();
 		this.proxyApi = null;
 		this.cleanUpDom = true;
-		configDownloadFolder("./Downloads");
+//		configDownloadFolder("./Downloads");
 		this.updateUrlMap = new HashMap<Long, Long>();
 	}
 	
@@ -604,6 +605,10 @@ public class WebProcessor {
 				break;
 			default:
 				break;
+			}
+			
+			if(Operations.isLogin(act) && act.getUser()!=null) {
+				text = "log in with " + ((Account)act.getUser()).getUsername();
 			}
 			
 			System.out.print("\t- Action " + act.getActionID() + " : " + text + " (" + aURL + ")");
@@ -2257,9 +2262,12 @@ public class WebProcessor {
 		this.sysConfig = new SystemConfig(configFile);
 		this.configProxy();
 		
-		configDownloadFolder(sysConfig.getOutputFile());
+//		configDownloadFolder(sysConfig.getOutputFile());
+		configDownloadFolder(outputFolder());
 		
 	}
+
+
 
 	/**
 	 * 
@@ -2268,22 +2276,27 @@ public class WebProcessor {
 		//Config download folder
 		String filepath = path;
 		
+		//Get filePath from the parameter path
 		if(filepath!=null && !filepath.isEmpty()){
 			File fileOfPath = new File(filepath);
 			if(fileOfPath.isFile()) {
 				filepath = filepath.substring(0, filepath.lastIndexOf(File.separator));
 			}
 			
-			if(path.endsWith(File.separator)){
+			if(filepath.endsWith(File.separator)){
 				filepath += "Downloads";
 			}
 			else{
 				filepath += File.separator + "Downloads";
 			}
 		}
+		//Get filePath of outputFolder (if having)
 		else{
 //			filepath = "./Downloads";
-			filepath = "Downloads";
+			filepath = outputFolder();
+			if(filepath==null || filepath.isEmpty()) {
+				filepath = "Downloads";
+			}
 		}
 		
 		File f = new File(filepath);

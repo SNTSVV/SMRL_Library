@@ -250,6 +250,7 @@ public abstract class MR {
 	private void iterateMRshuffling(List<MrDataDB> sortedDBs, MrDataDB db, int i) {
 //		System.out.println("Shuffling "+db.dbName);
 		int max = db.size() < MAX_SHUFFLING ? db.size() : MAX_SHUFFLING;
+//		System.out.println("***Shuffling "+db.dbName + " max:" + max);
 		for ( int j = 0; j < max; j++ ) {
 			db.shuffle();
 			iterateMR(sortedDBs, i+1);

@@ -403,12 +403,18 @@ public class WebOutputSequence implements Output {
 
 	@Override
 	public boolean containListOfTags() {
+		
 		List<CollectionOfConcepts> tagsList = listsOfTags();
 		
+		boolean result = false;
+		
 		if(tagsList!=null && tagsList.size()>0) {
-			return true;
+			result = true;
 		}
-		return false;
+		
+		
+//		System.out.println("\t!!! Call containListOfTags: "+result);
+		return result;
 	}
 
 
@@ -417,7 +423,9 @@ public class WebOutputSequence implements Output {
 
 	@Override
 	public List<CollectionOfConcepts> listsOfTags() {
+//		System.out.print("\t!!! Call listsOfTags: ");
 		if(this.seq==null || this.seq.size()<1) {
+//			System.out.println("null");
 			return null;
 		}
 		ArrayList<CollectionOfConcepts> result = new ArrayList<CollectionOfConcepts>();
@@ -431,6 +439,8 @@ public class WebOutputSequence implements Output {
 				result.addAll(newList);
 			}
 		}
+		
+//		System.out.println(result);
 		
 		return result;
 	}

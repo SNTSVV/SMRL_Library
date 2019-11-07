@@ -8,7 +8,6 @@ import org.junit.Test;
 import smrl.mr.crawljax.WebOperationsProvider;
 import smrl.mr.language.MRBaseTest;
 import smrl.mr.owasp.CheckTags;
-import smrl.mr.owasp.OTG_AUTHN_004;
 
 public class JoomlaTest extends MRBaseTest {
 	private static WebOperationsProvider provider;

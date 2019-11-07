@@ -83,11 +83,13 @@ public class Account implements Cloneable {
 		
 		Account that = (Account)obj;
 		
+		
+		
 		if(this.username==null && that.username==null &&
 				this.usernameParam==null && that.usernameParam==null &&
 				this.password==null && that.password==null &&
 				this.passwordParam==null && that.passwordParam==null){
-			return true;
+			return false;
 		}
 		
 		if((this.username!=null && that.username==null) ||
@@ -107,6 +109,10 @@ public class Account implements Cloneable {
 		
 		if((this.passwordParam!=null && that.passwordParam==null) ||
 				(this.passwordParam==null && that.passwordParam!=null)){
+			return false;
+		}
+		
+		if(this.isEmpty() && that.isEmpty()) {
 			return false;
 		}
 		
