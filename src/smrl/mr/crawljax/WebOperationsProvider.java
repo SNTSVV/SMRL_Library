@@ -535,13 +535,22 @@ public class WebOperationsProvider implements OperationsProvider {
 		}
 		
 		if(res!=null){
-			String userParam = WebProcessor.sysConfig.getUserParameter();
-			String passwordParam = WebProcessor.sysConfig.getPasswordParameter();
-
-			if(userParam!=null && passwordParam!=null &&
-					!userParam.isEmpty() && !passwordParam.isEmpty()){
-				res.identifyUsers(userParam, passwordParam, impl);
-			}
+//			ArrayList<LoginParam> allLoginParams = WebProcessor.sysConfig.getLoginParams();
+//			LoginParam usedLoginParam = null;
+//			
+//			for(Action a:res.actions()) {
+//				if(a instanceof StandardAction) {
+//					usedLoginParam = ((StandardAction)a).usedLoginParam(allLoginParams);
+//				}
+//				if(usedLoginParam!=null) {
+//					break;
+//				}
+//			}
+//
+//			if(usedLoginParam!=null){
+//				res.identifyUsers(usedLoginParam.userParam, usedLoginParam.passwordParam, impl);
+//			}
+			res.identifyUsers(impl);
 		}
 		
 		return res;
@@ -569,6 +578,30 @@ public class WebOperationsProvider implements OperationsProvider {
 			}
 			if(found){
 				break;
+			}
+		}
+		
+		return res;
+	}
+	
+	@Override
+	public Action newLoginAction(WebInputCrawlJax input, Object user) {
+		if(input==null || user==null) {
+			return null;
+		}
+		
+		Action res = null;
+
+		for(int i=0; i<input.actions().size(); i++){
+			Action act = input.actions().get(i);
+			if(Operations.isLogin(act)){
+				smrl.mr.language.Input tempInput = Operations.Input(act);
+				try {
+					res = Operations.changeCredentials(tempInput, user).actions().get(0).clone();
+					break;
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -635,5 +668,7 @@ public class WebOperationsProvider implements OperationsProvider {
 	public boolean isError(Object output) {
 		return impl.isError(output);
 	}
+
+	
 
 }

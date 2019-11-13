@@ -5,6 +5,7 @@ import java.util.List;
 
 import smrl.mr.language.Action;
 import smrl.mr.language.Input;
+import smrl.mr.language.LoginParam;
 import smrl.mr.language.actions.AlertAction;
 import smrl.mr.language.actions.IndexAction;
 import smrl.mr.language.actions.StandardAction;
@@ -149,16 +150,28 @@ public class WebInputCrawlJax extends Input{
 			
 			//*** update user in a
 			//1. if a contains a user
-			String userParam = WebProcessor.getSysConfig().getUserParameter();
-			String passwordParam = WebProcessor.getSysConfig().getPasswordParameter();
-			if(a instanceof StandardAction && 
-					a.containCredential(userParam, passwordParam)){
-				Account user = new Account();
-				user.setUsernameParam(userParam);
-				user.setPasswordParam(passwordParam);
-				user.setUsername(null);
-				user.setPassword(null);
-				user = processCurrentActionAndUpdateUser((StandardAction) a, user, userParam, passwordParam);
+//			fix: have to find the exact account parameters (username and password parameters)
+//			String userParam = WebProcessor.getSysConfig().getUserParameter();
+//			String passwordParam = WebProcessor.getSysConfig().getPasswordParameter();
+			
+			if(a instanceof StandardAction) { 
+				ArrayList<LoginParam> loginParams = WebProcessor.getSysConfig().getLoginParams();
+
+				LoginParam usedLoginParam = ((StandardAction)a).usedLoginParam(loginParams);
+
+//				if(a.containCredential(userParam, passwordParam)){
+				if(usedLoginParam!=null) {
+					Account user = new Account();
+//					user.setUsernameParam(userParam);
+//					user.setPasswordParam(passwordParam);
+					user.setUsernameParam(usedLoginParam.userParam);
+					user.setPasswordParam(usedLoginParam.passwordParam);
+					user.setUsername(null);
+					user.setPassword(null);
+//					user = processCurrentActionAndUpdateUser((StandardAction) a, user, userParam, passwordParam);
+					user = processCurrentActionAndUpdateUser(
+							(StandardAction) a, user, usedLoginParam.userParam, usedLoginParam.passwordParam);
+				}
 			}
 			
 			//2. if not, a inherits the user from the action at pos
@@ -290,13 +303,13 @@ public class WebInputCrawlJax extends Input{
 		
 		boolean hasConfig = false;
 		if(webPro!=null &&
-				webPro.sysConfig!=null){
+				WebProcessor.sysConfig!=null){
 			hasConfig = true;
 		}
 
 		for(Action a:actions){
 			if (a instanceof StandardAction) {
-				if(hasConfig && webPro.isLogin(a)){
+				if(hasConfig && WebProcessor.isLogin(a)){
 					user = processCurrentActionAndUpdateUser((StandardAction) a, user, userParam, passwordParam);
 				}
 				else{	//accept all account-like info as user, even failed login
@@ -377,6 +390,41 @@ public class WebInputCrawlJax extends Input{
 		}
 		
 		return res;
+	}
+
+	
+	public void identifyUsers(WebProcessor webProcessor) {
+		if(webProcessor==null || WebProcessor.sysConfig==null) {
+			return;
+		}
+		
+		Account user = new Account();
+		user.setUsernameParam(null);
+		user.setPasswordParam(null);
+		user.setUsername(null);
+		user.setPassword(null);
+		
+		for(Action a:actions){
+			if (a instanceof StandardAction) {
+				LoginParam usedLoginParam = ((StandardAction)a).usedLoginParam(WebProcessor.sysConfig.getLoginParams());
+				if(usedLoginParam!=null) {
+					user.setUsernameParam(usedLoginParam.userParam);
+					user.setPasswordParam(usedLoginParam.passwordParam);
+
+					if(WebProcessor.isLogin(a)){
+						user = processCurrentActionAndUpdateUser((StandardAction) a, user, usedLoginParam.userParam, usedLoginParam.passwordParam);
+					}
+					else{	//accept all account-like info as user, even failed login
+						user = processCurrentActionAndUpdateUser((StandardAction) a, user, usedLoginParam.userParam, usedLoginParam.passwordParam);
+					}
+				}
+				
+			} else {
+				a.setUser(user);
+			}
+		}
+		
+		
 	}
 
 	

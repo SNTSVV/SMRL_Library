@@ -11,10 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.io.input.ReaderInputStream;
-import org.hamcrest.core.IsInstanceOf;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -26,16 +22,22 @@ import com.google.gson.JsonSyntaxException;
 import smrl.mr.crawljax.Account;
 import smrl.mr.crawljax.WebInputCrawlJax;
 import smrl.mr.crawljax.WebProcessor;
+import smrl.mr.language.actions.StandardAction;
 
 public class MergeInputs {
 	public static void main(String[] args) {
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles.txt";
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles_180mins.txt";
-		String listFileName = "./testData/Jenkins/collectedData/300mins_new/listInputFiles.txt";
+//		String listFileName = "./testData/Jenkins/collectedData/300mins_new/listInputFiles.txt";
+		String listFileName = "./testData/Joomla/collectedData/listInputFiles.txt";
 		
-		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
-		String outFileName = "./testData/Jenkins/input_FULL.json";
-		boolean jenkinsSystem = true;
+//		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+//		String outFileName = "./testData/Jenkins/input_FULL.json";
+		
+		String configFile = "./testData/Joomla/joomlaSysConfig.json";
+		String outFileName = "./testData/Joomla/inputs.json";
+		
+		boolean checkIfContainLoginAction = true;
 
 		
 		
@@ -74,7 +76,7 @@ public class MergeInputs {
 				continue;
 			}
 			
-			List<WebInputCrawlJax> currentInputs = loadInputFromFile(iFileName, webPro, jenkinsSystem);
+			List<WebInputCrawlJax> currentInputs = loadInputFromFile(iFileName, webPro, checkIfContainLoginAction);
 			
 			if(currentInputs==null || currentInputs.size()<1){
 				continue;
@@ -136,12 +138,12 @@ public class MergeInputs {
 		return containNew;
 	}
 
-	private static List<WebInputCrawlJax> loadInputFromFile(String jsonInputFileName, WebProcessor webProcessor, boolean jenkinsSystem) {
+	private static List<WebInputCrawlJax> loadInputFromFile(String jsonInputFileName, WebProcessor webProcessor, boolean checkLogin) {
 		List<WebInputCrawlJax> res = new ArrayList<WebInputCrawlJax>();
 		
-		SystemConfig sysConfig = webProcessor.sysConfig;
-		String userParam = sysConfig.getUserParameter();
-		String passwordParam = sysConfig.getPasswordParameter();
+//		SystemConfig sysConfig = WebProcessor.sysConfig;
+//		String userParam = sysConfig.getUserParameter();
+//		String passwordParam = sysConfig.getPasswordParameter();
 		
 		Gson gson = new Gson();
 		File jsonFile = Paths.get(jsonInputFileName).toFile();
@@ -161,15 +163,16 @@ public class MergeInputs {
 			JsonArray jsonInput = jsonObject.get(key).getAsJsonArray();
 			if(jsonInput!= null && jsonInput.size()>0){
 				WebInputCrawlJax input = new WebInputCrawlJax(jsonInput);
-
+				
+				input.identifyUsers(webProcessor);
 				
 
-				if(userParam!=null && passwordParam!=null &&
-						!userParam.isEmpty() && !passwordParam.isEmpty()){
-					input.identifyUsers(userParam, passwordParam, webProcessor);
-				}
+//				if(userParam!=null && passwordParam!=null &&
+//						!userParam.isEmpty() && !passwordParam.isEmpty()){
+//					input.identifyUsers(userParam, passwordParam, webProcessor);
+//				}
 				
-				if(jenkinsSystem) {
+				if(checkLogin) {
 					if(containExactLoginAction(webProcessor, input)) {
 						res.add(input);
 					}
@@ -212,54 +215,68 @@ public class MergeInputs {
 	@SuppressWarnings("static-access")
 	private static boolean exactLogin(WebProcessor webPro, Action act) {
 		if(webPro==null || webPro.getSysConfig()==null ||
-				act==null || act.getUrl()==null || act.getUrl().isEmpty())
+				act==null || act.getUrl()==null || act.getUrl().isEmpty() ||
+				!(act instanceof StandardAction) ||
+				!act.getMethod().toLowerCase().equals("post") ||
+				!webPro.getSysConfig().isLoginURL(act.getUrl()))
 		{
 			return false;
 		}
 		
-		if(act.getMethod().toLowerCase().equals("post") &&
-			webPro.getSysConfig().isLoginURL(act.getUrl())) {
-			JsonArray fInputs = act.getFormInputs();
-			
-			if(fInputs==null || fInputs.size()<1) {
-				return false;
-			}
-			
-			String userParam = webPro.getSysConfig().getUserParameter();
-			String passwordParam = webPro.getSysConfig().getPasswordParameter();
-			if(userParam==null || userParam.isEmpty() ||
-					passwordParam==null || passwordParam.isEmpty()) {
-				return false;
-			}
-			
-			boolean containUsernameParam = false;
-			boolean containPasswordParam = false;
-			
-			for(int i=0; i<fInputs.size() && !(containUsernameParam && containPasswordParam); i++) {
-				JsonElement fi = fInputs.get(i);
-				if(fi!=null && fi instanceof JsonObject) {
-					if(((JsonObject)fi).keySet().contains("identification")) {
-						JsonObject iden = ((JsonObject)fi).get("identification").getAsJsonObject();
-						if(iden!=null && iden.keySet().contains("value")) {
-							String value = iden.get("value").getAsString();
-							if(value!=null && !value.isEmpty()) {
-								value = value.trim();
-								if(value.equals(userParam)) {
-									containUsernameParam=true;
-								}
-								else if(value.equals(passwordParam)) {
-									containPasswordParam = true;
-								}
+//		if(act.getMethod().toLowerCase().equals("post") &&
+//			webPro.getSysConfig().isLoginURL(act.getUrl())) {
+		JsonArray fInputs = act.getFormInputs();
+
+		if(fInputs==null || fInputs.size()<1) {
+			return false;
+		}
+
+		//			String userParam = webPro.getSysConfig().getUserParameter();
+		//			String passwordParam = webPro.getSysConfig().getPasswordParameter();
+
+//		if(userParam==null || userParam.isEmpty() ||
+//				passwordParam==null || passwordParam.isEmpty()) {
+//			return false;
+//		}
+		
+		LoginParam usedLoginParam = ((StandardAction)act).usedLoginParam(WebProcessor.sysConfig.getLoginParams());
+		
+		if(usedLoginParam==null || 
+				usedLoginParam.userParam==null || usedLoginParam.userParam.isEmpty() ||
+				usedLoginParam.passwordParam==null || usedLoginParam.passwordParam.isEmpty()) {
+			return false;
+		}
+		String userParam = usedLoginParam.userParam;
+		String passwordParam = usedLoginParam.passwordParam;
+
+		boolean containUsernameParam = false;
+		boolean containPasswordParam = false;
+
+		for(int i=0; i<fInputs.size() && !(containUsernameParam && containPasswordParam); i++) {
+			JsonElement fi = fInputs.get(i);
+			if(fi!=null && fi instanceof JsonObject) {
+				if(((JsonObject)fi).keySet().contains("identification")) {
+					JsonObject iden = ((JsonObject)fi).get("identification").getAsJsonObject();
+					if(iden!=null && iden.keySet().contains("value")) {
+						String value = iden.get("value").getAsString();
+						if(value!=null && !value.isEmpty()) {
+							value = value.trim();
+							if(value.equals(userParam)) {
+								containUsernameParam=true;
+							}
+							else if(value.equals(passwordParam)) {
+								containPasswordParam = true;
 							}
 						}
 					}
 				}
 			}
-			
-			if(containUsernameParam && containPasswordParam) {
-				return true;
-			}
 		}
+
+		if(containUsernameParam && containPasswordParam) {
+			return true;
+		}
+//		}
 		
 		return false;
 	}

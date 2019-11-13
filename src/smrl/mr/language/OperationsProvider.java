@@ -2,6 +2,8 @@ package smrl.mr.language;
 
 import java.util.List;
 
+import smrl.mr.crawljax.WebInputCrawlJax;
+
 public interface OperationsProvider {
 
 	Action DeleteCookies();
@@ -62,6 +64,8 @@ public interface OperationsProvider {
 	smrl.mr.language.Input Input(Action[] as);
 
 	Action newLoginAction(Object user);
+	
+	Action newLoginAction(WebInputCrawlJax input, Object user);
 
 	smrl.mr.language.Input Input(Action action);
 

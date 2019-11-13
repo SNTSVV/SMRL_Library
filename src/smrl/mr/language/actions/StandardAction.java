@@ -2,6 +2,7 @@ package smrl.mr.language.actions;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.apache.http.client.utils.URIBuilder;
 
 import smrl.mr.crawljax.Account;
 import smrl.mr.language.Action;
+import smrl.mr.language.LoginParam;
 import smrl.mr.language.Operations;
 import smrl.mr.language.Session;
 
@@ -677,6 +679,22 @@ public class StandardAction extends Action {
 		}
 		
 		return false;
+	}
+
+	
+	
+	public LoginParam usedLoginParam(ArrayList<LoginParam> loginParams) {
+		if(loginParams==null || loginParams.size()<1) {
+			return null;
+		}
+		
+		for(LoginParam res:loginParams) {
+			if(containCredential(res.userParam, res.passwordParam)) {
+				return res;
+			}
+		}
+		
+		return null;
 	}
 
 	

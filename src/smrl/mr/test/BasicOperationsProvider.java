@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import smrl.mr.crawljax.Account;
+import smrl.mr.crawljax.WebInputCrawlJax;
 import smrl.mr.language.Action;
 import smrl.mr.language.BasicUser;
 import smrl.mr.language.Input;
@@ -217,6 +218,12 @@ public class BasicOperationsProvider implements OperationsProvider {
 	public boolean userCanRetrieveContent(Object user, Object output) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Action newLoginAction(WebInputCrawlJax input, Object user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

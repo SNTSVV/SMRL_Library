@@ -22,10 +22,11 @@ public class SystemConfig {
 	private String outputStore;
 	private String randomFilePathFile;
 	private String randomAdminFilePathFile;
-	private String loginURL;
 	private String logoutURL;
-	private String userParameter;
-	private String passwordParameter;
+//	private String loginURL;
+//	private String userParameter;
+//	private String passwordParameter;
+	private ArrayList<LoginParam> loginParams;
 	private List<String> ignoreURLs; 
 	private String proxyAddress;
 	private int proxyPort;
@@ -43,6 +44,8 @@ public class SystemConfig {
 	
 	
 	static final int DEFAULT_WAIT_TIME = 1000;
+	static final String anonymUsername = "wrong";
+	static final String anonymPassword = "wrong";
 	
 	public SystemConfig() {
 		this.SUT = "";
@@ -51,10 +54,11 @@ public class SystemConfig {
 		this.outputStore = "";
 		this.randomFilePathFile = "";
 		this.randomAdminFilePathFile = "";
-		this.loginURL = "";
 		this.logoutURL = "";
-		this.userParameter = "";
-		this.passwordParameter = "";
+//		this.loginURL = "";
+//		this.userParameter = "";
+//		this.passwordParameter = "";
+		this.loginParams = new ArrayList<LoginParam>();
 		this.ignoreURLs = new ArrayList<String>();
 		this.proxyAddress = "";
 		this.proxyPort = 0;
@@ -125,13 +129,6 @@ public class SystemConfig {
 				this.randomAdminFilePathFile = "";
 			}
 			
-			if(jsonObject.keySet().contains("loginURL")){
-				this.loginURL = jsonObject.get("loginURL").getAsString().trim();
-			}
-			else{
-				this.loginURL = "";
-			}
-			
 			if(jsonObject.keySet().contains("logoutURL")){
 				this.logoutURL = jsonObject.get("logoutURL").getAsString().trim();
 			}
@@ -139,19 +136,55 @@ public class SystemConfig {
 				this.logoutURL = "";
 			}
 			
-			if(jsonObject.keySet().contains("userParameter")){
-				this.userParameter = jsonObject.get("userParameter").getAsString().trim();
+			this.loginParams = new ArrayList<LoginParam>();
+			if(jsonObject.keySet().contains("loginParams")){
+				JsonArray loginPars = jsonObject.get("loginParams").getAsJsonArray();
+				
+				for(int i=0; i<loginPars.size(); i++){
+					JsonObject logPar = loginPars.get(i).getAsJsonObject();
+					String newUrl = "";
+					String newUserPar = "";
+					String newPassPar = "";
+					
+					if(logPar.keySet().contains("loginURL")) {
+						newUrl = logPar.get("loginURL").getAsString();
+					}
+					if(logPar.keySet().contains("userParameter")) {
+						newUserPar = logPar.get("userParameter").getAsString();
+					}
+					if(logPar.keySet().contains("passwordParameter")) {
+						newPassPar = logPar.get("passwordParameter").getAsString();
+					}
+
+					if(newUrl!=null && newUserPar!=null && newPassPar!=null &&
+							!newUrl.isEmpty() &&
+							!newUserPar.isEmpty() &&
+							!newPassPar.isEmpty()) {
+						LoginParam newLoginPar = new LoginParam(newUrl, newUserPar, newPassPar);
+						this.loginParams.add(newLoginPar);
+					}
+				}
 			}
-			else{
-				this.userParameter = "";
+
+			if(jsonObject.keySet().contains("loginURL") && 
+					jsonObject.keySet().contains("userParameter") && 
+					jsonObject.keySet().contains("passwordParameter")){
+				 String newUrl = jsonObject.get("loginURL").getAsString();
+				 String newUserPar = jsonObject.get("userParameter").getAsString();
+				 String newPassPar = jsonObject.get("passwordParameter").getAsString();
+				 
+				 if(newUrl!=null && newUserPar!=null && newPassPar!=null &&
+						 !newUrl.isEmpty() &&
+						 !newUserPar.isEmpty() &&
+						 !newPassPar.isEmpty()) {
+					 LoginParam newLoginPar = new LoginParam(newUrl, newUserPar, newPassPar);
+					 if(!this.loginParams.contains(newLoginPar)) {
+						 this.loginParams.add(newLoginPar);
+					 }
+				 }
+				
 			}
 			
-			if(jsonObject.keySet().contains("passwordParameter")){
-				this.passwordParameter = jsonObject.get("passwordParameter").getAsString().trim();
-			}
-			else{
-				this.passwordParameter = "";
-			}
 			
 			if(jsonObject.keySet().contains("proxy")){
 				JsonObject proxy = jsonObject.get("proxy").getAsJsonObject();
@@ -297,13 +330,6 @@ public class SystemConfig {
 					}
 				}
 				
-//				ArrayList<String> conTexts = new ArrayList<String>();
-//				JsonArray jArray = jsonObject.get("confirmationTexts").getAsJsonArray();
-//				for(int i=0; i<jArray.size(); i++){
-//					String cText = jArray.get(i).getAsString().trim();
-//					conTexts.add(cText);
-//				}
-				
 				this.supervisedUser = sUser;
 			}
 			else{
@@ -445,34 +471,88 @@ public class SystemConfig {
 		this.errorSigns = errorSigns;
 	}
 
-	public String getLoginURL() {
-		return loginURL;
+//	public String getLoginURL() {
+//		return loginURL;
+//	}
+	
+	public ArrayList<String> getLoginURLs() {
+		ArrayList<String> result = new ArrayList<String>();
+//		if(this.loginURL!=null && !this.loginURL.isEmpty()) {
+//			result.add(this.loginURL);
+//		}
+			
+
+		if(this.loginParams!=null && this.loginParams.size()>0) {
+			for(LoginParam logPar:this.loginParams) {
+				result.add(logPar.loginUrl);
+			}
+		}
+		
+		return result;
 	}
 
-	public void setLoginURL(String loginURL) {
-		this.loginURL = loginURL.trim();
+//	public void setLoginURL(String loginURL) {
+//		this.loginURL = loginURL.trim();
+//	}
+
+//	public String getUserParameter() {
+//		return userParameter;
+//	}
+	
+	public ArrayList<String> getUserParameters() {
+		ArrayList<String> result = new ArrayList<String>();
+		
+//		if(this.userParameter!=null && !this.userParameter.isEmpty()) {
+//			result.add(this.userParameter);
+//		}
+		
+		if(this.loginParams!=null && this.loginParams.size()>0) {
+			for(LoginParam logPar:this.loginParams) {
+				result.add(logPar.userParam);
+			}
+		}
+		
+		return result;
 	}
 
-	public String getUserParameter() {
-		return userParameter;
+//	public void setUserParameter(String userParameter) {
+//		this.userParameter = userParameter.trim();
+//	}
+
+//	public String getPasswordParameter() {
+//		return passwordParameter;
+//	}
+	
+	public ArrayList<String> getPasswordParameters() {
+		ArrayList<String> result = new ArrayList<String>();
+		
+//		if(this.passwordParameter!=null && !this.passwordParameter.isEmpty()) {
+//			result.add(this.passwordParameter);
+//		}
+		
+		if(this.loginParams!=null && this.loginParams.size()>0) {
+			for(LoginParam logPar:this.loginParams) {
+				result.add(logPar.passwordParam);
+			}
+		}
+		
+		return result;
 	}
 
-	public void setUserParameter(String userParameter) {
-		this.userParameter = userParameter.trim();
+//	public void setPasswordParameter(String passwordParameter) {
+//		this.passwordParameter = passwordParameter.trim();
+//	}
+	
+	public ArrayList<LoginParam> getLoginParams() {
+		return loginParams;
 	}
-
-	public String getPasswordParameter() {
-		return passwordParameter;
-	}
-
-	public void setPasswordParameter(String passwordParameter) {
-		this.passwordParameter = passwordParameter.trim();
-	}
+	
 
 	public List<String> getIgnoreURLs() {
 		return ignoreURLs;
 	}
 	
+
 	public String getIgnoreURL(int pos) {
 		String res = null;
 		
@@ -513,7 +593,18 @@ public class SystemConfig {
 	}
 
 	public boolean isLoginURL(String url){
-		return equalURL(this.loginURL, url);
+		ArrayList<String> allLoginUrls = getLoginURLs();
+		if(allLoginUrls==null || allLoginUrls.size()<1) {
+			return false;
+		}
+		
+		for(String logUrl:getLoginURLs()) {
+			if(equalURL(logUrl, url)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public boolean isIgnoreURL(String url){
@@ -550,11 +641,19 @@ public class SystemConfig {
 	}
 	
 	public boolean hasAccountParameters(){
-		if(this.userParameter != null &&
-				this.passwordParameter!= null &&
-				!this.userParameter.isEmpty() &&
-				!this.passwordParameter.isEmpty()){
-			return true;
+//		if(this.userParameter != null &&
+//				this.passwordParameter!= null &&
+//				!this.userParameter.isEmpty() &&
+//				!this.passwordParameter.isEmpty()){
+//			return true;
+//		}
+		
+		if(this.loginParams!=null && this.loginParams.size()>0) {
+			for(LoginParam logPar:this.loginParams) {
+				if(logPar.hasAccountParemeters()) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

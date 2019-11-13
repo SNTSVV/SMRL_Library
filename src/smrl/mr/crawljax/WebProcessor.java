@@ -63,6 +63,7 @@ import com.google.gson.JsonObject;
 import smrl.mr.language.Action;
 import smrl.mr.language.Action.ActionType;
 import smrl.mr.language.CookieSession;
+import smrl.mr.language.LoginParam;
 import smrl.mr.language.MR;
 import smrl.mr.language.NoMoreInputsException;
 import smrl.mr.language.Operations;
@@ -488,13 +489,23 @@ public class WebProcessor {
 				if(jsonInput.size()>0){
 					WebInputCrawlJax input = new WebInputCrawlJax(jsonInput);
 					
-					String userParam = WebProcessor.sysConfig.getUserParameter();
-					String passwordParam = WebProcessor.sysConfig.getPasswordParameter();
-					
-					if(userParam!=null && passwordParam!=null &&
-							!userParam.isEmpty() && !passwordParam.isEmpty()){
-						input.identifyUsers(userParam, passwordParam, this);	//just modified
-					}
+//					ArrayList<LoginParam> allLoginParams = WebProcessor.sysConfig.getLoginParams();
+//					LoginParam usedLoginParam = null;
+//					
+//					for(Action a:input.actions()) {
+//						if(a instanceof StandardAction) {
+//							usedLoginParam = ((StandardAction)a).usedLoginParam(allLoginParams);
+//						}
+//						if(usedLoginParam!=null) {
+//							break;
+//						}
+//					}
+//					
+//					if(usedLoginParam!=null){
+//						input.identifyUsers(usedLoginParam.userParam, usedLoginParam.passwordParam, this);
+//					}
+					input.identifyUsers(this);
+
 					
 					this.inputList.add(input);
 				}
@@ -2105,17 +2116,24 @@ public class WebProcessor {
 		if(!this.sysConfig.hasAccountParameters()){
 			return;
 		}
-		
-		String userParam = this.sysConfig.getUserParameter();
-		String passParam = this.sysConfig.getPasswordParameter();
+//		String userParam = this.sysConfig.getUserParameter();
+//		String passParam = this.sysConfig.getPasswordParameter();
+		ArrayList<LoginParam> allLoginParams = WebProcessor.sysConfig.getLoginParams();
 		
 		for(WebInputCrawlJax input:this.inputList){
 			if(input.size()>0){
 				for(Action act:input.actions()){
+					LoginParam usedLoginParam = null;
+					if(act instanceof StandardAction) {
+						usedLoginParam = ((StandardAction)act).usedLoginParam(allLoginParams);
+					}
+					
 					//try to find an account from each action
-					if(act.containCredential(userParam, passParam)){
+//					if(act.containCredential(userParam, passParam)){
+					if(usedLoginParam!=null) {
 						//this means that the act is an instance of StandardAction
-						Account acc = ((StandardAction)act).getCredential(userParam, passParam);
+//						Account acc = ((StandardAction)act).getCredential(userParam, passParam);
+						Account acc = ((StandardAction)act).getCredential(usedLoginParam.userParam, usedLoginParam.passwordParam);
 						if(acc!=null){
 							//if the current userList does not contain acc, add it to the list
 							boolean contain = false;
@@ -2321,6 +2339,8 @@ public class WebProcessor {
 			
 			if ( possibleLogin ) {
 				Account user = (Account) action.getUser();
+				//FIXME: need to check the account parameters corresponding 
+				//to the login url (in a LoginParam object) 
 				if ( user.getUsername().equals(WRONG_USERNAME) ) {
 					return false;
 				}
