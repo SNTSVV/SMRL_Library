@@ -51,7 +51,8 @@ public class CookieSession implements Session {
 	public long getTimeout() {
 		for(Cookie ck:cookies){
 			if(ck.getExpiry() !=null){
-				return ck.getExpiry().getTime();
+				return (ck.getExpiry().getTime()-System.currentTimeMillis())/1000;
+				
 			}
 		}
 		return -1;

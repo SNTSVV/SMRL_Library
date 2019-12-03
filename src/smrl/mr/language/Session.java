@@ -1,11 +1,10 @@
 package smrl.mr.language;
 
-import java.util.Set;
-
-import org.openqa.selenium.Cookie;
-
 public interface Session {
 
+	/**
+	 * @return the number of seconds since now until the session expires
+	 */
 	public long getTimeout();
 
 	public void update(Object session);

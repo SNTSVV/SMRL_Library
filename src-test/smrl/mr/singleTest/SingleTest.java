@@ -212,7 +212,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//TODO: implement getSession() for actions
+	//Done: full
 	public void test_OTG_SESS_007() {
 		super.test(provider,OTG_SESS_007.class);
 	}
