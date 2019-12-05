@@ -164,7 +164,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_AUTHN_001() {
 		super.test(provider,OTG_AUTHN_001.class);
 	}
@@ -188,7 +188,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_CONFIG_007() {
 		super.test(provider,OTG_CONFIG_007.class);
 	}
@@ -212,7 +212,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_SESS_007() {
 		super.test(provider,OTG_SESS_007.class);
 	}

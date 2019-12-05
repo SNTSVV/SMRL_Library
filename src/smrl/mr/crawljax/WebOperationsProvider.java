@@ -500,6 +500,11 @@ public class WebOperationsProvider implements OperationsProvider {
 	
 	@Override
 	public boolean isUserIdParameter(Action a, int parpos, Object user) {
+		if( a.getParameters()==null ||
+				parpos<0 ||
+				user==null) {
+			return false;
+		}
 		throw new NotImplementedException();
 //		return false;
 	}
