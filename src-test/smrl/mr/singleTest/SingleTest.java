@@ -39,7 +39,6 @@ public class SingleTest extends MRBaseTest {
 	private static WebOperationsProvider provider;
 	
 	private static String system = "jenkins";
-//	private static String system = "iws";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -66,7 +65,7 @@ public class SingleTest extends MRBaseTest {
 		System.out.println("*** Ending time: " + getCurrentTime() + " ***");
     }   
 	
-	// In ICST paper: 12 MRs //
+	//In ICST paper: 11 MRs
 	@Test
 	public void test_OTG_AUTHN_004() {
 		super.test(provider,OTG_AUTHN_004.class);
@@ -75,11 +74,6 @@ public class SingleTest extends MRBaseTest {
 	@Test
 	public void test_OTG_AUTHN_010() {
 		super.test(provider,OTG_AUTHN_010.class);
-	}
-	
-	@Test
-	public void test_OTG_AUTHZ_001a() {
-		super.test(provider,OTG_AUTHZ_001a.class);
 	}
 	
 	@Test
@@ -154,6 +148,10 @@ public class SingleTest extends MRBaseTest {
 	
 		
 	// New tests
+	@Test
+	public void test_OTG_AUTHZ_001a() {
+		super.test(provider,OTG_AUTHZ_001a.class);
+	}
 	
 	@Test
 	/**
@@ -206,7 +204,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	// Source inputs do not have any log-out URL
+	// Done: all
 	public void test_OTG_SESS_006() {
 		super.test(provider,OTG_SESS_006.class);
 	}

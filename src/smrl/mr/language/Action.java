@@ -306,13 +306,15 @@ public abstract class Action implements Cloneable {
 			}
 			
 			for(String q:query.split("&")){
-				String key = q.split("=")[0];
-				String value = q.split("=")[1];
-				resList.add(new AbstractMap.SimpleEntry<String, String>(key, value));
+				if(q.split("=").length==2) {
+					String key = q.split("=")[0];
+					String value = q.split("=")[1];
+					resList.add(new AbstractMap.SimpleEntry<String, String>(key, value));
+				}
+				
 			}
 			
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
