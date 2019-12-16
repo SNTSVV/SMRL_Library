@@ -220,10 +220,10 @@ public class StandardAction extends Action {
 
 	@Override
 	public boolean setParameterValue(int p, Object object){
-		if(method.toLowerCase().equals("post")){
-			System.out.println("\t\t!!!Cannot modify URL's parameters of a POST request");
-			return false;
-		}
+//		if(method.toLowerCase().equals("post")){
+//			System.out.println("\t\t!!!Cannot modify URL's parameters of a POST request");
+//			return false;
+//		}
 		
 		List<Entry<String, String>> params = this.getParameters();
 		
