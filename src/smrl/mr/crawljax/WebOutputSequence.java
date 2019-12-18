@@ -122,6 +122,7 @@ public class WebOutputSequence implements Output {
 		// A webOutputSequence is an error if:
 		//1. it is an empty one
 		//2. it contains error signs, which are defined in the system configuration
+		// (class, script, id, attribute, title, content)
 		//3. it contains 4xx or 5xx http response
 		
 		if(this.seq == null || this.seq.size()==0){
@@ -245,6 +246,18 @@ public class WebOutputSequence implements Output {
 					String titleError = titleObject.get(i).getAsString().toLowerCase();
 					String title = doc.getElementsByTag("title").text().toLowerCase();
 					if(title.contains(titleError)){
+						return true;
+					}
+				}
+			}
+			
+			//Check content of the page
+			if(errorSigns.keySet().contains("content") &&
+					errorSigns.getAsJsonArray("content").size()>0) {
+				JsonArray contentObject = errorSigns.getAsJsonArray("content");
+				for(int i=0; i<contentObject.size(); i++) {
+					String contentSign = contentObject.get(i).getAsString();
+					if(doc.hasText() && doc.text().contains(contentSign)) {
 						return true;
 					}
 				}

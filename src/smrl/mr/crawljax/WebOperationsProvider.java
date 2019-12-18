@@ -8,13 +8,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 
 import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 
-import smrl.mr.language.*;
+import smrl.mr.language.Action;
+import smrl.mr.language.CookieSession;
+import smrl.mr.language.Input;
+import smrl.mr.language.Operations;
+import smrl.mr.language.OperationsProvider;
+import smrl.mr.language.Output;
 import smrl.mr.language.actions.StandardAction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -502,11 +508,22 @@ public class WebOperationsProvider implements OperationsProvider {
 	public boolean isUserIdParameter(Action a, int parpos, Object user) {
 		if( a.getParameters()==null ||
 				parpos<0 ||
-				user==null) {
+				parpos>=a.getParameters().size() ||
+				user==null ||
+				!(user instanceof Account)) {
 			return false;
 		}
-		throw new NotImplementedException();
-//		return false;
+		
+		Entry<String, String> par = a.getParameters().get(parpos);
+		Account uAcc = (Account) user;
+		
+		if(par.getKey()!=null &&
+				uAcc.getUsernameParam()!=null &&
+				par.getKey().equals(uAcc.getUsernameParam())) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
