@@ -452,7 +452,7 @@ public class Operations {
 	 * @return true if the action is not available without logging in.
 	 */
 	public static boolean notAvailableWithoutLoggingIn(Action action) {
-		return _notVisibleWithoutLoggingIn(action.getUrl()); 
+		return MR.CURRENT.provider.notVisibleWithoutLoggingIn(action.getUrl()); 
 	}
 	
 	/**
@@ -476,7 +476,7 @@ public class Operations {
 	 * @return true if the URL is not available before logging in.
 	 */
 	public static boolean notVisibleWithoutLoggingIn(String url) {
-		return _notVisibleWithoutLoggingIn(url);
+		return MR.CURRENT.provider.notVisibleWithoutLoggingIn(url);
 	}
 	
 	private static HashSet<String> visibleWithoutLogin;
@@ -503,7 +503,7 @@ public class Operations {
 	 */
 	private static boolean _visibleWithoutLoggingIn(String url) {
 		try {
-			return MR.CURRENT.provider.notVisibleWithoutLoggingIn(url);
+			return !MR.CURRENT.provider.notVisibleWithoutLoggingIn(url);
 		} catch ( Throwable t ) {
 
 			if ( visibleWithoutLogin == null ) {
@@ -517,7 +517,9 @@ public class Operations {
 						if ( isLogin(a) ) {
 							break;
 						}
-						visibleWithoutLogin.add(url);
+						if(a.getUrl()!=null) {
+							visibleWithoutLogin.add(a.getUrl());
+						}
 					}
 				}
 			}

@@ -234,7 +234,7 @@ public class StandardAction extends Action {
 		
 		boolean setResult = false;
 		
-		params.get(p).setValue((String) object);	// Update value
+		params.get(p).setValue(object.toString());	// Update value
 		
 		try {
 			URIBuilder ub = new URIBuilder(getUrl());

@@ -616,7 +616,7 @@ public class SystemConfig {
 		return false;
 	}
 	
-	private boolean equalURL(String url1, String url2){
+	public static boolean equalURL(String url1, String url2){
 		if(url1==null || url2==null || url1.isEmpty() || url2.isEmpty()){
 			return false;
 		}

@@ -63,8 +63,10 @@ import com.google.gson.JsonObject;
 import smrl.mr.language.Action;
 import smrl.mr.language.Action.ActionType;
 import smrl.mr.language.CookieSession;
+import smrl.mr.language.Input;
 import smrl.mr.language.LoginParam;
 import smrl.mr.language.MR;
+import smrl.mr.language.MrDataDB;
 import smrl.mr.language.NoMoreInputsException;
 import smrl.mr.language.Operations;
 import smrl.mr.language.SystemConfig;
@@ -115,6 +117,7 @@ public class WebProcessor {
 	private boolean headless=false;
 	private boolean backToRightPageBeforeAction=true;
 	private boolean checkStatusCode=false;
+	private static HashSet<String> visibleWithoutLogin;
 	
 	
 	
@@ -1053,13 +1056,14 @@ public class WebProcessor {
 					
 					if(newElements.size()>0){
 						
-						//if we prioritize buttons, filter newElements to get only buttons from there
+						//if we prioritize buttons and input_submits, filter newElements to get only buttons from there
 						if(prioritizeButton){
 							Elements onlyButtons = new Elements();
 							
 							for(int iEle=0; iEle<newElements.size(); iEle++){
 								Element elem = newElements.get(iEle);
-								if(elem.tagName().toLowerCase().equals("button")){
+								if(elem.tagName().toLowerCase().equals("button") ||
+										elem.tagName().toLowerCase().equals("input")){
 									onlyButtons.add(elem);
 								}
 							}
@@ -1097,27 +1101,53 @@ public class WebProcessor {
 						}
 
 					}
+					if(tagName.equals("input")){
+						if(executeEle.attributes().hasKey("type")){
+							elementBy = getByType("tagName", "input");
+						}
+					}
 
 					try{
 						List<WebElement> eles = driver.findElements(elementBy);
 
-						if(eles!=null && eles.size()>0){
-							String elementURL = getElementURL(driver, executeEle);
+						
 
+						if(eles!=null && eles.size()>0){
+							String beforeUrl = driver.getCurrentUrl();
+							String elementURL = getElementURL(driver, executeEle);
 							//								System.out.println("\t--Will click on: " + elementURL);
 
-							try {
-								driver.findElement(elementBy).click();
-							} catch ( Throwable t ){
-								System.out.print("!!!Ignored (auto confirmation cannot click): "+elementURL);
-
+							for(WebElement e1:eles) {
+								if(matchElement(e1, executeEle)) {
+									if(e1.getTagName().equalsIgnoreCase("input") &&
+											e1.getAttribute("type")!=null &&
+											e1.getAttribute("type").equalsIgnoreCase("submit")) {
+										e1.submit();;
+									}
+									else {
+										e1.click();
+									}
+									confirmed = true;
+									break;
+								}
 							}
-							confirmed = true;
+							
+							//Phu: just commented statements under (20/12/2019) to try another way to click on the element
+//							try {
+//								driver.findElement(elementBy).click();
+//							} catch ( Throwable t ){
+//								System.out.print("!!!Ignored (auto confirmation cannot click): "+elementURL);
+//
+//							}
+//							confirmed = true;
+							//end of commented
+							
 							aURL = elementURL;
 
 
 							//get redirect URL
-							redirectURL = getRedirectUrl(driver, elementURL);
+							redirectURL = getRedirectUrl(driver, beforeUrl, elementURL);
+//							redirectURL = getRedirectUrl(driver, elementURL);
 						}
 
 						//							System.out.println("\t\t" + executeEle);
@@ -1264,6 +1294,28 @@ public class WebProcessor {
 		System.out.println("\tTimes of automatic confirmation: "+timeOfConfirm);
 		
 		return outputSequence;
+	}
+
+
+	
+
+
+	private boolean matchElement(WebElement webElement, Element jsoupElement) {
+		if(webElement==null ||
+				jsoupElement==null ||
+				!webElement.getTagName().equalsIgnoreCase(jsoupElement.tagName())) {
+			return false;
+		}
+		
+		Attributes allAttr = jsoupElement.attributes();
+		for(Attribute attr:allAttr) {
+			if(webElement.getAttribute(attr.getKey())==null ||
+					!webElement.getAttribute(attr.getKey()).equals(attr.getValue())) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 
@@ -1984,20 +2036,8 @@ public class WebProcessor {
 			URI resolved = oldUri.resolve(newAct);
 			res = resolved.toString();
 		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-//		if(!res.endsWith("/")){
-//			res += "/";
-//		}
-//		
-//		if(newAct.startsWith("/")){
-//			newAct = newAct.substring(1);
-//		}
-//		
-//		res += newAct;
-		
 		return res;
 	}
 
@@ -2042,6 +2082,15 @@ public class WebProcessor {
 			res = currentURL;
 		}
 		return res;
+	}
+	
+	private String getRedirectUrl(ChromeDriver driver, String beforeUrl, String requestedURL) {
+		String tempRedirectUrl = getRedirectUrl(driver, requestedURL);
+		if(tempRedirectUrl!=null && !tempRedirectUrl.isEmpty() &&
+				!beforeUrl.trim().equalsIgnoreCase(tempRedirectUrl)) {
+			return tempRedirectUrl;
+		}
+		return "";
 	}
 
 	public void loadUsers(String accFile) throws IOException {
@@ -2195,6 +2244,11 @@ public class WebProcessor {
 		//Get all elements of tags "a" and "button"
 		Elements currentElements = currentDoc.getElementsByTag("a");
 		currentElements.addAll(currentDoc.getElementsByTag("button"));
+		
+		Elements currentInputElements = getSubmitInputElements(currentDoc);
+		if(currentInputElements!=null && currentInputElements.size()>0) {
+			currentElements.addAll(currentInputElements);
+		}
 		//currentElements.addAll(currentDoc.getElementsByTag("form"));
 		
 		//If the previous dom is empty, of the current dom has no element
@@ -2206,11 +2260,17 @@ public class WebProcessor {
 		Document prevDoc = Jsoup.parse(prevDom);
 		Elements prevElements = prevDoc.getElementsByTag("a");
 		prevElements.addAll(prevDoc.getElementsByTag("button"));
+		
+		Elements prevInputElements = getSubmitInputElements(prevDoc);
+		if(prevInputElements!=null && prevInputElements.size()>0) {
+			prevElements.addAll(prevInputElements);
+		}
 		//prevElements.addAll(prevDoc.getElementsByTag("form"));
 
 		for(Element cElement:currentElements){
 			String cTagName = cElement.tagName().toLowerCase();
 			boolean contain = false;
+			//anchor tag
 			if(cTagName.toLowerCase().equals("a")){
 				//find if any tag "a" in the previous dom has the same url (href)
 				for(Element pElement:prevElements){
@@ -2231,14 +2291,15 @@ public class WebProcessor {
 					newElements.add(cElement);
 				}
 			}
+			//button tag
 			else if (cTagName.toLowerCase().equals("button")){
 				//find if any tag "button" in the previous dom has the same id
 				for(Element pElement:prevElements){
 					if(pElement.tagName().toLowerCase().equals("button")){
 						if(cElement.attributes().hasKey("id") &&
 								pElement.attributes().hasKey("id")){
-							String pId = pElement.attr("href").trim();
-							String cId = cElement.attr("href").trim();
+							String pId = pElement.attr("id").trim();
+							String cId = cElement.attr("id").trim();
 
 							if((!cId.isEmpty()) && cId.equals(pId)){
 								contain = true;
@@ -2252,9 +2313,45 @@ public class WebProcessor {
 					newElements.add(cElement);
 				}
 			}
+			//input submit tag
+			else if (cTagName.toLowerCase().equals("input")){
+				//find if any tag "input" in the previous dom has the same id
+				for(Element pElement:prevElements){
+					if(pElement.tagName().toLowerCase().equals("input")){
+						if(cElement.attributes().hasKey("value") &&
+								pElement.attributes().hasKey("value")){
+							String pValue = pElement.attr("value").trim();
+							String cValue = cElement.attr("value").trim();
+
+							if((!cValue.isEmpty()) && cValue.equals(pValue)){
+								contain = true;
+								break;
+							}
+						}
+					}
+				}
+				
+				if(cElement.attributes().hasKey("value") && (!contain)){
+					newElements.add(cElement);
+				}
+			}
 		}
 		
 		return newElements;
+	}
+
+
+	private Elements getSubmitInputElements(Document document) {
+		Elements result = new Elements();
+		Elements inputElements = document.getElementsByTag("input");
+		if(inputElements!=null && inputElements.size()>0) {
+			for(Element ie:inputElements) {
+				if(ie.attr("type")!=null && ie.attr("type").equals("submit")) {
+					result.add(ie);
+				}
+			}
+		}
+		return result;
 	}
 	
 	private boolean isEmptyHtml(String dom){
@@ -2352,18 +2449,36 @@ public class WebProcessor {
 
 	@SuppressWarnings("static-access")
 	public boolean notVisibleWithoutLoggingIn(String url) {		
-		for(WebInputCrawlJax input:this.inputList){
-			for(Action act : input.actions()){
-				if(this.isLogin(act)){
-					break;
-				}
-				if(act.contain(url.trim())){
-					return false;
+		if(url==null || url.trim().isEmpty()) {
+			return false;
+		}
+		
+		if ( visibleWithoutLogin == null ) {
+			visibleWithoutLogin = new HashSet<String>();
+			if(this.inputList!=null && this.inputList.size()>0) {
+				for(WebInputCrawlJax input:this.inputList){
+					for(Action act : input.actions()){
+						if(this.isLogin(act)){
+							break;
+						}
+						if(act.getUrl()!=null) {
+							visibleWithoutLogin.add(act.getUrl().trim());
+						}
+					}
 				}
 			}
 		}
 		
-		return true;
+		boolean contain = false;
+		
+		for(String vUrl: visibleWithoutLogin) {
+			if(SystemConfig.equalURL(vUrl, url.trim())) {
+				contain = true;
+				break;
+			}
+		}
+
+		return !contain;
 	}
 
 	@SuppressWarnings("static-access")
