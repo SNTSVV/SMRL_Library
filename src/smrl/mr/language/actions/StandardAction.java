@@ -225,10 +225,14 @@ public class StandardAction extends Action {
 //			return false;
 //		}
 		
+		if(object==null || object.toString().isEmpty() ||
+				getUrl()==null || getUrl().isEmpty()) {
+			return false;
+		}
+		
 		List<Entry<String, String>> params = this.getParameters();
 		
-		if(params==null || params.size()<=0 || p<0 || p>=params.size() ||
-				getUrl()==null || getUrl().isEmpty()){
+		if(params==null || params.size()<=0 || p<0 || p>=params.size() ){
 			return false;
 		}
 		

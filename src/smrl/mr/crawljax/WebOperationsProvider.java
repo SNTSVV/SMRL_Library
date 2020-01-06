@@ -691,6 +691,11 @@ public class WebOperationsProvider implements OperationsProvider {
 		return impl.isError(output);
 	}
 
+	@Override
+	public String parameterValueUsedByOtherUsers(Action action, int parPosition) {
+		return impl.parameterValueUsedByOtherUsers(action, parPosition);
+	}
+
 	
 
 }

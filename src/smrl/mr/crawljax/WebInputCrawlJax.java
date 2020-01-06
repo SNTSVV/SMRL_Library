@@ -7,7 +7,6 @@ import smrl.mr.language.Action;
 import smrl.mr.language.Input;
 import smrl.mr.language.LoginParam;
 import smrl.mr.language.actions.AlertAction;
-import smrl.mr.language.actions.IndexAction;
 import smrl.mr.language.actions.StandardAction;
 
 import com.google.gson.JsonArray;
@@ -417,6 +416,9 @@ public class WebInputCrawlJax extends Input{
 					else{	//accept all account-like info as user, even failed login
 						user = processCurrentActionAndUpdateUser((StandardAction) a, user, usedLoginParam.userParam, usedLoginParam.passwordParam);
 					}
+				}
+				else {
+					a.setUser(user);
 				}
 				
 			} else {

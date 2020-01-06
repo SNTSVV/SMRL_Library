@@ -359,7 +359,11 @@ public class Operations {
 	 * @return
 	 */
 	public static boolean userCanRetrieveContent(Object user, Object output) {
-		return MR.CURRENT.provider.userCanRetrieveContent(user,output);
+//		return MR.CURRENT.provider.userCanRetrieveContent(user,output);
+		MR.printCallerLog("start");
+		boolean ret = MR.CURRENT.provider.userCanRetrieveContent(user,output);
+		MR.printCallerLog("end");
+		return ret;
 	}
 
 	/**
@@ -953,6 +957,7 @@ public class Operations {
 	static HashMap<Object,HashSet<String>> triedInputs = new HashMap<Object,HashSet<String>>();
 	
 	
+	
 	/**
 	 * Web-specific function.
 	 * Checks whether a given user tried to access a given URL until the current execution period.
@@ -1042,7 +1047,9 @@ public class Operations {
 		return MR.CURRENT.provider.isError(output);
 	}
 
-
+	public static String parameterValueUsedByOtherUsers(Action action, int parPosition) {
+		return MR.CURRENT.provider.parameterValueUsedByOtherUsers(action, parPosition);
+	}
 	
 	public static Object randomFilePath(int x){ 
 //		return MR.CURRENT.getMRData("RandomValue:"+Path.class.getCanonicalName(),x);
@@ -1053,5 +1060,6 @@ public class Operations {
 //		return MR.CURRENT.getMRData("RandomValue:"+Path.class.getCanonicalName(),x);
 		return MR.CURRENT.getMRDataSize("RandomFilePath");
 	}
+
 }
 

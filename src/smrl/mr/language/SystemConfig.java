@@ -593,6 +593,10 @@ public class SystemConfig {
 	}
 
 	public boolean isLoginURL(String url){
+		if(url==null || url.isEmpty()) {
+			return false;
+		}
+		
 		ArrayList<String> allLoginUrls = getLoginURLs();
 		if(allLoginUrls==null || allLoginUrls.size()<1) {
 			return false;

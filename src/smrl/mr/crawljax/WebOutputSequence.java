@@ -3,28 +3,22 @@ package smrl.mr.crawljax;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.jsoup.safety.Cleaner;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.Cookie;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import smrl.mr.language.CookieSession;
 import smrl.mr.language.CollectionOfConcepts;
+import smrl.mr.language.CookieSession;
 import smrl.mr.language.Output;
 import smrl.mr.language.Session;
 import smrl.mr.language.SystemConfig;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class WebOutputSequence implements Output {
 
@@ -34,7 +28,8 @@ public class WebOutputSequence implements Output {
 	
 	private ArrayList<CookieSession> sessionSequence;
 	
-	public WebOutputSequence() {
+	
+ 	public WebOutputSequence() {
 		this.seq = new ArrayList<Object>();
 		this.redirectedURLs = new ArrayList<String>();
 //		this.useEditDistance = true;
@@ -66,13 +61,12 @@ public class WebOutputSequence implements Output {
 		if ( ! compare(seq,rhs.seq) ){
 			return false;
 		}
-		
-		
-		
-	
 
 		return true;
 	}
+
+
+
 
 	private boolean compare(ArrayList<Object> seq, ArrayList<Object> rhsSeq) {
 		if (seq.size() != rhsSeq.size()) {

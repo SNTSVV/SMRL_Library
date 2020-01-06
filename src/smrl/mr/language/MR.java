@@ -3,6 +3,8 @@ package smrl.mr.language;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -723,6 +725,20 @@ public abstract class MR {
 	
 	public int getMRDataSize(String name) {
 		return dataDBs.get(name).size();
+	}
+
+	static boolean printCallerLog=true;
+	public static void printCallerLog(String position) {
+		if(printCallerLog) {
+			StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+			if(stackTraceElements.length >3) {
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");  
+				LocalDateTime now = LocalDateTime.now();  
+				String time = dtf.format(now).toString();
+				System.out.println("\t!!! " + time + " " +  position.toUpperCase() + 
+						" the method: " + stackTraceElements[2].getMethodName());	
+			}
+		}
 	}
 		
 

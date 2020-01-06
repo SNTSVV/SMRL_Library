@@ -80,6 +80,8 @@ public interface OperationsProvider {
 	boolean isSupervisorOf(Object user1, Object user2);
 
 	boolean isError(Object output);
+
+	String parameterValueUsedByOtherUsers(Action action, int parPosition);
 	
 
 }

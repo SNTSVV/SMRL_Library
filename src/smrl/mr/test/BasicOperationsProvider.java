@@ -226,4 +226,10 @@ public class BasicOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
+	@Override
+	public String parameterValueUsedByOtherUsers(Action action, int parPosition) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
