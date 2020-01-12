@@ -81,7 +81,6 @@ public interface OperationsProvider {
 
 	boolean isError(Object output);
 
-	String parameterValueUsedByOtherUsers(Action action, int parPosition);
 	
 
 }

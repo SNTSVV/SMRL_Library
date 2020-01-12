@@ -20,6 +20,9 @@ import com.google.gson.JsonObject;
 
 import smrl.mr.analysis.ASMUtil;
 import smrl.mr.analysis.ASMUtil.ASM_MRData;
+import smrl.mr.crawljax.Account;
+import smrl.mr.language.actions.IndexAction;
+import smrl.mr.language.actions.StandardAction;
 import smrl.mr.utils.URLUtil;
 
 
@@ -102,11 +105,86 @@ public abstract class MR {
 					continue;
 				} 
 				
+				if ( dataName.equals("parameterValueUsedByOtherUsers") ) {
+					//This should be loaded after loading Input list
+					continue;
+				} 
+				
+				
 				
 				MrDataDB db = new MrDataDB(dataName);
 				dataDBs.put(dataName, db);
 				db.load(provider.load(dataName));
 				sortedDBs.add(db);
+			}
+			
+			//just added by Phu on 10/01/2020 to support the function parameterValueUsedByOtherUsers 
+			if(dataConsidered.contains("parameterValueUsedByOtherUsers")) {
+				HashMap<String, ArrayList<Entry>> allUser_parName_parValue = new HashMap<String, ArrayList<Entry>>();
+				
+				//get all entries <par_name, par_value> of each user
+				for(Object input:provider.load("Input")) {
+					for(Action act:((Input)input).actions()) {
+						String username = null;
+						if(act.getUser()!=null &&
+								(((Account)act.getUser()).getUsername()!=null || 
+								!((Account)act.getUser()).getUsername().isEmpty())) {
+							username = ((Account)act.getUser()).getUsername();
+						}
+						
+						if(username==null || username.isEmpty()) {
+							continue;
+						}
+						
+						if(act.getParameters()!=null &&
+								act.getParameters().size()>0) {
+							
+
+							if(!allUser_parName_parValue.containsKey(username)) {
+								allUser_parName_parValue.put(username, new ArrayList<Entry>());
+							}
+							
+							for(Entry<String, String> parPair:act.getParameters()) {
+								if(!allUser_parName_parValue.get(username).contains(parPair)) {
+									allUser_parName_parValue.get(username).add(parPair);
+								}
+							}
+						}
+					}
+				}
+				
+				//get list of par_values are used by other users
+				HashMap<String, ArrayList> finalList = new HashMap<String, ArrayList>();
+				for(String user1:allUser_parName_parValue.keySet()) {
+					ArrayList<Entry> list1 = allUser_parName_parValue.get(user1);
+					for(String user2:allUser_parName_parValue.keySet()) {
+						if(user2.equals(user1)) {
+							continue;
+						}
+						ArrayList<Entry> list2 = allUser_parName_parValue.get(user2);
+						
+						for(Entry e:list2) {
+							if(!list1.contains(e)) {
+								String key = user1 + "_" +e.getKey();
+								if(!finalList.containsKey(key)) {
+									finalList.put(key, new ArrayList<String>());
+								}
+								if(!finalList.get(key).contains(e.getValue())){
+									finalList.get(key).add(e.getValue());
+								}
+							}
+						}
+						
+					}
+				}
+				
+				//create MrDB
+				for(String dataName:finalList.keySet()) {
+					MrDataDB db = new MrDataDB(dataName);
+					dataDBs.put(dataName, db);
+					db.load(finalList.get(dataName));
+					sortedDBs.add(db);
+				}
 			}
 
 		}
@@ -725,6 +803,32 @@ public abstract class MR {
 	
 	public int getMRDataSize(String name) {
 		return dataDBs.get(name).size();
+	}
+	
+	public String getParameterValueUsedByOtherUsers_DBName(Action action, int parPosition) {
+		if(action==null || 
+				!((action instanceof StandardAction) || (action instanceof IndexAction)) ||
+				action.getParameterName(parPosition)==null ||
+				action.getParameterName(parPosition).isEmpty()) {
+			return null;
+		}
+		
+		String username = "";
+		if(action.getUser()!=null) {
+			Account user = (Account)action.getUser();
+			String un = user.getUsername(); 
+			if(un==null || un.isEmpty() ||
+				un.equalsIgnoreCase("ANONYMOUS")) {
+				username = "ANONYMOUS";
+			}
+			else {
+				username = un;
+			}
+		}
+		
+		String dbName = username + "_" + action.getParameterName(parPosition);
+		
+		return dbName;
 	}
 
 	static boolean printCallerLog=true;

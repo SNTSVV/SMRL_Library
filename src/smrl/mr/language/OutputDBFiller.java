@@ -1,10 +1,10 @@
 package smrl.mr.language;
 
-import static smrl.mr.language.Operations.*;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import smrl.mr.crawljax.Account;
 import smrl.mr.crawljax.WebOperationsProvider;
@@ -23,15 +23,15 @@ public class OutputDBFiller {
 		String outFolder = "./testData/Jenkins/outputStore";
 		String sysConfigFile = "./testData/Jenkins/jenkinsSysConfig.json";
 		
-		if(args!=null && args.length>=2) {
-			outFolder = args[0].trim();
-			sysConfigFile = args[1].trim();
-		}
-		else {
-			System.out.println("Usage: " + OutputDBFiller.class.getSimpleName() + 
-					" <path_of_output_store> <path_to_system_config_file>");
-			return;
-		}
+//		if(args!=null && args.length>=2) {
+//			outFolder = args[0].trim();
+//			sysConfigFile = args[1].trim();
+//		}
+//		else {
+//			System.out.println("Usage: " + OutputDBFiller.class.getSimpleName() + 
+//					" <path_of_output_store> <path_to_system_config_file>");
+//			return;
+//		}
 		
 //		OutputDBFiller db = new OutputDBFiller(new File("./testData/OTG_AUTHZ_002/edlah2/outputStore"));
 //		OutputDBFiller db = new OutputDBFiller(new File("./testData/OTG_AUTHZ_002/jenkins-1/outputStore"));
@@ -82,13 +82,18 @@ public class OutputDBFiller {
 		File destHtml = new File( userFolder, "output_"+id+".html" );
 		File destText = new File( userFolder, "output_"+id+".txt" );
 		
-		store( destHtml, pageOut.html );
+		store(userFolder, destHtml, pageOut.html );
 		
-		store( destText, pageOut.text );
+		store(userFolder, destText, pageOut.text );
 		
 	}
 
-	private void store(File destHtml, String html) {
+	private void store(File folder, File destHtml, String html) {
+		if(alreadyStored(folder, html)) {
+			System.out.println("!!! already stored: " + destHtml.getAbsolutePath());
+		}
+		
+		//TODO: in the near future, should use alreadyStored function to filter content to be stored
 		try {
 			FileWriter w = new FileWriter( destHtml );
 			w.write(html);
@@ -97,6 +102,37 @@ public class OutputDBFiller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean alreadyStored(File folder, String content) {
+		if(!folder.exists() || !folder.isDirectory()) {
+			return false;
+		}
+		
+		for(File file:folder.listFiles()) {
+			String fileContent = readLines(file.getAbsolutePath());
+			if(fileContent.equals(content)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private static String readLines(String filePath) 
+	{
+		String content = "";
+
+		try
+		{
+			content = new String ( Files.readAllBytes( Paths.get(filePath) ) );
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+
+		return content;
 	}
 
 }

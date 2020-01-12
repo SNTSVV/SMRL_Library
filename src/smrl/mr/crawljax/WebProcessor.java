@@ -2837,18 +2837,6 @@ public class WebProcessor {
 	}
 
 
-	
-	public String parameterValueUsedByOtherUsers(Action action, int parPosition) {
-		if(action==null || 
-				!((action instanceof StandardAction) || (action instanceof IndexAction))) {
-			return null;
-		}
-		//TODO
-		String parValue = "";
-		
-		return parValue;
-	}
-
 
 	
 	

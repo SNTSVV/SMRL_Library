@@ -221,11 +221,21 @@ public class WebOperationsProvider implements OperationsProvider {
 		List<WebInputCrawlJax> inps = impl.getInputList();
 		LinkedList<Action> actions = new LinkedList<>();
 		for (WebInputCrawlJax i : inps) {
+			boolean loggedIn = false;
 			for ( Action a : i.actions() ) {
 				if ( isLogin(a) ) {
-					break;
+					loggedIn = true;
+//					break;
 				}
-				actions.add(a);
+				
+				boolean isLogOut = isLogout(a);
+				if(isLogOut) {
+					loggedIn = false;
+				}
+				
+				if(!loggedIn && !isLogOut) {
+					actions.add(a);
+				}
 			}
 		}
 		
@@ -285,9 +295,17 @@ public class WebOperationsProvider implements OperationsProvider {
 			return loadRandomFilePath();
 		case "RandomAdminFilePath":
 			return loadRandomAdminFilePath();
+//		case "parameterValueUsedByOtherUsers":
+//			return loadParameterValueUsedByOtherUsers();
 		}
 		return null;
 	}
+
+//	private List loadParameterValueUsedByOtherUsers() {
+//		// TODO Auto-generated method stub
+//		//FIXME --> implement
+//		return null;
+//	}
 
 	@Override
 	public boolean notVisibleWithoutLoggingIn(String url) {
@@ -691,10 +709,6 @@ public class WebOperationsProvider implements OperationsProvider {
 		return impl.isError(output);
 	}
 
-	@Override
-	public String parameterValueUsedByOtherUsers(Action action, int parPosition) {
-		return impl.parameterValueUsedByOtherUsers(action, parPosition);
-	}
 
 	
 

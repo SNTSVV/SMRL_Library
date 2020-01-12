@@ -15,6 +15,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import smrl.mr.crawljax.Account;
+import smrl.mr.language.actions.IndexAction;
+import smrl.mr.language.actions.StandardAction;
 import smrl.mr.language.actions.WaitAction;
 
 public class Operations {
@@ -1047,8 +1049,20 @@ public class Operations {
 		return MR.CURRENT.provider.isError(output);
 	}
 
+	/**
+	 * Data Representation Function.
+	 * Returns the 1-th parameter value used by other users
+	 * 
+	 * @return
+	 */
+	@MRDataProvider
 	public static String parameterValueUsedByOtherUsers(Action action, int parPosition) {
-		return MR.CURRENT.provider.parameterValueUsedByOtherUsers(action, parPosition);
+		String dbName = MR.CURRENT.getParameterValueUsedByOtherUsers_DBName(action, parPosition);
+		if (dbName==null) {
+			return null;
+		}
+		
+		return MR.CURRENT.getMRData(dbName,1).toString();
 	}
 	
 	public static Object randomFilePath(int x){ 
