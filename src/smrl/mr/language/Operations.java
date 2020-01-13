@@ -1062,6 +1062,12 @@ public class Operations {
 			return null;
 		}
 		
+		//check if the mrDatabase contains dbName
+		
+		if(MR.CURRENT.getDataDB(dbName)==null) {
+			return null;
+		}
+		
 		return MR.CURRENT.getMRData(dbName,1).toString();
 	}
 	

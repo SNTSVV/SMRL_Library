@@ -127,8 +127,10 @@ public abstract class MR {
 					for(Action act:((Input)input).actions()) {
 						String username = null;
 						if(act.getUser()!=null &&
-								(((Account)act.getUser()).getUsername()!=null || 
-								!((Account)act.getUser()).getUsername().isEmpty())) {
+								(
+										((Account)act.getUser()).getUsername()!=null && 
+								!((Account)act.getUser()).getUsername().isEmpty())
+							) {
 							username = ((Account)act.getUser()).getUsername();
 						}
 						
@@ -684,7 +686,10 @@ public abstract class MR {
 	
 	
 	public Object getMRData(String name, int i){
-		return dataDBs.get(name).get(i);
+		if(dataDBs.keySet().contains(name)) {
+			return dataDBs.get(name).get(i);
+		}
+		return null;
 	}
 
 
