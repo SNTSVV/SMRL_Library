@@ -252,4 +252,14 @@ public class AlertAction extends InnerAction {
 		return false;
 	}
 
+	@Override
+	public String getOldMethod() {
+		return null;
+	}
+
+	@Override
+	public boolean isMethodChanged() {
+		return false;
+	}
+
 }

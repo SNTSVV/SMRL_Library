@@ -29,6 +29,7 @@ public class StandardAction extends Action {
 	private boolean channelChanged;
 	private String newChannel;
 	private String oldChannel;
+	private String oldMethod;
 	
 	
 	public StandardAction(){
@@ -46,6 +47,7 @@ public class StandardAction extends Action {
 		this.user = new Account();
 		this.innerActions = null;
 		setActionID();
+		this.oldMethod = null;
 	}
 	
 	/**
@@ -131,6 +133,8 @@ public class StandardAction extends Action {
 		this.user = new Account();
 		this.innerActions = null;
 		setActionID();
+		
+		this.oldMethod = null;
 	}
 
 	public String getText() {
@@ -337,12 +341,13 @@ public class StandardAction extends Action {
 	@Override
 	public boolean setMethod(String method) {
 		for(HTTPMethod m : HTTPMethod.values()){
-			if (m.toString().toLowerCase().equals(method.trim().toLowerCase())){
+			if (m.toString().equalsIgnoreCase(method.trim())){
 				//if this action applied already the "method", do not to set it again
-				if(this.method!=null && this.method.toLowerCase().equals(method.trim().toLowerCase())) {
+				if(this.method!=null && this.method.equalsIgnoreCase(method.trim())) {
 					return false;
 				}
-				this.method = method.trim().toLowerCase();
+				this.oldMethod = this.method;
+				this.method = method.trim().toUpperCase();
 				return true;
 			}
 		} 
@@ -352,6 +357,11 @@ public class StandardAction extends Action {
 	@Override
 	public String getMethod() {
 		return this.method;
+	}
+	
+	@Override
+	public String getOldMethod() {
+		return this.oldMethod;
 	}
 
 //	@Override
@@ -700,6 +710,13 @@ public class StandardAction extends Action {
 		
 		return null;
 	}
+
+	@Override
+	public boolean isMethodChanged() {
+		return this.oldMethod!=null;
+	}
+
+	
 
 	
 	

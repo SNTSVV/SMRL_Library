@@ -184,4 +184,20 @@ public class BasicAction extends Action {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
+
+	@Override
+	public String getOldMethod() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public boolean isMethodChanged() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

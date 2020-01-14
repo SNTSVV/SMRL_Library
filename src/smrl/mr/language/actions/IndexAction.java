@@ -7,6 +7,7 @@ import java.util.Set;
 import smrl.mr.crawljax.Account;
 import smrl.mr.language.Action;
 import smrl.mr.language.Session;
+import smrl.mr.language.Action.HTTPMethod;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,6 +19,7 @@ public class IndexAction extends Action {
 	private boolean channelChanged;
 	private String newChannel;
 	private String oldChannel;
+	private String oldMethod;
 	
 	public IndexAction(){
 		this.url = "";
@@ -30,6 +32,7 @@ public class IndexAction extends Action {
 		this.user = new Account();
 		this.innerActions = null;
 		setActionID();
+		this.oldChannel = null;
 	}
 	
 	public IndexAction(JsonObject indexAction){
@@ -83,6 +86,7 @@ public class IndexAction extends Action {
 		this.user = new Account();
 		this.innerActions = null;
 		setActionID();
+		this.oldChannel = null;
 	}
 	
 	@Override
@@ -160,17 +164,27 @@ public class IndexAction extends Action {
 	@Override
 	public boolean setMethod(String method) {
 		for(HTTPMethod m : HTTPMethod.values()){
-			if (m.toString().toLowerCase().equals(method.toLowerCase())){
-				this.method = method.toLowerCase();
+			if (m.toString().equalsIgnoreCase(method.trim())){
+				//if this action applied already the "method", do not to set it again
+				if(this.method!=null && this.method.equalsIgnoreCase(method.trim())) {
+					return false;
+				}
+				this.oldMethod = this.method;
+				this.method = method.trim().toUpperCase();
 				return true;
 			}
-		}
+		} 
 		return false;
 	}
 
 	@Override
 	public String getMethod() {
 		return this.method;
+	}
+	
+	@Override
+	public String getOldMethod() {
+		return this.oldMethod;
 	}
 
 
@@ -271,8 +285,12 @@ public class IndexAction extends Action {
 
 	@Override
 	public boolean containFormInputForFilePath() {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean isMethodChanged() {
+		return this.oldMethod!=null;
 	}
 
 }

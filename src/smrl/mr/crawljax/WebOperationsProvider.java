@@ -222,24 +222,60 @@ public class WebOperationsProvider implements OperationsProvider {
 		LinkedList<Action> actions = new LinkedList<>();
 		for (WebInputCrawlJax i : inps) {
 			boolean loggedIn = false;
+			boolean isLogOut = true;
 			for ( Action a : i.actions() ) {
 				if ( isLogin(a) ) {
 					loggedIn = true;
+					isLogOut = false;
+					continue;
 //					break;
 				}
 				
-				boolean isLogOut = isLogout(a);
+				isLogOut = isLogout(a);
 				if(isLogOut) {
 					loggedIn = false;
+					continue;
 				}
 				
-				if(!loggedIn && !isLogOut) {
+				if(!loggedIn && !isLogOut &&
+						!containActionURL(actions, a) &&
+						a.getUrl()!=null &&
+						!a.getUrl().isEmpty() &&
+						!impl.sysConfig.isLoginURL(a.getUrl()) &&
+						!isEmptyUrl(a.getUrl())) {
 					actions.add(a);
 				}
 			}
 		}
 		
 		return actions;
+	}
+
+	private boolean isEmptyUrl(String url) {
+		if(url==null || url.isEmpty() || 
+				url.equals("/") ||
+				url.equals("#")) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean containActionURL(LinkedList<Action> actions, Action act) {
+		if(actions==null || act==null || 
+			actions.size()<1 ||
+			act.getUrl()==null ||
+			act.getUrl().isEmpty()) {
+			return false;
+		}
+		
+		for(Action a:actions) {
+			if(a.getUrl()!=null && !a.getUrl().isEmpty() &&
+					a.getUrl().equals(act.getUrl())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public List<WebInputCrawlJax> loadInputs() {
@@ -295,17 +331,10 @@ public class WebOperationsProvider implements OperationsProvider {
 			return loadRandomFilePath();
 		case "RandomAdminFilePath":
 			return loadRandomAdminFilePath();
-//		case "parameterValueUsedByOtherUsers":
-//			return loadParameterValueUsedByOtherUsers();
 		}
 		return null;
 	}
 
-//	private List loadParameterValueUsedByOtherUsers() {
-//		// TODO Auto-generated method stub
-//		//FIXME --> implement
-//		return null;
-//	}
 
 	@Override
 	public boolean notVisibleWithoutLoggingIn(String url) {

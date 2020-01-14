@@ -566,7 +566,7 @@ public class WebProcessor {
 		chOptions.addArguments("--ignore-certificate-errors");
 		chOptions.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		chOptions.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-		//FIXME: add certificate to driver if needed
+		//TODO: add certificate to driver if needed
 		
 		if(headless) {
 			chOptions.addArguments("headless");
@@ -637,24 +637,34 @@ public class WebProcessor {
 			// process the action (depend on type of action)
 			boolean doneAction = false;
 			String redirectURL = "";
-			String ruleDescription = "";
 			
 			//create replace rule
+			String ruleChannelDescription = "";
 			if ( act.isChannelChanged() ){
 				String oldChannel = act.getOldChannel();
 				String newChannel = act.getNewChannel();
-				ruleDescription = "replace_" + oldChannel + "_to_" + newChannel; 
+				ruleChannelDescription = "replace_" + oldChannel + "_to_" + newChannel; 
 				//set the rule in the proxy to replace the channel or the address
 				try {
-					proxyApi.replacer.addRule(ruleDescription, "true", "REQ_HEADER_STR", "true", oldChannel, newChannel, "");
+					proxyApi.replacer.addRule(ruleChannelDescription, "true", "REQ_HEADER_STR", "true", oldChannel, newChannel, "");
 				} catch (ClientApiException e) {
 					e.printStackTrace();
 				}
-				
-				//proxy.replace( act.getOldChannel(), act.getNewChannel() ) 
 			}
 			
-			//TODO Replace HTTP method using the proxy replacer
+			//Replace HTTP method using the proxy replacer
+			String ruleMethodDescription = "";
+			if(act.isMethodChanged()) {
+				String oldMethod = act.getOldMethod();
+				String med = act.getMethod();
+				ruleMethodDescription = "replace_method_to_" + med;
+				//set the rule in the proxy to replace the method
+				try {
+					proxyApi.replacer.addRule(ruleMethodDescription, "true", "REQ_HEADER_STR", "true", oldMethod, med, "");
+				} catch (ClientApiException e) {
+					e.printStackTrace();
+				}
+			}
 			
 			//The max id of message in the proxy
 			int maxId = 0;
@@ -1270,10 +1280,18 @@ public class WebProcessor {
 			}
 			
 			//clear all replacer rule in the proxy
-			if(!ruleDescription.isEmpty()){
+			if(!ruleChannelDescription.isEmpty()){
 				try {
-					proxyApi.replacer.removeRule(ruleDescription);
-					ruleDescription = "";
+					proxyApi.replacer.removeRule(ruleChannelDescription);
+					ruleChannelDescription = "";
+				} catch (ClientApiException e) {
+					e.printStackTrace();
+				}
+			}
+			if(!ruleMethodDescription.isEmpty()){
+				try {
+					proxyApi.replacer.removeRule(ruleMethodDescription);
+					ruleMethodDescription = "";
 				} catch (ClientApiException e) {
 					e.printStackTrace();
 				}

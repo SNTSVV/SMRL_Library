@@ -149,6 +149,7 @@ public class SingleTest extends MRBaseTest {
 		
 	// New tests
 	@Test
+	//Done: full
 	public void test_OTG_AUTHZ_001a() {
 		super.test(provider,OTG_AUTHZ_001a.class);
 	}
@@ -157,6 +158,7 @@ public class SingleTest extends MRBaseTest {
 	/**
 	  *This test case should detect CVE-2018-1999006"
 	  */
+	//Not execute
 	public void test_OTG_AUTHZ_001b2() {
 		super.test(provider,OTG_AUTHZ_001b2.class);
 	}
@@ -168,13 +170,13 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//TODO: fix MR
+	//Done: all
 	public void test_OTG_AUTHZ_003() {
 		super.test(provider,OTG_AUTHZ_003.class);
 	}
 	
 	@Test
-	//TODO: fix MR
+	//running
 	public void test_OTG_AUTHZ_004() {
 		super.test(provider,OTG_AUTHZ_004.class);
 	}
@@ -198,7 +200,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	// TODO: implement a proxy replacer in WebProcessor.output function to replace HttpMethod
+	// can run: do not forget to turn on proxy
 	public void test_OTG_INPVAL_003() {
 		super.test(provider,OTG_INPVAL_003.class);
 	}
@@ -216,7 +218,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//TODO: check MRData "ActionAvailableWithoutLogin"
+	//can run
 	public void test_OTG_SESS_008() {
 		super.test(provider,OTG_SESS_008.class);
 	}

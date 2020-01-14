@@ -354,6 +354,8 @@ public abstract class Action implements Cloneable {
 	
 	public abstract String getMethod();
 	
+	public abstract String getOldMethod();
+	
 	public boolean addParameter(String name, String value) {
 		String oldUrl = getUrl();
 		
@@ -478,5 +480,10 @@ public abstract class Action implements Cloneable {
 		return URLUtil.hasTheSameUrl(getUrl(), act.getUrl());
 	}
 
+
+	public boolean isIndex() {
+		return (this instanceof IndexAction);
+	}
 	
+	public abstract boolean isMethodChanged();
 }

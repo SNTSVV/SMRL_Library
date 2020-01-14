@@ -193,7 +193,16 @@ public class ClickOnNewRandomElement extends Action {
 
 	@Override
 	public boolean containFormInputForFilePath() {
-		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getOldMethod() {
+		return null;
+	}
+
+	@Override
+	public boolean isMethodChanged() {
 		return false;
 	}
 }
