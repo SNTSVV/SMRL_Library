@@ -21,6 +21,7 @@ import smrl.mr.language.Input;
 import smrl.mr.language.Operations;
 import smrl.mr.language.OperationsProvider;
 import smrl.mr.language.Output;
+import smrl.mr.language.SystemConfig;
 import smrl.mr.language.actions.StandardAction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -736,6 +737,20 @@ public class WebOperationsProvider implements OperationsProvider {
 	@Override
 	public boolean isError(Object output) {
 		return impl.isError(output);
+	}
+
+	@Override
+	public ArrayList<Action> actionsUpdatedUrl() {
+		return impl.actionsUpdatedUrl();
+	}
+
+	@SuppressWarnings("static-access")
+	@Override
+	public SystemConfig getSysConfig() {
+		if(impl!=null) {
+			return impl.sysConfig;
+		}
+		return null;
 	}
 
 

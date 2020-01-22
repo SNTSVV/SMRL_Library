@@ -36,7 +36,7 @@ public class CountExecutions {
 			if ( line.startsWith("Executed") ) {
 //				if ( line.contains("Input(2)") ) {
 				if ( line.contains(followUpString) ) {
-					System.out.println(line);
+//					System.out.println(line);
 					actions+=lastInputs*count(line,"Action");
 				}
 				lastInputs=0;

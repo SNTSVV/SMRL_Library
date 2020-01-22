@@ -21,7 +21,8 @@ public class OutputDBFiller {
 
 	public static void main(String[] args) {
 		String outFolder = "./testData/Jenkins/outputStore";
-		String sysConfigFile = "./testData/Jenkins/jenkinsSysConfig.json";
+//		String sysConfigFile = "./testData/Jenkins/jenkinsSysConfig.json";
+		String sysConfigFile = "./testData/Jenkins/jenkinsSysConfig_trying.json";
 		
 //		if(args!=null && args.length>=2) {
 //			outFolder = args[0].trim();
@@ -89,17 +90,18 @@ public class OutputDBFiller {
 	}
 
 	private void store(File folder, File destHtml, String html) {
-		if(alreadyStored(folder, html)) {
-			System.out.println("!!! already stored: " + destHtml.getAbsolutePath());
-		}
+//		if(alreadyStored(folder, html)) {
+//			System.out.println("!!! already stored: " + destHtml.getAbsolutePath());
+//		}
 		
-		//TODO: in the near future, should use alreadyStored function to filter content to be stored
+		//in the near future, should use alreadyStored function to filter content to be stored
+		//--> this does not work well, because each response page always contains a session key (in html source)
+		
 		try {
 			FileWriter w = new FileWriter( destHtml );
 			w.write(html);
 			w.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

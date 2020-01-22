@@ -33,6 +33,7 @@ public class IndexAction extends Action {
 		this.innerActions = null;
 		setActionID();
 		this.oldChannel = null;
+		this.oldMethod = null;
 	}
 	
 	public IndexAction(JsonObject indexAction){
@@ -87,6 +88,7 @@ public class IndexAction extends Action {
 		this.innerActions = null;
 		setActionID();
 		this.oldChannel = null;
+		this.oldMethod = null;
 	}
 	
 	@Override

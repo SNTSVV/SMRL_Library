@@ -1,8 +1,13 @@
 package smrl.mr.language;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import smrl.mr.crawljax.Account;
 
@@ -79,5 +84,23 @@ public abstract class Input extends MRData implements Cloneable {
 		return toString().hashCode();
 	}
 	
+	public void exportToFile(String fileName) {
+		JsonArray jsonResult = toJson();
+		if(jsonResult==null || jsonResult.size()<1) {
+			return;
+		}
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String prettyJson = gson.toJson(jsonResult);
+		
+		FileWriter writer;
+		try {
+			writer = new FileWriter(fileName);
+			writer.write(prettyJson);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

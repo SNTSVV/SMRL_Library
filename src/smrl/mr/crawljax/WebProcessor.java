@@ -73,6 +73,7 @@ import smrl.mr.language.actions.IndexAction;
 import smrl.mr.language.actions.InnerAction;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.language.actions.WaitAction;
+import smrl.mr.utils.FileUtil;
 import smrl.mr.utils.URLUtil;
 
 public class WebProcessor {
@@ -89,6 +90,7 @@ public class WebProcessor {
 	private boolean cleanUpDom;
 	private String downloadFilePath;
 	private boolean waitBeforeEachAction=true;
+	private WebInputCrawlJax actionsChangedUrl;
 	
 	private String[] ignoredObjects = {".js", ".css"};
 	
@@ -134,6 +136,7 @@ public class WebProcessor {
 		this.cleanUpDom = true;
 //		configDownloadFolder("./Downloads");
 		this.updateUrlMap = new HashMap<Long, Long>();
+		this.actionsChangedUrl = new WebInputCrawlJax();
 	}
 	
 
@@ -246,6 +249,19 @@ public class WebProcessor {
 		return this.userList;
 	}
 
+	public WebInputCrawlJax getActionsChangedUrl() {
+		return actionsChangedUrl;
+	}
+	
+	public void loadActionsChangedUrl() {
+		if(sysConfig==null ||
+			sysConfig.getActionsChangedUrlFileName()==null ||
+			sysConfig.getActionsChangedUrlFileName().isEmpty() ||
+			!FileUtil.exist(sysConfig.getActionsChangedUrlFileName())){
+//			.
+		}
+	}
+
 	public boolean guiNotContain(Account user, WebInputCrawlJax input) {
 		if (user==null || input == null){
 			throw new IllegalStateException();
@@ -309,12 +325,6 @@ public class WebProcessor {
 	}
 	
 	
-	
-	
-	
-
-	
-
 
 	public void setAutoDetectConfirmation(boolean autoDetectConfirmation) {
 		this.autoDetectConfirmation = autoDetectConfirmation;
@@ -490,24 +500,7 @@ public class WebProcessor {
 			if(jsonInput!= null){
 				if(jsonInput.size()>0){
 					WebInputCrawlJax input = new WebInputCrawlJax(jsonInput);
-					
-//					ArrayList<LoginParam> allLoginParams = WebProcessor.sysConfig.getLoginParams();
-//					LoginParam usedLoginParam = null;
-//					
-//					for(Action a:input.actions()) {
-//						if(a instanceof StandardAction) {
-//							usedLoginParam = ((StandardAction)a).usedLoginParam(allLoginParams);
-//						}
-//						if(usedLoginParam!=null) {
-//							break;
-//						}
-//					}
-//					
-//					if(usedLoginParam!=null){
-//						input.identifyUsers(usedLoginParam.userParam, usedLoginParam.passwordParam, this);
-//					}
 					input.identifyUsers(this);
-
 					
 					this.inputList.add(input);
 				}
@@ -517,7 +510,6 @@ public class WebProcessor {
 		
 		// Update inputIter
 		this.inputIter = this.getInputList().iterator();
-		
 	}
 
 	public WebInputCrawlJax newInput() throws NoMoreInputsException {
@@ -660,7 +652,7 @@ public class WebProcessor {
 				ruleMethodDescription = "replace_method_to_" + med;
 				//set the rule in the proxy to replace the method
 				try {
-					proxyApi.replacer.addRule(ruleMethodDescription, "true", "REQ_HEADER_STR", "true", oldMethod, med, "");
+					proxyApi.replacer.addRule(ruleMethodDescription, "true", "REQ_HEADER_STR", "true", oldMethod.toUpperCase(), med, "");
 				} catch (ClientApiException e) {
 					e.printStackTrace();
 				}
@@ -2855,7 +2847,26 @@ public class WebProcessor {
 	}
 
 
-
 	
+	public ArrayList<Action> actionsUpdatedUrl() {
+		if(updateUrlMap==null || updateUrlMap.isEmpty()) {
+			return null;
+		}
+		
+		ArrayList<Action> result = new ArrayList<Action>();
+		for(WebInputCrawlJax inp:inputList) {
+			for(Action act:inp.actions()) {
+				if(updateUrlMap.containsValue(act.getActionID()) &&
+						!result.contains(act)) {
+					try {
+						result.add(act.clone());
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return result;
+	}
 	
 }

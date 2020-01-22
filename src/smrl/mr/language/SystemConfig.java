@@ -41,6 +41,7 @@ public class SystemConfig {
 	private List<String> confirmationButtons;
 	private Map<String, ArrayList<String>> supervisedUser;
 	private boolean headless;
+	private String actionsChangedUrlFileName;
 	
 	
 	static final int DEFAULT_WAIT_TIME = 1000;
@@ -73,6 +74,7 @@ public class SystemConfig {
 		this.confirmationButtons = new ArrayList<String>();
 		this.supervisedUser = new HashMap<String, ArrayList<String>>();
 		this.headless = false;
+		this.actionsChangedUrlFileName = "";
 	}
 	
 	public SystemConfig(String configFile){
@@ -341,6 +343,13 @@ public class SystemConfig {
 			}
 			else{
 				this.headless = false;
+			}
+			
+			if(jsonObject.keySet().contains("actionsChangedUrlFileName")){
+				this.actionsChangedUrlFileName = jsonObject.get("actionsChangedUrlFileName").getAsString().trim();
+			}
+			else{
+				this.actionsChangedUrlFileName = "";
 			}
 			
 		} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
@@ -735,7 +744,8 @@ public class SystemConfig {
 	}
 
 	
-
-	
+	public String getActionsChangedUrlFileName() {
+		return this.actionsChangedUrlFileName;
+	}
 	
 }

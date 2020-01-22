@@ -1,5 +1,6 @@
 package smrl.mr.language;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import smrl.mr.crawljax.WebInputCrawlJax;
@@ -80,6 +81,10 @@ public interface OperationsProvider {
 	boolean isSupervisorOf(Object user1, Object user2);
 
 	boolean isError(Object output);
+
+	ArrayList<Action> actionsUpdatedUrl();
+
+	SystemConfig getSysConfig();
 
 	
 

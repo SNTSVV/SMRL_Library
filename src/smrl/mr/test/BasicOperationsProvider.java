@@ -9,6 +9,7 @@ import smrl.mr.language.Action;
 import smrl.mr.language.BasicUser;
 import smrl.mr.language.Input;
 import smrl.mr.language.OperationsProvider;
+import smrl.mr.language.SystemConfig;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class BasicOperationsProvider implements OperationsProvider {
@@ -222,6 +223,18 @@ public class BasicOperationsProvider implements OperationsProvider {
 
 	@Override
 	public Action newLoginAction(WebInputCrawlJax input, Object user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Action> actionsUpdatedUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SystemConfig getSysConfig() {
 		// TODO Auto-generated method stub
 		return null;
 	}
