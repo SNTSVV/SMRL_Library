@@ -223,7 +223,7 @@ public class WebInputCrawlJax extends Input{
 	 * Check if the input contain a concrete url
 	 * @param url to find
 	 */
-	public boolean contain(String url){
+	public boolean contains(String url){
 		for(Action a : this.actions){
 			if(a.contain(url)){
 				return true;

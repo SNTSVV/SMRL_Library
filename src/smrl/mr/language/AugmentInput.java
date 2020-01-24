@@ -195,7 +195,7 @@ public class AugmentInput {
 		}
 		
 		for(WebInputCrawlJax input:inputsList) {
-			if(input.contain(url)) {
+			if(input.contains(url)) {
 				return true;
 			}
 		}

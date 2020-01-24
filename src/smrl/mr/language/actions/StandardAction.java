@@ -14,6 +14,7 @@ import smrl.mr.language.Action;
 import smrl.mr.language.LoginParam;
 import smrl.mr.language.Operations;
 import smrl.mr.language.Session;
+import smrl.mr.utils.URLUtil;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -340,6 +341,11 @@ public class StandardAction extends Action {
 
 	@Override
 	public boolean setMethod(String method) {
+		if(URLUtil.getOrPost(this.method) &&
+						URLUtil.getOrPost(method.trim())) {
+			return false;
+		}
+		
 		for(HTTPMethod m : HTTPMethod.values()){
 			if (m.toString().equalsIgnoreCase(method.trim())){
 				//if this action applied already the "method", do not to set it again

@@ -43,4 +43,10 @@ public class URLUtil {
 		}
 		return url;
 	}
+	
+	public static boolean getOrPost(String method) {
+		return (method!=null && 
+				(method.equalsIgnoreCase("get") ||
+						method.equalsIgnoreCase("post")));
+	}
 }

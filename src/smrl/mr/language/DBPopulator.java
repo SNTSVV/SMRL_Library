@@ -21,23 +21,27 @@ public class DBPopulator extends MR {
 			Output output = Operations.Output(Input(1),a.getPosition());
 			db.store( user, output );
 		}
-		ArrayList<Action> actUpdatedUrl = provider.actionsUpdatedUrl();
 		
+		
+		return true;
+	}
+	
+	public void exportActionsChangedUrl() {
+		ArrayList<Action> actUpdatedUrl = provider.actionsUpdatedUrl();
+
 		//Create the list of actions which changed URL after multiple executions
 		if(actUpdatedUrl==null || actUpdatedUrl.isEmpty()) {
-			return true;
+			return;
 		}
-		
+
 		WebInputCrawlJax inp = new WebInputCrawlJax(actUpdatedUrl);
 		SystemConfig sysCon = provider.getSysConfig();
-		
+
 		if(sysCon!=null &&
 				sysCon.getActionsChangedUrlFileName()!=null &&
 				!sysCon.getActionsChangedUrlFileName().isEmpty()) {
 			inp.exportToFile(sysCon.getActionsChangedUrlFileName());
 		}
-		
-		return true;
 	}
 	
 }

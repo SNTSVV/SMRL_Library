@@ -350,7 +350,33 @@ public class WebOperationsProvider implements OperationsProvider {
 
 	@Override
 	public boolean urlOfActionChangesInDifferentExecutions(smrl.mr.language.Input input, int x) {
-		throw new NotImplementedException();
+		if(input.actions()==null || input.actions().get(x)==null) {
+			return false;
+		}
+		
+		WebInputCrawlJax actionsChangedUrl = impl.getActionsChangedUrl();
+		
+		if(actionsChangedUrl==null ||
+				actionsChangedUrl.size()<1) {
+			return false;
+		}
+		
+		try {
+			Action comparedAction = input.actions().get(x).clone();
+			comparedAction.setUser(null);
+			for(Action act: actionsChangedUrl.actions()) {
+				Action act1 = act.clone();
+				act1.setUser(null);
+
+				if(act1.equals(comparedAction)) {
+					return true;
+				}
+			}
+		} catch (CloneNotSupportedException e1) {
+			e1.printStackTrace();
+		}
+		
+		return false;
 	}
 
 	@Override

@@ -58,7 +58,10 @@ import org.zaproxy.clientapi.core.ClientApiException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.sun.javafx.webkit.WebConsoleListener;
 
 import smrl.mr.language.Action;
 import smrl.mr.language.Action.ActionType;
@@ -253,12 +256,24 @@ public class WebProcessor {
 		return actionsChangedUrl;
 	}
 	
-	public void loadActionsChangedUrl() {
+	public void loadActionsChangedUrl() throws JsonSyntaxException, JsonIOException, FileNotFoundException {
 		if(sysConfig==null ||
 			sysConfig.getActionsChangedUrlFileName()==null ||
 			sysConfig.getActionsChangedUrlFileName().isEmpty() ||
 			!FileUtil.exist(sysConfig.getActionsChangedUrlFileName())){
-//			.
+			return;
+		}
+		
+		String fileName = sysConfig.getActionsChangedUrlFileName();
+		 
+		Gson gson = new Gson();
+		File jsonFile = Paths.get(fileName).toFile();
+		
+		JsonObject jsonObject = gson.fromJson(new FileReader(jsonFile), JsonObject.class);
+
+		JsonArray jsonInput = jsonObject.getAsJsonArray();
+		if(jsonInput!= null && jsonInput.size()>0){
+			this.actionsChangedUrl = new WebInputCrawlJax(jsonInput);
 		}
 	}
 
@@ -488,7 +503,7 @@ public class WebProcessor {
 		//1. Load input from json file
 		Gson gson = new Gson();
 		File jsonFile = Paths.get(fileName).toFile();
-		if (!jsonFile.exists()) {
+		if (!jsonFile.exists() || !jsonFile.isFile()) {
 			System.out.println("Input file not found: " + fileName);
 			return;
 		}
@@ -2848,6 +2863,11 @@ public class WebProcessor {
 
 
 	
+	/**
+	 * Return the list of actions whose URLs are changed after multiple executions.
+	 * This function should be invoked only and only the function output was called (one or many times)
+	 * @return list of actions whose URLs are changed after multiple executions
+	 */
 	public ArrayList<Action> actionsUpdatedUrl() {
 		if(updateUrlMap==null || updateUrlMap.isEmpty()) {
 			return null;
