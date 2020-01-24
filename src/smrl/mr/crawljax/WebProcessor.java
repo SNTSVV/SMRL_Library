@@ -139,7 +139,7 @@ public class WebProcessor {
 		this.cleanUpDom = true;
 //		configDownloadFolder("./Downloads");
 		this.updateUrlMap = new HashMap<Long, Long>();
-		this.actionsChangedUrl = new WebInputCrawlJax();
+		this.actionsChangedUrl = null;
 	}
 	
 
@@ -253,6 +253,13 @@ public class WebProcessor {
 	}
 
 	public WebInputCrawlJax getActionsChangedUrl() {
+		if(actionsChangedUrl==null) {
+			try {
+				loadActionsChangedUrl();
+			} catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 		return actionsChangedUrl;
 	}
 	

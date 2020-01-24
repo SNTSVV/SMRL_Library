@@ -45,16 +45,22 @@ public class OutputDBFiller {
 		
 		DBPopulator mr = new DBPopulator(db);
 		
-//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/edlah2/edlah2Sysconfig.json");
-//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins-1/jenkinsSysconfig.json");
-//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins-agentLog/jenkinsSysconfig.json");
-//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins/jenkinsSysconfig.json");
-		WebOperationsProvider provider = new WebOperationsProvider(sysConfigFile);
+//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/edlah2/edlah2Sysconfig.json"){
+//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins-1/jenkinsSysconfig.json"){
+//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins-agentLog/jenkinsSysconfig.json"){
+//		WebOperationsProvider provider = new WebOperationsProvider("./testData/OTG_AUTHZ_002/jenkins/jenkinsSysconfig.json"){
+		WebOperationsProvider provider = new WebOperationsProvider(sysConfigFile){
+			//Have to override the function nextStep (do nothing) to not reset the updateUrlMap variable of WebProcessor
+			@Override
+			public void nextTest() {}
+		};
 		
 		mr.setProvider(provider);
 		
 		
 		mr.run();
+		
+		mr.exportActionsChangedUrl();
 		
 		//should be populated
 	}

@@ -26,6 +26,8 @@ public class DBPopulator extends MR {
 		return true;
 	}
 	
+	
+	//To assure that this method work well, the function nextTest of the provider have to be overridden to not do anything
 	public void exportActionsChangedUrl() {
 		ArrayList<Action> actUpdatedUrl = provider.actionsUpdatedUrl();
 
