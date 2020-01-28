@@ -642,7 +642,8 @@ public class WebProcessor {
 			
 			if(waitBeforeEachAction){
 				try {
-					Thread.sleep(1000);
+//					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -654,7 +655,7 @@ public class WebProcessor {
 			
 			//create replace rule
 			String ruleChannelDescription = "";
-			if ( act.isChannelChanged() ){
+			if ( act.isChannelChanged() && proxyApi!=null){
 				String oldChannel = act.getOldChannel();
 				String newChannel = act.getNewChannel();
 				ruleChannelDescription = "replace_" + oldChannel + "_to_" + newChannel; 
@@ -668,7 +669,7 @@ public class WebProcessor {
 			
 			//Replace HTTP method using the proxy replacer
 			String ruleMethodDescription = "";
-			if(act.isMethodChanged()) {
+			if(act.isMethodChanged() && proxyApi!=null) {
 				String oldMethod = act.getOldMethod();
 				String med = act.getMethod();
 				ruleMethodDescription = "replace_method_to_" + med;
@@ -696,7 +697,10 @@ public class WebProcessor {
 						doneAction = true;
 					}
 					catch(WebDriverException e){
+						System.out.println("!!! Could not access the index");
+						driver.close();
 						e.printStackTrace();
+						return outputSequence;
 					}
 					
 					if(doneAction){
@@ -876,6 +880,7 @@ public class WebProcessor {
 						clicked = true;
 						System.out.println(" --> DONE");
 					} catch(Throwable t){
+						clicked = false;
 						t.printStackTrace();
 					}
 				}
@@ -1323,6 +1328,9 @@ public class WebProcessor {
 		driver.close();
 		
 		System.out.println("\tTimes of automatic confirmation: "+timeOfConfirm);
+		
+		//delete all messages in the history of the Proxy (if existed) -> reducing memory
+		cleanProxyMessages();
 		
 		return outputSequence;
 	}
@@ -2894,6 +2902,40 @@ public class WebProcessor {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Remove all messages in the proxy
+	 */
+	private void cleanProxyMessages() {
+		if(proxyApi==null) {
+			return;
+		}
+		
+		//1. get all URLs
+		ApiResponseList sites = null;
+		try {
+			sites = (ApiResponseList) proxyApi.core.sites();
+		} catch (ClientApiException e) {
+			System.out.println("The history of ZAP Proxy is current empty!");
+			e.printStackTrace();
+		}
+		
+		if(sites==null ||
+				sites.getItems()==null||
+				sites.getItems().size()<1) {
+			return;
+		}
+		
+		//2. delele all site nodes related to each URL 
+		for(ApiResponse site:sites.getItems()) {
+			String delUrl = site.toString();
+			try {
+				proxyApi.core.deleteSiteNode(delUrl, null, null);
+			} catch (ClientApiException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 }
