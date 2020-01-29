@@ -276,9 +276,8 @@ public class WebProcessor {
 		Gson gson = new Gson();
 		File jsonFile = Paths.get(fileName).toFile();
 		
-		JsonObject jsonObject = gson.fromJson(new FileReader(jsonFile), JsonObject.class);
+		JsonArray jsonInput = gson.fromJson(new FileReader(jsonFile), JsonArray.class);
 
-		JsonArray jsonInput = jsonObject.getAsJsonArray();
 		if(jsonInput!= null && jsonInput.size()>0){
 			this.actionsChangedUrl = new WebInputCrawlJax(jsonInput);
 		}
