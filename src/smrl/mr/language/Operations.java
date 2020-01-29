@@ -956,7 +956,7 @@ public class Operations {
 		return res;
 	}
 	
-	static HashMap<Object,HashSet<String>> triedInputs = new HashMap<Object,HashSet<String>>();
+	static HashMap<String,HashSet<String>> triedInputs = new HashMap<String,HashSet<String>>();
 	
 	
 	
@@ -988,18 +988,6 @@ public class Operations {
 		
 		setOfInputs.add(url);
 		
-//		HashSet<String> setOfInputs = triedInputs.get(user);
-//		
-//		if ( setOfInputs == null ) {
-//			setOfInputs = new HashSet<String>();
-//			triedInputs.put( user, setOfInputs );
-//		}
-//		
-//		if ( setOfInputs.contains(url) ) {
-//			return false;
-//		}
-//		
-//		setOfInputs.add(url);
 		return true;
 	}
 	

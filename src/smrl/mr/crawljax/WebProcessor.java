@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +39,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -80,6 +82,9 @@ import smrl.mr.utils.FileUtil;
 import smrl.mr.utils.URLUtil;
 
 public class WebProcessor {
+	private static final long SEARCH_ELEMENT_TIMEOUT = 5000; 	// in ms
+	private static final long PAGELOAD_TIMEOUT = 5000;			// in ms
+	private static final boolean setTimeouts = true;
 	private List<Account> userList;
 	private List<WebInputCrawlJax> inputList;
 	private Iterator<WebInputCrawlJax> inputIter;
@@ -587,6 +592,10 @@ public class WebProcessor {
 		
 		driver = new ChromeDriver(chOptions);
 		
+		if(setTimeouts) {
+			driver.manage().timeouts().implicitlyWait(SEARCH_ELEMENT_TIMEOUT, TimeUnit.MILLISECONDS);
+			driver.manage().timeouts().pageLoadTimeout(PAGELOAD_TIMEOUT, TimeUnit.MILLISECONDS);
+		}
 		
 		List<Action> actions = input.actions();
 		
