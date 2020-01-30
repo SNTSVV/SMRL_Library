@@ -991,6 +991,42 @@ public class Operations {
 		return true;
 	}
 	
+	public static boolean notTried(Object user, Object... others) {
+		if(!(user instanceof Account)) {
+			return true;
+		}
+		
+		if(others.length<1) {
+			return false;
+		}
+		
+		String username = ((Account)user).getUsername();
+		
+		HashSet<String> setOfInputs = triedInputs.get(username);
+		
+		if ( setOfInputs == null ) {
+			setOfInputs = new HashSet<String>();
+			triedInputs.put( username, setOfInputs );
+		}
+		
+		String checkedString = "";
+		for(Object str:others) {
+			checkedString += str + "_";
+		}
+		
+		if(checkedString.endsWith("_")) {
+			checkedString = checkedString.substring(0, checkedString.length()-1);
+		}
+		
+		if ( setOfInputs.contains(checkedString) ) {
+			return false;
+		}
+		
+		setOfInputs.add(checkedString);
+		
+		return true;
+	}
+	
 	/**
 	 * Web-specific function.
 	 * Checks whether a given user is an administrator.
