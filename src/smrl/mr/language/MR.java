@@ -238,7 +238,8 @@ public abstract class MR {
 				
 				//sleep 30s (for the case in which the web server restarts)
 				try {
-					Thread.sleep(30000);
+//					Thread.sleep(30000);
+					Thread.sleep(3000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
