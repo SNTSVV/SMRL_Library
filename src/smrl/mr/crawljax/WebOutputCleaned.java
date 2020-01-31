@@ -38,6 +38,7 @@ public class WebOutputCleaned {
 	public HashMap<String,String> downloadedObjects;
 	public int statusCode;
 	private ArrayList<CollectionOfConcepts> allConcepts;
+	public String realRequestedUrl; 
 	
 	
 	public WebOutputCleaned() {
@@ -49,6 +50,7 @@ public class WebOutputCleaned {
 		this.downloadedObjects = null;
 		this.statusCode = -1;
 		this.allConcepts = new ArrayList<CollectionOfConcepts>();
+		this.realRequestedUrl = null;
 	}
 
 

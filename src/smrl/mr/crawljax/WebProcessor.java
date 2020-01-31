@@ -172,6 +172,12 @@ public class WebProcessor {
 		return prioritizeButton;
 	}
 
+	
+
+	public HashMap<Long, Long> getUpdateUrlMap() {
+		return updateUrlMap;
+	}
+
 
 	public void resetUpdateUrlMap(){
 		this.updateUrlMap.clear();
@@ -695,6 +701,8 @@ public class WebProcessor {
 				maxId = getMaxIdFromProxy();
 			}
 			
+			String realRequestedUrl = aURL;
+			
 			//Start to process request following the type of action (index, click, ...)
 			switch (type){
 			case index:
@@ -881,6 +889,7 @@ public class WebProcessor {
 					String newURL = null;
 					newURL = getElementURL(driver, eleToClick);
 					checkUpdateUrlMap(act, actionUrls, newURL);
+					realRequestedUrl = newURL;
 					
 					//Click on the found element
 					try{
@@ -909,6 +918,7 @@ public class WebProcessor {
 						urlToGet = processUrlBeforeRequest(driver, urlToGet);
 						
 						if(urlToGet!=null) {
+							realRequestedUrl = urlToGet;
 							driver.get(urlToGet);
 							clicked = true;
 							System.out.println(" --> DONE");
@@ -1007,6 +1017,7 @@ public class WebProcessor {
 
 							}
 							aURL = elementURL;
+							realRequestedUrl = aURL;
 
 							System.out.println(" --> DONE");
 							//get redirect URL
@@ -1239,6 +1250,7 @@ public class WebProcessor {
 				//normalize the new dom
 				WebOutputCleaned outObj = cleanUpOutPut(newDom);
 				outObj.resultedUrl = driver.getCurrentUrl();
+				outObj.realRequestedUrl = realRequestedUrl;
 				
 				if(checkStatusCode) {
 					outObj.statusCode = getStatusCode(driver);

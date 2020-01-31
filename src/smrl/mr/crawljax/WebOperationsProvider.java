@@ -779,7 +779,9 @@ public class WebOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
-
+	public WebProcessor getWebProcessor() {
+		return impl;
+	}
 	
 
 }
