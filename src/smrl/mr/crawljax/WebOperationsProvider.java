@@ -782,6 +782,12 @@ public class WebOperationsProvider implements OperationsProvider {
 	public WebProcessor getWebProcessor() {
 		return impl;
 	}
+
+	@Override
+	public void resetProxy() {
+		this.impl.resetProxy();
+		
+	}
 	
 
 }

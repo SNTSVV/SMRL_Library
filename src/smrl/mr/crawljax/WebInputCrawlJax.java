@@ -430,4 +430,9 @@ public class WebInputCrawlJax extends Input{
 	}
 
 	
+	public boolean containAction(Action addedAction) {
+		return actions.contains(addedAction);
+	}
+
+	
 }

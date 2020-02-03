@@ -236,6 +236,8 @@ public abstract class MR {
 				
 				killChromeDriver();
 				
+				provider.resetProxy();	
+				
 				//sleep 30s (for the case in which the web server restarts)
 				try {
 //					Thread.sleep(30000);

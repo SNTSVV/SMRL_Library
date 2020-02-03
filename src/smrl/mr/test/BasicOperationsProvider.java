@@ -239,5 +239,11 @@ public class BasicOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
+	@Override
+	public void resetProxy() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

@@ -82,8 +82,11 @@ public class MRForActionsChangedUrl extends MR {
 				if(!seq1.realRequestedUrl.equals(seq2.realRequestedUrl)) {
 					try {
 						Action addedAction = input.actions().get(i).clone();
-						System.out.println("!!! added action: " + addedAction);
-						result.addAction(addedAction);
+						addedAction.setUser(null);
+						if(!result.containAction(addedAction)) {
+							System.out.println("!!! added action: " + addedAction);
+							result.addAction(addedAction);
+						}
 					} catch (CloneNotSupportedException e) {
 						e.printStackTrace();
 					}

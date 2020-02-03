@@ -86,6 +86,8 @@ public interface OperationsProvider {
 
 	SystemConfig getSysConfig();
 
+	void resetProxy();
+
 	
 
 }

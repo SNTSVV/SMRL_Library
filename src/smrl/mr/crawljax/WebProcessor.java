@@ -99,6 +99,7 @@ public class WebProcessor {
 	private String downloadFilePath;
 	private boolean waitBeforeEachAction=true;
 	private WebInputCrawlJax actionsChangedUrl;
+	ArrayList<String> proxyReplacerRules;
 	
 	private String[] ignoredObjects = {".js", ".css"};
 	
@@ -145,6 +146,7 @@ public class WebProcessor {
 //		configDownloadFolder("./Downloads");
 		this.updateUrlMap = new HashMap<Long, Long>();
 		this.actionsChangedUrl = null;
+		this.proxyReplacerRules = new ArrayList<String>();
 	}
 	
 
@@ -667,12 +669,15 @@ public class WebProcessor {
 			boolean doneAction = false;
 			String redirectURL = "";
 			
+			
+			
 			//create replace rule
-			String ruleChannelDescription = "";
+			String ruleChannelDescription = ""; 
 			if ( act.isChannelChanged() && proxyApi!=null){
 				String oldChannel = act.getOldChannel();
 				String newChannel = act.getNewChannel();
 				ruleChannelDescription = "replace_" + oldChannel + "_to_" + newChannel; 
+				proxyReplacerRules.add(ruleChannelDescription);
 				//set the rule in the proxy to replace the channel or the address
 				try {
 					proxyApi.replacer.addRule(ruleChannelDescription, "true", "REQ_HEADER_STR", "true", oldChannel, newChannel, "");
@@ -687,6 +692,7 @@ public class WebProcessor {
 				String oldMethod = act.getOldMethod();
 				String med = act.getMethod();
 				ruleMethodDescription = "replace_method_to_" + med;
+				proxyReplacerRules.add(ruleMethodDescription);
 				//set the rule in the proxy to replace the method
 				try {
 					proxyApi.replacer.addRule(ruleMethodDescription, "true", "REQ_HEADER_STR", "true", oldMethod.toUpperCase(), med, "");
@@ -1319,27 +1325,16 @@ public class WebProcessor {
 			}
 			
 			//clear all replacer rule in the proxy
-			if(!ruleChannelDescription.isEmpty()){
-				try {
-					proxyApi.replacer.removeRule(ruleChannelDescription);
-					ruleChannelDescription = "";
-				} catch (ClientApiException e) {
-					e.printStackTrace();
-				}
-			}
-			if(!ruleMethodDescription.isEmpty()){
-				try {
-					proxyApi.replacer.removeRule(ruleMethodDescription);
-					ruleMethodDescription = "";
-				} catch (ClientApiException e) {
-					e.printStackTrace();
-				}
-			}
+			clearProxyReplacerRules();
+			
+			ruleChannelDescription = "";
+			ruleMethodDescription = "";
+			
 			
 			//Update URLs of following actions (if needed)
 			updateUrlsForNextActions(driver, act, input);
 		}
-		
+
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
@@ -1349,10 +1344,25 @@ public class WebProcessor {
 		
 		System.out.println("\tTimes of automatic confirmation: "+timeOfConfirm);
 		
-		//delete all messages in the history of the Proxy (if existed) -> reducing memory
-		cleanProxyMessages();
+		//reset the proxy (clear messages in the history, clear replacer rules)
+		resetProxy();
 		
 		return outputSequence;
+	}
+
+
+	private void clearProxyReplacerRules() {
+		if(proxyReplacerRules.size()>0) {
+			for(String rule:proxyReplacerRules) {
+				try {
+					proxyApi.replacer.removeRule(rule);
+				} catch (ClientApiException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		proxyReplacerRules.clear();
 	}
 
 
@@ -2927,7 +2937,7 @@ public class WebProcessor {
 	/**
 	 * Remove all messages in the proxy
 	 */
-	private void cleanProxyMessages() {
+	private void clearProxyMessages() {
 		if(proxyApi==null) {
 			return;
 		}
@@ -2956,6 +2966,16 @@ public class WebProcessor {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+
+
+	public void resetProxy() {
+		//clear all messages in the history of the proxy
+		clearProxyMessages();
+		
+		//clear all replacer rules
+		clearProxyReplacerRules();
 	}
 	
 }
