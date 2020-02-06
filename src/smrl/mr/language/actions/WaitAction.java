@@ -224,4 +224,9 @@ public class WaitAction extends Action {
 	public boolean isMethodChanged() {
 		return false;
 	}
+
+	@Override
+	public String getText() {
+		return "wait " + millis;
+	}
 }

@@ -708,6 +708,7 @@ public class WebProcessor {
 			}
 			
 			String realRequestedUrl = aURL;
+			String realClickedElementText = null;
 			
 			//Start to process request following the type of action (index, click, ...)
 			switch (type){
@@ -715,6 +716,7 @@ public class WebProcessor {
 			{
 				if(aURL!=null && !aURL.isEmpty()){
 					try{
+						realClickedElementText = "index " + aURL;
 						driver.get(aURL);
 						doneAction = true;
 					}
@@ -896,6 +898,7 @@ public class WebProcessor {
 					newURL = getElementURL(driver, eleToClick);
 					checkUpdateUrlMap(act, actionUrls, newURL);
 					realRequestedUrl = newURL;
+					realClickedElementText = eleToClick.getText();
 					
 					//Click on the found element
 					try{
@@ -925,6 +928,7 @@ public class WebProcessor {
 						
 						if(urlToGet!=null) {
 							realRequestedUrl = urlToGet;
+							realClickedElementText = "access url " + urlToGet;
 							driver.get(urlToGet);
 							clicked = true;
 							System.out.println(" --> DONE");
@@ -1017,6 +1021,7 @@ public class WebProcessor {
 							String elementURL = getElementURL(driver, executeEle);
 
 							try {
+								realClickedElementText = driver.findElement(elementBy).getText();
 								driver.findElement(elementBy).click();
 							} catch ( Throwable t ){
 								System.out.print("!!!Ignored (cannot click): "+elementURL);
@@ -1042,6 +1047,7 @@ public class WebProcessor {
 				
 			case wait: 
 			{
+				realClickedElementText = "wait " + ((WaitAction)act).getMillis();
 				try {
 					Thread.sleep(((WaitAction)act).getMillis());
 				} catch (InterruptedException e1) {
@@ -1257,6 +1263,7 @@ public class WebProcessor {
 				WebOutputCleaned outObj = cleanUpOutPut(newDom);
 				outObj.resultedUrl = driver.getCurrentUrl();
 				outObj.realRequestedUrl = realRequestedUrl;
+				outObj.realClickedElementText = realClickedElementText;
 				
 				if(checkStatusCode) {
 					outObj.statusCode = getStatusCode(driver);

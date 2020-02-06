@@ -138,6 +138,7 @@ public class StandardAction extends Action {
 		this.oldMethod = null;
 	}
 
+	@Override
 	public String getText() {
 		return text;
 	}

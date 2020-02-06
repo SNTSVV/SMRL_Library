@@ -200,4 +200,12 @@ public class BasicAction extends Action {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+
+
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

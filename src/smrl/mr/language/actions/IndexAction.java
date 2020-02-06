@@ -301,4 +301,9 @@ public class IndexAction extends Action {
 		return this.oldMethod!=null;
 	}
 
+	@Override
+	public String getText() {
+		return "index";
+	}
+
 }

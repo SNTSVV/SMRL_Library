@@ -5,13 +5,13 @@ import static smrl.mr.language.Operations.Input;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.sun.javafx.webkit.WebConsoleListener;
-
 import smrl.mr.crawljax.WebInputCrawlJax;
 import smrl.mr.crawljax.WebOperationsProvider;
 import smrl.mr.crawljax.WebOutputCleaned;
 import smrl.mr.crawljax.WebOutputSequence;
 import smrl.mr.crawljax.WebProcessor;
+import smrl.mr.language.actions.StandardAction;
+import smrl.mr.language.actions.WaitAction;
 
 public class MRForActionsChangedUrl extends MR {
 	WebInputCrawlJax result;
@@ -78,11 +78,24 @@ public class MRForActionsChangedUrl extends MR {
 					updatedUrlMap2.containsValue(input.actions().get(i).actionID)) {
 				WebOutputCleaned seq1 = (WebOutputCleaned)outSeq1.get(i);
 				WebOutputCleaned seq2 = (WebOutputCleaned)outSeq2.get(i);
+				
+				if(seq1==null || seq2==null ||
+						(seq1.realClickedElementText==null && seq2.realClickedElementText!=null) ||
+						(seq2.realClickedElementText==null && seq1.realClickedElementText!=null)) {
+					continue;
+				}
 
-				if(!seq1.realRequestedUrl.equals(seq2.realRequestedUrl)) {
+				if(!seq1.realRequestedUrl.equals(seq2.realRequestedUrl) &&
+						((seq1.realClickedElementText==null && seq2.realClickedElementText==null) ||
+						seq1.realClickedElementText.equals(seq2.realClickedElementText))) {
 					try {
 						Action addedAction = input.actions().get(i).clone();
 						addedAction.setUser(null);
+//						if(!containActionWithSameText(result, addedAction)) {
+//							System.out.println("!!! added action: " + addedAction);
+//							result.addAction(addedAction);
+//						}
+						
 						if(!result.containAction(addedAction)) {
 							System.out.println("!!! added action: " + addedAction);
 							result.addAction(addedAction);
@@ -97,6 +110,34 @@ public class MRForActionsChangedUrl extends MR {
 		return true;
 	}
 	
+	private boolean containActionWithSameText(WebInputCrawlJax input, Action action) {
+		if(input==null) {
+			input = new WebInputCrawlJax();
+			return false;
+		}
+		
+		if(action==null) {
+			return true;
+		}
+		
+		for(Action act:result.actions()) {
+			if(act.equals(action)) {
+				if(act instanceof StandardAction ||
+						act instanceof WaitAction) {
+					if(act.getText()!=null && action.getText()!=null &&
+					act.getText().equals(action.getText())) {
+						return true;
+					}
+				}
+				else {	
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	public void exportResultToFile() {
 		SystemConfig sysCon = ((WebOperationsProvider)provider).getWebProcessor().sysConfig;
 		if(sysCon!=null &&

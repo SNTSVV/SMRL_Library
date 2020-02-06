@@ -1,16 +1,13 @@
 package smrl.mr.language.actions;
 
-import java.util.List;
 import java.util.Set;
-import java.util.Map.Entry;
-
-import smrl.mr.crawljax.Account;
-import smrl.mr.crawljax.WebInputCrawlJax;
-import smrl.mr.language.Action;
-import smrl.mr.language.Session;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import smrl.mr.crawljax.Account;
+import smrl.mr.language.Action;
+import smrl.mr.language.Session;
 
 public class AlertAction extends InnerAction {
 	
@@ -61,7 +58,7 @@ public class AlertAction extends InnerAction {
 	}
 	
 	
-
+	@Override
 	public String getText() {
 		return text;
 	}

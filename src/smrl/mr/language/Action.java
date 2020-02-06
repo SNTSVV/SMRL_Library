@@ -213,6 +213,8 @@ public abstract class Action implements Cloneable {
 		return url;
 	}
 
+	public abstract String getText();
+	
 	public String getParameterValue(int p){
 		List<Entry<String, String>> allPars = getParameters();
 		if(p<0 || allPars==null || allPars.size()<1 || p>=allPars.size()){

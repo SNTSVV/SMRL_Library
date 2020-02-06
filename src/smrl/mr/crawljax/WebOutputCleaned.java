@@ -39,6 +39,7 @@ public class WebOutputCleaned {
 	public int statusCode;
 	private ArrayList<CollectionOfConcepts> allConcepts;
 	public String realRequestedUrl; 
+	public String realClickedElementText;
 	
 	
 	public WebOutputCleaned() {
@@ -51,6 +52,7 @@ public class WebOutputCleaned {
 		this.statusCode = -1;
 		this.allConcepts = new ArrayList<CollectionOfConcepts>();
 		this.realRequestedUrl = null;
+		this.realClickedElementText = null;
 	}
 
 
