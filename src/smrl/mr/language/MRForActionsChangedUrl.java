@@ -24,6 +24,13 @@ public class MRForActionsChangedUrl extends MR {
 	@Override
 	public boolean mr() {
 		WebInputCrawlJax input = (WebInputCrawlJax)Input(1);
+		
+		WebInputCrawlJax inputBackUp = null;
+		try {
+			inputBackUp = input.clone();
+		} catch (CloneNotSupportedException e1) {
+			e1.printStackTrace();
+		}
 		WebProcessor webProc = ((WebOperationsProvider)provider).getWebProcessor();
 		
 		System.out.println("*** Execute the input: " + input);
@@ -89,7 +96,7 @@ public class MRForActionsChangedUrl extends MR {
 						((seq1.realClickedElementText==null && seq2.realClickedElementText==null) ||
 						seq1.realClickedElementText.equals(seq2.realClickedElementText))) {
 					try {
-						Action addedAction = input.actions().get(i).clone();
+						Action addedAction = inputBackUp.actions().get(i).clone();
 						addedAction.setUser(null);
 //						if(!containActionWithSameText(result, addedAction)) {
 //							System.out.println("!!! added action: " + addedAction);
