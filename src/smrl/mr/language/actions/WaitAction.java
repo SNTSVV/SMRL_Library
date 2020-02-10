@@ -229,4 +229,9 @@ public class WaitAction extends Action {
 	public String getText() {
 		return "wait " + millis;
 	}
+
+	@Override
+	public boolean setId(String id) {
+		return false;
+	}
 }

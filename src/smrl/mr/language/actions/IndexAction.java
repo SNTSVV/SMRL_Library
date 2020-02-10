@@ -306,4 +306,9 @@ public class IndexAction extends Action {
 		return "index";
 	}
 
+	@Override
+	public boolean setId(String id) {
+		return false;
+	}
+
 }

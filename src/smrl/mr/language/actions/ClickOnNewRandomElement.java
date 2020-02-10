@@ -210,4 +210,9 @@ public class ClickOnNewRandomElement extends Action {
 	public String getText() {
 		return "randomly click";
 	}
+
+	@Override
+	public boolean setId(String id) {
+		return false;
+	}
 }

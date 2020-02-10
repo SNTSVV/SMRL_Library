@@ -394,6 +394,8 @@ public abstract class Action implements Cloneable {
 		return true;
 	}
 	
+	public abstract boolean setId(String id);
+	
 	public boolean contain(String url){
 		String currentURL = this.getUrl();
 		if(currentURL != null && url!=null){

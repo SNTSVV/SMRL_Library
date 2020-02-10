@@ -259,4 +259,9 @@ public class AlertAction extends InnerAction {
 		return false;
 	}
 
+	@Override
+	public boolean setId(String id) {
+		return false;
+	}
+
 }

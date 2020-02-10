@@ -151,8 +151,14 @@ public class StandardAction extends Action {
 		return id;
 	}
 
-	public void setId(String id) {
+	@Override
+	public boolean setId(String id) {
+		if(id==null) {
+			this.id = "";
+		}
+		
 		this.id = id;
+		return true;
 	}
 
 	public String getElement() {
