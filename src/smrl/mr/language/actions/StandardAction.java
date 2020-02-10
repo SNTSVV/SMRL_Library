@@ -154,7 +154,15 @@ public class StandardAction extends Action {
 	@Override
 	public boolean setId(String id) {
 		if(id==null) {
+			if(this.id.isEmpty()) {
+				return false;
+			}
 			this.id = "";
+			return true;
+		}
+		
+		if(this.id.equals(id)) {
+			return false;
 		}
 		
 		this.id = id;
