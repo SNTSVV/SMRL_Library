@@ -85,6 +85,7 @@ public class WebProcessor {
 	private static final long SEARCH_ELEMENT_TIMEOUT = 5000; 	// in ms
 	private static final long PAGELOAD_TIMEOUT = 5000;			// in ms
 	private static final boolean setTimeouts = true;
+	private static final boolean storeDOMs = false;
 	private List<Account> userList;
 	private List<WebInputCrawlJax> inputList;
 	private Iterator<WebInputCrawlJax> inputIter;
@@ -1324,11 +1325,13 @@ public class WebProcessor {
 					executionId = "";
 				}
 				
-				String fileName = executionId+"_"+inputID+"_" + text + "_" + aURL;
-				saveDomToFile(outObj.html, fileName);
-				
-				fileName = executionId+"_"+inputID+"_" + text + "_text_" + aURL;
-				saveDomToFile(outObj.text, fileName);
+				if(storeDOMs) {
+					String fileName = executionId+"_"+inputID+"_" + (standardText(text) + "_" + aURL).hashCode();
+					saveDomToFile(outObj.html, fileName);
+
+					fileName = executionId+"_"+inputID+"_" + (standardText(text) + "_" + aURL).hashCode() + "_text_";
+					saveDomToFile(outObj.text, fileName);
+				}
 			}
 			
 			//clear all replacer rule in the proxy
@@ -1355,6 +1358,15 @@ public class WebProcessor {
 		resetProxy();
 		
 		return outputSequence;
+	}
+
+
+	private String standardText(String text) {
+		if(text==null) {
+			return "";
+		}
+		
+		return text.replaceAll(" ", "_").replaceAll(":", "").replaceAll("/", "_");
 	}
 
 
@@ -2070,7 +2082,7 @@ public class WebProcessor {
 		if(onlyFileName.endsWith("/")){
 			onlyFileName = onlyFileName.substring(0, onlyFileName.length()-1);
 		}
-		onlyFileName = onlyFileName.replaceAll("/", "_").replaceAll(":", "");
+		onlyFileName = onlyFileName.replaceAll("/", "_").replaceAll(":", "").replaceAll(" ", "_");
 		
 		fullFileName += onlyFileName;
 		
