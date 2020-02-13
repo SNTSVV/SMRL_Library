@@ -31,6 +31,7 @@ public class StandardAction extends Action {
 	private String newChannel;
 	private String oldChannel;
 	private String oldMethod;
+	private String cipherSuiteBlackList;
 	
 	
 	public StandardAction(){
@@ -49,6 +50,7 @@ public class StandardAction extends Action {
 		this.innerActions = null;
 		setActionID();
 		this.oldMethod = null;
+		this.cipherSuiteBlackList = null;
 	}
 	
 	/**
@@ -340,8 +342,12 @@ public class StandardAction extends Action {
 
 	@Override
 	public boolean setEncryption(Object object) {
-		// TODO Auto-generated method stub
-		return false;
+		if (object==null ||
+				!(object instanceof String)) {
+			return false;
+		}
+		this.cipherSuiteBlackList = (String) object;
+		return true;
 	}
 
 	@Override
@@ -735,6 +741,11 @@ public class StandardAction extends Action {
 	@Override
 	public boolean isMethodChanged() {
 		return this.oldMethod!=null;
+	}
+
+	@Override
+	public String getCipherSuite() {
+		return this.cipherSuiteBlackList;
 	}
 
 	

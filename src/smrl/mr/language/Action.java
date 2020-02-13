@@ -327,6 +327,8 @@ public abstract class Action implements Cloneable {
 		return this.user;
 	}
 
+	public abstract String getCipherSuite();
+	
 	public abstract boolean setEncryption(Object object);
 
 	public Input getInput() {

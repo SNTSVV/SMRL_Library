@@ -21,6 +21,7 @@ public class IndexAction extends Action {
 	private String newChannel;
 	private String oldChannel;
 	private String oldMethod;
+	private String cipherSuiteBlackList;
 	
 	public IndexAction(){
 		this.url = "";
@@ -35,6 +36,7 @@ public class IndexAction extends Action {
 		setActionID();
 		this.oldChannel = null;
 		this.oldMethod = null;
+		this.cipherSuiteBlackList = null;
 	}
 	
 	public IndexAction(JsonObject indexAction){
@@ -154,8 +156,12 @@ public class IndexAction extends Action {
 
 	@Override
 	public boolean setEncryption(Object object) {
-		// TODO Auto-generated method stub
-		return false;
+		if (object==null ||
+				!(object instanceof String)) {
+			return false;
+		}
+		this.cipherSuiteBlackList = (String) object;
+		return true;
 	}
 
 	@Override
@@ -309,6 +315,11 @@ public class IndexAction extends Action {
 	@Override
 	public boolean setId(String id) {
 		return false;
+	}
+
+	@Override
+	public String getCipherSuite() {
+		return this.cipherSuiteBlackList;
 	}
 
 }

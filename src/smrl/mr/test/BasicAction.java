@@ -215,4 +215,12 @@ public class BasicAction extends Action {
 	public boolean setId(String id) {
 		return false;
 	}
+
+
+
+	@Override
+	public String getCipherSuite() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

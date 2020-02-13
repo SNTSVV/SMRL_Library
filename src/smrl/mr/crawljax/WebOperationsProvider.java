@@ -23,6 +23,7 @@ import smrl.mr.language.OperationsProvider;
 import smrl.mr.language.Output;
 import smrl.mr.language.SystemConfig;
 import smrl.mr.language.actions.StandardAction;
+import smrl.mr.utils.CipherSuites;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class WebOperationsProvider implements OperationsProvider {
@@ -290,6 +291,11 @@ public class WebOperationsProvider implements OperationsProvider {
 	private List loadRandomAdminFilePath() {
 		return impl.getRandomAdminFilePath();
 	}
+	
+	private List loadWeakCipherSuite() {
+		return CipherSuites.weakCipherSuite();
+	}
+	
 
 	@Override
 	public smrl.mr.language.Input changeCredentials(smrl.mr.language.Input input, Object user) {
@@ -332,6 +338,8 @@ public class WebOperationsProvider implements OperationsProvider {
 			return loadRandomFilePath();
 		case "RandomAdminFilePath":
 			return loadRandomAdminFilePath();
+		case "WeakEncryption":
+			return loadWeakCipherSuite();
 		}
 		return null;
 	}

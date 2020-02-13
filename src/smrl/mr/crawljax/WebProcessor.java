@@ -125,7 +125,7 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=false;
+	private boolean headless=true;
 	private boolean backToRightPageBeforeAction=true;
 	private boolean checkStatusCode=false;
 	private static HashSet<String> visibleWithoutLogin;
@@ -598,6 +598,8 @@ public class WebProcessor {
 		if(headless) {
 			chOptions.addArguments("headless");
 		}
+		
+		setCipherSuite(chOptions, input);
 		
 		driver = new ChromeDriver(chOptions);
 		
@@ -1358,6 +1360,31 @@ public class WebProcessor {
 		resetProxy();
 		
 		return outputSequence;
+	}
+
+
+	private void setCipherSuite(ChromeOptions chOptions, WebInputCrawlJax input) {
+		if(input==null ||
+				input.size()<1) {
+			return;
+		}
+		
+		if(chOptions==null) {
+			chOptions = new ChromeOptions();
+		}
+		
+		String cipherSuiteBlackList = null;
+		
+		for(Action act:input.actions()) {
+			if(act.getCipherSuite()!=null) {
+				cipherSuiteBlackList = act.getCipherSuite();
+				break;
+			}
+		}
+		
+		if(cipherSuiteBlackList!=null) {
+			chOptions.addArguments("--cipher-suite-blacklist="+cipherSuiteBlackList);
+		}
 	}
 
 

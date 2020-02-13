@@ -264,4 +264,9 @@ public class AlertAction extends InnerAction {
 		return false;
 	}
 
+	@Override
+	public String getCipherSuite() {
+		return null;
+	}
+
 }

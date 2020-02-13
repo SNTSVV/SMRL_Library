@@ -215,4 +215,9 @@ public class ClickOnNewRandomElement extends Action {
 	public boolean setId(String id) {
 		return false;
 	}
+
+	@Override
+	public String getCipherSuite() {
+		return null;
+	}
 }
