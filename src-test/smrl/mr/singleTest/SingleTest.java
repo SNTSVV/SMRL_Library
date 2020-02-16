@@ -46,8 +46,8 @@ public class SingleTest extends MRBaseTest {
 		System.out.println("*** Starting time: " + getCurrentTime() +" ***");
 		
 		//by default, the SUT is the Jenkins
-//		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
-		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
+		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+//		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 		
 		if(SingleTest.system.equals("iws")){
 			configFile = "./testData/IWS/iwsSysConfig.json";
@@ -183,7 +183,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//TODO: check MR
+	//Done: all
 	public void test_OTG_BUSLOGIC_005() {
 		super.test(provider,OTG_BUSLOGIC_005.class);
 	}
@@ -195,13 +195,13 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//Cannot run because of setEncryption(Operations.WeakEncryption())
+	//Done: all
 	public void test_OTG_CRYPST_004() {
 		super.test(provider,OTG_CRYPST_004.class);
 	}
 	
 	@Test
-	//running: do not forget to turn on proxy
+	//Done: all
 	public void test_OTG_INPVAL_003() {
 		super.test(provider,OTG_INPVAL_003.class);
 	}
