@@ -39,7 +39,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -63,7 +62,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.sun.javafx.webkit.WebConsoleListener;
 
 import smrl.mr.language.Action;
 import smrl.mr.language.Action.ActionType;
@@ -74,7 +72,6 @@ import smrl.mr.language.NoMoreInputsException;
 import smrl.mr.language.Operations;
 import smrl.mr.language.SystemConfig;
 import smrl.mr.language.actions.AlertAction;
-import smrl.mr.language.actions.IndexAction;
 import smrl.mr.language.actions.InnerAction;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.language.actions.WaitAction;
@@ -85,7 +82,7 @@ public class WebProcessor {
 	private static final long SEARCH_ELEMENT_TIMEOUT = 5000; 	// in ms
 	private static final long PAGELOAD_TIMEOUT = 5000;			// in ms
 	private static final boolean setTimeouts = true;
-	private static final boolean storeDOMs = false;
+	private static final boolean storeDOMs = true;
 	private List<Account> userList;
 	private List<WebInputCrawlJax> inputList;
 	private Iterator<WebInputCrawlJax> inputIter;
@@ -125,7 +122,7 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=true;
+	private boolean headless=false;
 	private boolean backToRightPageBeforeAction=true;
 	private boolean checkStatusCode=false;
 	private static HashSet<String> visibleWithoutLogin;
@@ -255,7 +252,6 @@ public class WebProcessor {
 			try {
 				FileUtils.deleteDirectory(folder);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -473,7 +469,7 @@ public class WebProcessor {
 		for(Action act:actions){
 			boolean gotten = false;
 			if(act.containCredential(user2)){
-				//TODO: get info
+				//get info
 				JsonArray fInputs = ((StandardAction)act).getFormInputs();
 				for(int i = 0; i<fInputs.size(); i++){
 					JsonObject fi = fInputs.get(i).getAsJsonObject();
@@ -547,10 +543,6 @@ public class WebProcessor {
 		this.inputIter = this.getInputList().iterator();
 	}
 
-	public WebInputCrawlJax newInput() throws NoMoreInputsException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public WebOutputSequence output(WebInputCrawlJax input) {
 		return output(input, false);
@@ -558,8 +550,6 @@ public class WebProcessor {
 	
 	public WebOutputSequence output(WebInputCrawlJax input, boolean checkDownloadedObjects) {
 		WebOutputSequence outputSequence = new WebOutputSequence();
-		
-		String latestUrl = "";
 		
 		//call web browser
 		String exePath = "/usr/local/bin/chromedriver";
@@ -1225,7 +1215,6 @@ public class WebProcessor {
 					try {
 						Thread.sleep(sysConfig.getWaitTimeAfterAction());
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -1736,7 +1725,6 @@ public class WebProcessor {
 		
 		//Get action to change its URL
 		Long actToChangeID = updateUrlMap.get(currentAction.getActionID());
-		Action actToChange = null;
 		
 		ArrayList<Action> listActToChange = new ArrayList<Action>();
 		for(Action a:input.actions()){

@@ -46,8 +46,8 @@ public class SingleTest extends MRBaseTest {
 		System.out.println("*** Starting time: " + getCurrentTime() +" ***");
 		
 		//by default, the SUT is the Jenkins
-		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
-//		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
+//		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 		
 		if(SingleTest.system.equals("iws")){
 			configFile = "./testData/IWS/iwsSysConfig.json";
@@ -150,7 +150,7 @@ public class SingleTest extends MRBaseTest {
 		
 	// New tests
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_AUTHZ_001a() {
 		super.test(provider,OTG_AUTHZ_001a.class);
 	}
@@ -177,7 +177,7 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_AUTHZ_004() {
 		super.test(provider,OTG_AUTHZ_004.class);
 	}
@@ -202,6 +202,8 @@ public class SingleTest extends MRBaseTest {
 	
 	@Test
 	//Done: all
+	//Run with proxy
+	//Re-run after modifying MR
 	public void test_OTG_INPVAL_003() {
 		super.test(provider,OTG_INPVAL_003.class);
 	}
