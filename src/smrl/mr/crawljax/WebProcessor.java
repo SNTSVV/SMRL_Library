@@ -81,7 +81,7 @@ import smrl.mr.utils.URLUtil;
 public class WebProcessor {
 	private static final long SEARCH_ELEMENT_TIMEOUT = 5000; 	// in ms
 	private static final long PAGELOAD_TIMEOUT = 5000;			// in ms
-	private static final boolean setTimeouts = true;
+	private static final boolean setTimeouts = false;
 	private static final boolean storeDOMs = true;
 	private List<Account> userList;
 	private List<WebInputCrawlJax> inputList;
