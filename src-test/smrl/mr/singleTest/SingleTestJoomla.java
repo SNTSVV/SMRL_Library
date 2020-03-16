@@ -34,25 +34,19 @@ import smrl.mr.owasp.OTG_SESS_006;
 import smrl.mr.owasp.OTG_SESS_007;
 import smrl.mr.owasp.OTG_SESS_008;
 
-public class SingleTest extends MRBaseTest {
+public class SingleTestJoomla extends MRBaseTest {
 	
 	private static WebOperationsProvider provider;
 	
-	private static String system = "jenkins";
+	private static String system = "joomla";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		
 		System.out.println("*** Starting time: " + getCurrentTime() +" ***");
 		
-		//by default, the SUT is the Jenkins
-		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
-//		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
-//		String configFile = "./testData/Jenkins/jenkinsSysConfig_trying.json";
-		
-		if(SingleTest.system.equals("iws")){
-			configFile = "./testData/IWS/iwsSysConfig.json";
-		}
+		//by default, the SUT is the Joomla!
+		String configFile = "./testData/Joomla/joomlaSysConfig.json";
 		
 		provider = new WebOperationsProvider(configFile);
 	}
@@ -67,7 +61,6 @@ public class SingleTest extends MRBaseTest {
 		System.out.println("*** Ending time: " + getCurrentTime() + " ***");
     }   
 	
-	//In ICST paper: 11 MRs
 	@Test
 	public void test_OTG_AUTHN_004() {
 		super.test(provider,OTG_AUTHN_004.class);
@@ -79,57 +72,36 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999006"
-	  */
 	public void test_OTG_AUTHZ_001b() {
 		super.test(provider,OTG_AUTHZ_001b.class);
 	}
 
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999004"
-	  */
 	public void test_OTG_AUTHZ_002() {
 		super.test(provider,OTG_AUTHZ_002.class);
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999004"
-	  */
 	public void test_OTG_AUTHZ_002a() {
 		super.test(provider,OTG_AUTHZ_002a.class);
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999003 and CVE-2018-1999004
-	  */
 	public void test_OTG_AUTHZ_002b() {
 		super.test(provider,OTG_AUTHZ_002b.class);
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999046 and CVE-2018-1999004"
-	  */
 	public void test_OTG_AUTHZ_002c() {
 		super.test(provider,OTG_AUTHZ_002c.class);
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1000406"
-	  */
 	public void test_OTG_AUTHZ_002d() {
 		super.test(provider,OTG_AUTHZ_002d.class);
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999003"
-	  */
 	public void test_OTG_AUTHZ_002e() {
 		super.test(provider,OTG_AUTHZ_002e.class);
 	}
@@ -140,89 +112,68 @@ public class SingleTest extends MRBaseTest {
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1000409"
-	  */
 	public void test_OTG_SESS_003() {
 		super.test(provider,OTG_SESS_003.class);
 	}
-	// End list of MRs in ICST paper //
 	
 		
-	// New tests
 	@Test
-	//Done: all
 	public void test_OTG_AUTHZ_001a() {
 		super.test(provider,OTG_AUTHZ_001a.class);
 	}
 	
 	@Test
-	/**
-	  *This test case should detect CVE-2018-1999006"
-	  */
-	//Not execute
 	public void test_OTG_AUTHZ_001b2() {
 		super.test(provider,OTG_AUTHZ_001b2.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_AUTHN_001() {
 		super.test(provider,OTG_AUTHN_001.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_AUTHZ_003() {
 		super.test(provider,OTG_AUTHZ_003.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_AUTHZ_004() {
 		super.test(provider,OTG_AUTHZ_004.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_BUSLOGIC_005() {
 		super.test(provider,OTG_BUSLOGIC_005.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_CONFIG_007() {
 		super.test(provider,OTG_CONFIG_007.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_CRYPST_004() {
 		super.test(provider,OTG_CRYPST_004.class);
 	}
 	
 	@Test
-	//Done: all
 	//Run with proxy
-	//Re-run after modifying MR
 	public void test_OTG_INPVAL_003() {
 		super.test(provider,OTG_INPVAL_003.class);
 	}
 	
 	@Test
-	// Done: all
 	public void test_OTG_SESS_006() {
 		super.test(provider,OTG_SESS_006.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_SESS_007() {
 		super.test(provider,OTG_SESS_007.class);
 	}
 	
 	@Test
-	//Done: all
 	public void test_OTG_SESS_008() {
 		super.test(provider,OTG_SESS_008.class);
 	}
