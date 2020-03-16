@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import smrl.mr.crawljax.WebInputCrawlJax;
+import smrl.mr.crawljax.WebOperationsProvider;
 import smrl.mr.crawljax.WebOutputCleaned;
 import smrl.mr.crawljax.WebOutputSequence;
 import smrl.mr.crawljax.WebProcessor;
@@ -20,11 +21,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class AugmentInput {
-//	static String configFile = "./testData/OTG_AUTHZ_002/jenkins-CVE-2018-1999046-2/jenkinsSysConfig.json";
-//	static String configFile = "./testData/Jenkins/simple/jenkinsSysConfig.json";
-//	static String configFile = "./testData/Jenkins/fullWithAnonym/jenkinsSysConfigToAugment.json";
-//	static String configFile = "./testData/FINAL/sysConfig_Short_ToAugment.json";
-//	static String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 	public static String augmentedText = "augmented action";
 	
 
@@ -33,16 +29,22 @@ public class AugmentInput {
 //		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 		String configFile = "./testData/Joomla/joomlaSysConfig.json";
 		
-		if(args!=null && args.length>=1) {
-			configFile = args[0].trim();
-		}
-		else{
-			System.out.println("Usage: " + AugmentInput.class.getSimpleName() + 
-					" <path_to_system_config_file>");
-			return;
-		}
+//		if(args!=null && args.length>=1) {
+//			configFile = args[0].trim();
+//		}
+//		else{
+//			System.out.println("Usage: " + AugmentInput.class.getSimpleName() + 
+//					" <path_to_system_config_file>");
+//			return;
+//		}
 		
-		WebProcessor webPro = ReplicateInputs.setupWebProcessor(configFile);
+		WebOperationsProvider provider = new WebOperationsProvider(configFile);
+		
+		DBPopulator dbPop = new DBPopulator(null);
+		dbPop.setProvider(provider);
+		dbPop.CURRENT = dbPop;
+		
+		WebProcessor webPro = provider.getWebProcessor();
 		
 		
 		//1. run inputs: step by step (in loops)
@@ -51,7 +53,8 @@ public class AugmentInput {
 		ArrayList<WebInputCrawlJax> newInputsList = new ArrayList<WebInputCrawlJax>();
 		
 		for(WebInputCrawlJax input:inputList){
-			WebOutputSequence outSequence = webPro.output(input,true);
+			WebOutputSequence outSequence = webPro.output(input, true);
+			
 			if(outSequence==null){
 				continue;
 			}
