@@ -1,5 +1,8 @@
 package smrl.mr.utils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class URLUtil {
 
 	public static String extractActionURL( String url ) {
@@ -48,5 +51,41 @@ public class URLUtil {
 		return (method!=null && 
 				(method.equalsIgnoreCase("get") ||
 						method.equalsIgnoreCase("post")));
+	}
+	
+	/** Check if a URL contain a given extention in the path or in a query
+	 * @param url the URL to check
+	 * @param ext the given extention, e.g., ".js"
+	 * @return true if the URL contain the given extention in its path or query
+	 */
+	public static boolean containExtension(String url, String ext) {
+		if (url==null || url.isEmpty() ||
+				ext==null || ext.isEmpty()) {
+			return false;
+		}
+		String path = "";
+		String query = "";
+		try {
+			URI uri = new URI (url.toLowerCase());
+			path = uri.getPath();
+			query = uri.getQuery();
+			
+			String extLower = ext.toLowerCase();
+			
+			if(path!=null && path.endsWith(extLower)) {
+				return true;
+			}
+			
+			if(query!=null) {
+				for(String q:query.split("&")) {
+					if(q.endsWith(extLower)) {
+						return true;
+					}
+				}
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

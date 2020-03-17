@@ -13,7 +13,6 @@ import smrl.mr.crawljax.WebOutputCleaned;
 import smrl.mr.crawljax.WebOutputSequence;
 import smrl.mr.crawljax.WebProcessor;
 import smrl.mr.language.actions.StandardAction;
-import smrl.mr.test.ReplicateInputs;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,15 +58,15 @@ public class AugmentInput {
 				continue;
 			}
 			
-			ArrayList<WebInputCrawlJax> newInputs = generateNewInputs(input, outSequence);
+			ArrayList<WebInputCrawlJax> newInputs = generateNewInputs(webPro, input, outSequence);
 			if(newInputs!=null && newInputs.size()>0){
 				for(WebInputCrawlJax i:newInputs){
 					if(!newInputsList.contains(i) &&
-							hasNewURL(inputList, i)){
+							hasNewURL(webPro, inputList, i) &&
+							hasNewURL(webPro, newInputsList, i)){
 						newInputsList.add(i);
 					}
 				}
-//				newInputsList.addAll(newInputs);
 			}
 		}
 		
@@ -79,11 +78,11 @@ public class AugmentInput {
 			}
 	
 			for(WebInputCrawlJax i:newInputsList){
-				if(!inputList.contains(i)){
+				if(!inputList.contains(i) &&
+						hasNewURL(webPro, inputList, i)){
 					inputList.add(i);
 				}
 			}
-//			inputList.addAll(newInputsList);
 			
 			String fileName = webPro.sysConfig.getInputFile();
 			if(fileName.endsWith(".json")){
@@ -98,7 +97,7 @@ public class AugmentInput {
 	}
 
 
-	private static boolean hasNewURL(List<WebInputCrawlJax> inputsList, WebInputCrawlJax input) {
+	private static boolean hasNewURL(WebProcessor webPro, List<WebInputCrawlJax> inputsList, WebInputCrawlJax input) {
 		if((inputsList==null || inputsList.size()<1) &&
 				(input!=null && input.size()>0)) {
 			return true;
@@ -106,6 +105,7 @@ public class AugmentInput {
 		for(Action act:input.actions()) {
 			String url = act.getUrl();
 			if(url!=null && !url.isEmpty() &&
+					webPro.isNotIgnoredURL(url) &&
 					!containUrl(inputsList, url)) {
 			return true;
 			}
@@ -114,12 +114,12 @@ public class AugmentInput {
 	}
 
 
-	private static ArrayList<WebInputCrawlJax> generateNewInputs(
+	private static ArrayList<WebInputCrawlJax> generateNewInputs(WebProcessor webPro, 
 			WebInputCrawlJax inputSequence, WebOutputSequence outSequence) {
-		return generateNewInputs(inputSequence, outSequence, false);
+		return generateNewInputs(webPro, inputSequence, outSequence, false);
 	}
 	
-	private static ArrayList<WebInputCrawlJax> generateNewInputs(
+	private static ArrayList<WebInputCrawlJax> generateNewInputs(WebProcessor webPro,
 			WebInputCrawlJax inputSequence, WebOutputSequence outSequence, boolean outDomain) {
 		if(inputSequence==null || outSequence==null ||
 				outSequence.getOutputSequence()==null ||
@@ -148,7 +148,7 @@ public class AugmentInput {
 				
 				if((outDomain || 
 						hasSameDomain(key,domain)) &&
-						!ignoreUrl(key) &&
+						!ignoreUrl(webPro, key) &&
 						!containUrl(res,key)){
 					execute = true;
 				}
@@ -208,32 +208,8 @@ public class AugmentInput {
 	}
 
 
-	private static boolean ignoreUrl(String url) {
-		
-		if(url==null || url.trim().isEmpty()) {
-			return false;
-		}
-		
-		String path = "";
-		
-		try {
-			URI uri = new URI(url);
-			path = uri.getPath();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		
-		if(path==null) {
-			return false;
-		}
-		
-		
-		if(path.endsWith(".js") ||
-				path.endsWith(".css")) {
-			return true;
-		}
-		
-		return false;
+	private static boolean ignoreUrl(WebProcessor webPro, String url) {
+		return !webPro.isNotIgnoredURL(url);
 	}
 
 

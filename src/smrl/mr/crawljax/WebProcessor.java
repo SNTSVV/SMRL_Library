@@ -99,7 +99,7 @@ public class WebProcessor {
 	private WebInputCrawlJax actionsChangedUrl;
 	ArrayList<String> proxyReplacerRules;
 	
-	private String[] ignoredObjects = {".js", ".css"};
+	private String[] ignoredObjects = {".js", ".css", ".woff", ".ttf", ".otf", ".eot"};
 	
 	//updateUrlMap contains action IDs: 
 	//- first one is the action should check
@@ -1609,9 +1609,13 @@ public class WebProcessor {
 		return res;
 	}
 
-	private boolean isNotIgnoredURL(String url) {
+	public boolean isNotIgnoredURL(String url) {
+		if(url==null || url.isEmpty()) {
+			return false;
+		}
+		
 		for(int i=0; i<ignoredObjects.length; i++){
-			if(url.toLowerCase().endsWith(ignoredObjects[i])){
+			if(URLUtil.containExtension(url, ignoredObjects[i])) {
 				return false;
 			}
 		}
