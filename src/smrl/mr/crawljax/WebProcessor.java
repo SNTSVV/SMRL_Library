@@ -1133,7 +1133,6 @@ public class WebProcessor {
 				}
 				
 				if(executeEle!=null) {
-//					executeEle.text();
 					String tagName = executeEle.tagName().toLowerCase();
 					By elementBy = null;
 					if(tagName.equals("a")){
@@ -2545,7 +2544,10 @@ public class WebProcessor {
 				Account user = (Account) action.getUser();
 				//FIXME: need to check the account parameters corresponding 
 				//to the login url (in a LoginParam object) 
-				if ( user.getUsername().equals(WRONG_USERNAME) ) {
+				if ( user==null || 
+						user.getUsername()==null || 
+						user.getUsername().isEmpty() ||
+						user.getUsername().equals(WRONG_USERNAME) ) {
 					return false;
 				}
 				return true;

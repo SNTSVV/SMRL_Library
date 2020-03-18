@@ -323,6 +323,7 @@ public class WebOperationsProvider implements OperationsProvider {
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List load(String dataName) {
 		switch ( dataName ){
