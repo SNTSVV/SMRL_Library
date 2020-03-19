@@ -29,13 +29,13 @@ public class MergeInputs {
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles.txt";
 //		String listFileName = "./testData/Jenkins/collectedData/listInputFiles_180mins.txt";
 //		String listFileName = "./testData/Jenkins/collectedData/300mins_new/listInputFiles.txt";
-		String listFileName = "./testData/Joomla/collectedData/listInputFiles.txt";
+		String listFileName = "./testData/Joomla/collectedData/listInputFilesFULL.txt";
 		
 //		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
 //		String outFileName = "./testData/Jenkins/input_FULL.json";
 		
 		String configFile = "./testData/Joomla/joomlaSysConfig.json";
-		String outFileName = "./testData/Joomla/inputs.json";
+		String outFileName = "./testData/Joomla/inputs_raw_full.json";
 		
 		boolean checkIfContainLoginAction = true;
 
@@ -85,7 +85,8 @@ public class MergeInputs {
 			for(WebInputCrawlJax input:currentInputs){
 				
 				if(!listFullInputs.contains(input) &&
-						containNewUrl(addedUrls, input)){
+				containNewUrl(addedUrls, input)){
+//					if(!listFullInputs.contains(input)){
 					listFullInputs.add(input);
 				}
 			}
@@ -131,7 +132,11 @@ public class MergeInputs {
 					addedUrls.put(username, new HashSet<String>());
 				}
 
-				containNew = addedUrls.get(username).add(url) || containNew;
+				containNew = addedUrls.get(username).add(url);
+				
+				if(containNew) {
+					return containNew;
+				}
 			}
 		}
 //		System.out.println("End checking: " + addedUrls);
