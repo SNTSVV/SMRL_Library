@@ -5,17 +5,31 @@ import java.util.List;
 
 import smrl.mr.language.Action;
 import smrl.mr.language.AugmentInput;
+import smrl.mr.language.DBPopulator;
+import smrl.mr.language.MR;
 import smrl.mr.language.actions.StandardAction;
 import smrl.mr.test.ReplicateInputs;
 
 public class FilterInputs {
 	
-	static String configFile = "./testData/Jenkins/jenkinsSysConfig_filter.json";
-	static String[] avoidString = {"$stapler/bound/", "ajaxexecutors", "ajaxbuildqueue", "buildhistory/ajax"};
+	//For Jenkins
+//	static String configFile = "./testData/Jenkins/jenkinsSysConfig_filter.json";
+//	static String[] avoidString = {"$stapler/bound/", "ajaxexecutors", "ajaxbuildqueue", "buildhistory/ajax"};
+	
+	//For Joomla
+	static String configFile = "./testData/Joomla/joomlaSysConfig.json";
+	static String[] avoidString = {"opensearch", "module.orderposition", "update.ajax", "jform_articletext"};
+	
 	static boolean printAugmentedInput = true;
 
 	public static void main(String[] args) {
-		WebProcessor webPro = ReplicateInputs.setupWebProcessor(configFile);
+		WebOperationsProvider provider = new WebOperationsProvider(configFile);
+		DBPopulator dbPop = new DBPopulator(null);
+		dbPop.setProvider(provider);
+		MR.CURRENT = dbPop;
+		
+//		WebProcessor webPro = ReplicateInputs.setupWebProcessor(configFile);
+		WebProcessor webPro = provider.getWebProcessor();
 		
 		
 		//1. loads inputs
