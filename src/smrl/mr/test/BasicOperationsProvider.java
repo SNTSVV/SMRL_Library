@@ -3,7 +3,6 @@ package smrl.mr.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import smrl.mr.crawljax.Account;
 import smrl.mr.crawljax.WebInputCrawlJax;
 import smrl.mr.language.Action;
 import smrl.mr.language.BasicUser;
@@ -243,6 +242,18 @@ public class BasicOperationsProvider implements OperationsProvider {
 	public void resetProxy() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setKeepCache(boolean keep) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean keepCache() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 

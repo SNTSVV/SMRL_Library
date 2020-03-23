@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import smrl.mr.crawljax.WebOperationsProvider;
 import smrl.mr.language.MRBaseTest;
+import smrl.mr.owasp.CheckTags;
 import smrl.mr.owasp.OTG_AUTHN_001;
 import smrl.mr.owasp.OTG_AUTHN_004;
 import smrl.mr.owasp.OTG_AUTHN_010;
@@ -62,11 +63,20 @@ public class SingleTestJoomla extends MRBaseTest {
     }   
 	
 	@Test
+	public void test_CheckTags() {
+		provider.setKeepCache(true);
+		super.test(provider,CheckTags.class);
+		provider.setKeepCache(false);
+	}
+	
+	@Test
+	//Done: full
 	public void test_OTG_AUTHN_004() {
 		super.test(provider,OTG_AUTHN_004.class);
 	}
 	
 	@Test
+	//Done: full
 	public void test_OTG_AUTHN_010() {
 		super.test(provider,OTG_AUTHN_010.class);
 	}
@@ -77,11 +87,13 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 
 	@Test
+	//Done: full
 	public void test_OTG_AUTHZ_002() {
 		super.test(provider,OTG_AUTHZ_002.class);
 	}
 	
 	@Test
+//	Done:full
 	public void test_OTG_AUTHZ_002a() {
 		super.test(provider,OTG_AUTHZ_002a.class);
 	}
@@ -107,11 +119,13 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+	//Done: full -> rerun
 	public void test_OTG_INPVAL_004() {
 		super.test(provider,OTG_INPVAL_004.class);
 	}
 	
 	@Test
+	//Done: all
 	public void test_OTG_SESS_003() {
 		super.test(provider,OTG_SESS_003.class);
 	}
@@ -128,6 +142,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+//	Done: all
 	public void test_OTG_AUTHN_001() {
 		super.test(provider,OTG_AUTHN_001.class);
 	}

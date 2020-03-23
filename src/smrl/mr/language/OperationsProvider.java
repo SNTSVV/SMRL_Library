@@ -88,6 +88,10 @@ public interface OperationsProvider {
 
 	void resetProxy();
 
+	void setKeepCache(boolean keep);
+	
+	boolean keepCache();
+	
 	
 
 }

@@ -31,10 +31,12 @@ public class WebOperationsProvider implements OperationsProvider {
 	HashMap<WebInputCrawlJax, WebOutputSequence> outputCache = new HashMap<WebInputCrawlJax, WebOutputSequence>();
 	
 	HashMap<String, HashMap<String, WebOutputCleaned>> outputStore = 
-			new HashMap<String, HashMap<String, WebOutputCleaned>>(); 
+			new HashMap<String, HashMap<String, WebOutputCleaned>>();
+	private boolean keepCache; 
 	
 	public WebOperationsProvider(String configFile) {
 		impl = new WebProcessor();
+		this.keepCache = false;
 		
 		if(configFile!=null && !configFile.isEmpty()){
 			impl.setConfig(configFile);
@@ -60,6 +62,7 @@ public class WebOperationsProvider implements OperationsProvider {
 	
 	public WebOperationsProvider(String inputFile, String outFile, String configFile) {
 		impl = new WebProcessor();
+		this.keepCache = false;
 		
 		if(configFile!=null && !configFile.isEmpty()){
 			impl.setConfig(configFile);
@@ -80,6 +83,7 @@ public class WebOperationsProvider implements OperationsProvider {
 	
 	public WebOperationsProvider(String inputFile, String outFile, String configFile, String randomFilePath, String randomAdminFilePath) {
 		this(inputFile, outFile, configFile);
+		this.keepCache = false;
 		
 		try {
 			
@@ -566,7 +570,9 @@ public class WebOperationsProvider implements OperationsProvider {
 	@Override
 	public void nextTest() {
 		//this method should reset the cache in which we keep teh output of teh executed tests
-		this.outputCache.clear();
+		if(!this.keepCache) {
+			this.outputCache.clear();
+		}
 		impl.resetUpdateUrlMap();
 //		throw new NotImplementedException();
 	}
@@ -796,6 +802,16 @@ public class WebOperationsProvider implements OperationsProvider {
 	public void resetProxy() {
 		this.impl.resetProxy();
 		
+	}
+
+	@Override
+	public void setKeepCache(boolean keep) {
+		this.keepCache = keep;		
+	}
+
+	@Override
+	public boolean keepCache() {
+		return this.keepCache;
 	}
 	
 

@@ -732,6 +732,10 @@ public class SystemConfig {
 			return false;
 		}
 		
+		if(username1.trim().equals(username2.trim())) {
+			return true;
+		}
+		
 		boolean isSuper = false;
 		if(supervisedUser.containsKey(username1)) {
 			ArrayList<String> listUsers = supervisedUser.get(username1);

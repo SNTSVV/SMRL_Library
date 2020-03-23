@@ -2930,6 +2930,8 @@ public class WebProcessor {
 			return false;
 		}
 		
+		//TODO: should check account parameters, however it might cause errors/bugs
+		
 		String username1 = ((Account)user1).getUsername();
 		String username2 = ((Account)user2).getUsername();
 		
