@@ -50,6 +50,7 @@ public class SingleTestJoomla extends MRBaseTest {
 		String configFile = "./testData/Joomla/joomlaSysConfig.json";
 		
 		provider = new WebOperationsProvider(configFile);
+		provider.setKeepCache(true);
 	}
 
 	@Before
@@ -64,9 +65,9 @@ public class SingleTestJoomla extends MRBaseTest {
 	
 	@Test
 	public void test_CheckTags() {
-		provider.setKeepCache(true);
+//		provider.setKeepCache(true);
 		super.test(provider,CheckTags.class);
-		provider.setKeepCache(false);
+//		provider.setKeepCache(false);
 	}
 	
 	@Test
@@ -158,11 +159,13 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+	//Done: all
 	public void test_OTG_BUSLOGIC_005() {
 		super.test(provider,OTG_BUSLOGIC_005.class);
 	}
 	
 	@Test
+//	Done: all
 	public void test_OTG_CONFIG_007() {
 		super.test(provider,OTG_CONFIG_007.class);
 	}
@@ -184,6 +187,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+//	Done:full
 	public void test_OTG_SESS_007() {
 		super.test(provider,OTG_SESS_007.class);
 	}

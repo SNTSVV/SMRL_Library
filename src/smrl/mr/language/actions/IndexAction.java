@@ -219,7 +219,6 @@ public class IndexAction extends Action {
 		try {
 			return (IndexAction)this.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

@@ -90,7 +90,12 @@ public class Operations {
 	 */
 	public static boolean EQUAL( Object a, Object b ){ 
 		MR.CURRENT.setLastEQUAL( a, b );
-		boolean eq = MR.CURRENT.equal(a, b);
+		boolean eq =false;
+		
+		//Tracing: edited by Phu on 24/3/2020 to fix the error occurred when b is null
+		if(b!=null) {
+				eq = MR.CURRENT.equal(a, b);
+		}
 		
 		if ( ! eq ){
 			System.out.println("!!! NOT EQUAL: \n\t"+a+" \n\t"+b);

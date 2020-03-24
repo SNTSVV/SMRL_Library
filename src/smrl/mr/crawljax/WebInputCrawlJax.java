@@ -6,6 +6,7 @@ import java.util.List;
 import smrl.mr.language.Action;
 import smrl.mr.language.Input;
 import smrl.mr.language.LoginParam;
+import smrl.mr.language.Operations;
 import smrl.mr.language.actions.AlertAction;
 import smrl.mr.language.actions.StandardAction;
 
@@ -242,6 +243,28 @@ public class WebInputCrawlJax extends Input{
 	}
 	
 	public WebInputCrawlJax changeCredential(Account user2){
+		if(user2==null || 
+				user2.getUsername()==null || 
+				user2.getPassword()==null) {
+			return null;
+		}
+		
+		Account loginAccount = null;
+		for(Action act:actions()) {
+			if(Operations.isLogin(act)){
+				loginAccount = (Account) act.getUser();
+				if(loginAccount!=null) {
+					loginAccount.setUsername(user2.getUsername());
+					loginAccount.setPassword(user2.getPassword());
+					break;
+				}
+			}
+		}
+		
+		if(loginAccount==null) {
+			return null;
+		}
+		
 		WebInputCrawlJax res=null;
 		try {
 			res = this.clone();
@@ -255,11 +278,11 @@ public class WebInputCrawlJax extends Input{
 		
 		List<Action> newActions = res.actions();
 		for(int i=0; i<res.actions().size(); i++){
-			if(res.actions.get(i).containCredential(user2)){
+			if(res.actions.get(i).containCredential(loginAccount)){
 				try {
 					Action toReplaceAct =  (Action) res.actions.get(i).clone();
-					Action newAct = toReplaceAct.changeCredential(user2);
-					
+					Action newAct = toReplaceAct.changeCredential(loginAccount);
+
 					if(newAct != null){
 						newActions.remove(i);
 						newActions.add(i, newAct);
@@ -267,7 +290,7 @@ public class WebInputCrawlJax extends Input{
 					else{
 						System.out.println("Cannot change credencial in the action "+i+ " in the input " + this.toString());
 					}
-					
+
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}

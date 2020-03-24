@@ -491,34 +491,32 @@ public class StandardAction extends Action {
 			e.printStackTrace();
 		}
 		
-		if(this.containCredential(acc)){
-			if(newAct!=null){
-				for(int i = 0; i<newAct.getFormInputs().size(); i++){
-					JsonObject fi = newAct.getFormInputs().get(i).getAsJsonObject();
-					if(fi.keySet().contains("identification")){
-						JsonObject iden = fi.get("identification").getAsJsonObject();
-						if(iden.keySet().contains("value")){
-							if(iden.get("value").getAsString().trim().equals(acc.getUsernameParam())){
-								fi.remove("values");
-								
-								JsonArray values = new JsonArray();
-								values.add(acc.getUsername());
-								fi.add("values", values);
-							}
-							else if(iden.get("value").getAsString().trim().equals(acc.getPasswordParam())){
-								fi.remove("values");
-								
-								JsonArray values = new JsonArray();
-								values.add(acc.getPassword());
-								fi.add("values", values);
-							}
+		if(newAct!=null && this.containCredential(acc)){
+			for(int i = 0; i<newAct.getFormInputs().size(); i++){
+				JsonObject fi = newAct.getFormInputs().get(i).getAsJsonObject();
+				if(fi.keySet().contains("identification")){
+					JsonObject iden = fi.get("identification").getAsJsonObject();
+					if(iden.keySet().contains("value")){
+						if(iden.get("value").getAsString().trim().equals(acc.getUsernameParam())){
+							fi.remove("values");
+
+							JsonArray values = new JsonArray();
+							values.add(acc.getUsername());
+							fi.add("values", values);
+						}
+						else if(iden.get("value").getAsString().trim().equals(acc.getPasswordParam())){
+							fi.remove("values");
+
+							JsonArray values = new JsonArray();
+							values.add(acc.getPassword());
+							fi.add("values", values);
 						}
 					}
 				}
-				return newAct;
 			}
+			return newAct;
 		}
-		return this;
+		return null;
 	}
 
 	

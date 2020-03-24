@@ -450,11 +450,17 @@ public class WebProcessor {
 	}
 
 	public WebInputCrawlJax changeCredential(WebInputCrawlJax _input, Account user2) {
+		if(_input==null || _input.actions().size()<1 ||
+				user2==null) {
+			return null;
+		}
+		
 		String userParam = user2.getUsernameParam();
 		String passParam = user2.getPasswordParam();
 		if(userParam.isEmpty() || passParam.isEmpty()){
 			System.out.println("Information of account parameters is missing");
-			return _input;
+			return null;
+//			return _input;
 		}
 		
 		WebInputCrawlJax input;
@@ -467,31 +473,43 @@ public class WebProcessor {
 		List<Action> actions = input.actions();
 		//get the username before changing it
 		for(Action act:actions){
-			boolean gotten = false;
-			if(act.containCredential(user2)){
-				//get info
-				JsonArray fInputs = ((StandardAction)act).getFormInputs();
-				for(int i = 0; i<fInputs.size(); i++){
-					JsonObject fi = fInputs.get(i).getAsJsonObject();
-					if(fi.keySet().contains("identification") && fi.keySet().contains("values")){
-						JsonObject iden = fi.get("identification").getAsJsonObject();
-						JsonArray fiValues = fi.get("values").getAsJsonArray();
-
-						if(iden.keySet().contains("value") && fiValues.size()>=1){
-							String idenKey = iden.get("value").getAsString().trim();
-							if(idenKey.equals(user2.getUsernameParam())){
-								this.currentUsername = fiValues.get(0).getAsString().trim();
-								this.changedUsername = user2.getUsername();
-								gotten = true;
-								break;
-							}
-						}
-					}
+//			boolean gotten = false;
+			if(containCredential(act)) {
+				Account usedAccount = (Account) act.getUser();
+				if(usedAccount!=null && usedAccount.getUsername()!=null) {
+					this.currentUsername = usedAccount.getUsername();
 				}
-			}
-			if(gotten){
+				else {
+					this.currentUsername = "";
+				}
+				this.changedUsername = user2.getUsername();
 				break;
 			}
+				
+//			if(act.containCredential(user2)){
+//				//get info
+//				JsonArray fInputs = ((StandardAction)act).getFormInputs();
+//				for(int i = 0; i<fInputs.size(); i++){
+//					JsonObject fi = fInputs.get(i).getAsJsonObject();
+//					if(fi.keySet().contains("identification") && fi.keySet().contains("values")){
+//						JsonObject iden = fi.get("identification").getAsJsonObject();
+//						JsonArray fiValues = fi.get("values").getAsJsonArray();
+//
+//						if(iden.keySet().contains("value") && fiValues.size()>=1){
+//							String idenKey = iden.get("value").getAsString().trim();
+//							if(idenKey.equals(user2.getUsernameParam())){
+//								this.currentUsername = fiValues.get(0).getAsString().trim();
+//								this.changedUsername = user2.getUsername();
+//								gotten = true;
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
+//			if(gotten){
+//				break;
+//			}
 		}
 		
 		//get the last URL in the input
@@ -512,6 +530,20 @@ public class WebProcessor {
 
 		return input.changeCredential(user2);
 	}
+
+	private boolean containCredential(Action act) {
+		if(this.userList==null || this.userList.isEmpty()) {
+			return false;
+		}
+		
+		for(Account u:this.userList) {
+			if(act.containCredential(u)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	public void loadInput(String fileName) throws FileNotFoundException,
 			IOException {

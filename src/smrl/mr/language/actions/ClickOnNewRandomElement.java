@@ -119,7 +119,6 @@ public class ClickOnNewRandomElement extends Action {
 		try {
 			return (ClickOnNewRandomElement)this.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}

@@ -136,7 +136,6 @@ public class WaitAction extends Action {
 		try {
 			return (WaitAction) this.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
