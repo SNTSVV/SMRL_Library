@@ -460,7 +460,7 @@ public class WebOutputSequence implements Output {
 	public CollectionOfConcepts listOfTags(String key) {
 		List<CollectionOfConcepts> tagsList = listsOfTags();
 		if(tagsList==null || tagsList.size()<1) {
-			return null;
+			return new CollectionOfConcepts();
 		}
 		
 		for(CollectionOfConcepts cc:tagsList) {

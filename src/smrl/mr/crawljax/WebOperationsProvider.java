@@ -617,6 +617,7 @@ public class WebOperationsProvider implements OperationsProvider {
 
 	@Override
 	public boolean isLogout(Action action) {
+		//FIXME: this method should be updated to check all elements of action, not only url
 		return impl.sysConfig.isLogoutUrl(action.getUrl());
 	}
 

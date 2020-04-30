@@ -10,6 +10,14 @@ public class CollectionOfConcepts {
 		this.id = null;
 		this.concepts = new ArrayList<String>();
 	}
+	
+	public boolean isEmpty() {
+		if(this.id==null && 
+				(this.concepts ==null || this.concepts.isEmpty())) {
+			return true;
+		}
+		return false;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -18,6 +26,10 @@ public class CollectionOfConcepts {
 		}
 		
 		CollectionOfConcepts that = (CollectionOfConcepts) obj;
+		
+		if(this.isEmpty() && ((CollectionOfConcepts)obj).isEmpty()) {
+			return true;
+		}
 		
 		if(this.concepts!=null && that.concepts!=null &&
 				this.concepts.size()==that.concepts.size() &&
