@@ -95,7 +95,7 @@ public class WebProcessor {
 	private ClientApi	proxyApi;
 	private boolean cleanUpDom;
 	private String downloadFilePath;
-	private boolean waitBeforeEachAction=true;
+	private boolean waitBeforeEachAction=false;	// was true
 	private WebInputCrawlJax actionsChangedUrl;
 	ArrayList<String> proxyReplacerRules;
 	
@@ -747,7 +747,8 @@ public class WebProcessor {
 					}
 					catch(WebDriverException e){
 						System.out.println("!!! Could not access the index");
-						driver.close();
+						driver.quit();
+//						driver.close();
 						e.printStackTrace();
 						return outputSequence;
 					}
@@ -763,7 +764,8 @@ public class WebProcessor {
 				}
 				else{
 					System.out.println("!!! The index URL should NOT be empty");
-					driver.close();
+					driver.quit();
+//					driver.close();
 					return outputSequence;
 				}
 				System.out.println(" --> DONE");
@@ -1367,12 +1369,13 @@ public class WebProcessor {
 			updateUrlsForNextActions(driver, act, input);
 		}
 
-		try {
-			Thread.sleep(1500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		driver.close();
+//		try {
+//			Thread.sleep(1500);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		driver.quit();
+//		driver.close();
 		
 		System.out.println("\tTimes of automatic confirmation: "+timeOfConfirm);
 		
