@@ -581,6 +581,10 @@ public class WebProcessor {
 	}
 	
 	public WebOutputSequence output(WebInputCrawlJax input, boolean checkDownloadedObjects) {
+		if(input==null) {
+			return null;
+		}
+		
 		WebOutputSequence outputSequence = new WebOutputSequence();
 		
 		//call web browser

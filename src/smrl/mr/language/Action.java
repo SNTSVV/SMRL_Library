@@ -323,7 +323,7 @@ public abstract class Action implements Cloneable {
 		return resList;
 	}
 
-	public Object getUser(){
+	public Account getUser(){
 		return this.user;
 	}
 

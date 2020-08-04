@@ -83,8 +83,8 @@ public class Account implements Cloneable {
 		
 		Account that = (Account)obj;
 		
-		
-		
+		//compare username, password, userParam, and passwordParam
+
 		if(this.username==null && that.username==null &&
 				this.usernameParam==null && that.usernameParam==null &&
 				this.password==null && that.password==null &&
@@ -121,6 +121,28 @@ public class Account implements Cloneable {
 				((this.usernameParam==null && that.usernameParam==null) || this.usernameParam.equals(that.usernameParam)) &&
 				((this.password==null && that.password==null) || this.password.equals(that.password)) &&
 				((this.passwordParam==null && that.passwordParam==null) || this.passwordParam.equals(that.passwordParam)));
+		
+	}
+	
+	public boolean isSimilar(Object obj) {
+		if(obj==null || !(obj instanceof Account)){
+			return false;
+		}
+		
+		Account that = (Account)obj;
+		
+		//compare only user and password (only care whether Params are null)
+		if(this.username==null || that.username==null ||
+				this.password==null || that.password==null || 
+				this.usernameParam==null || that.usernameParam==null ||
+				this.passwordParam==null || that.passwordParam==null){
+			return false;
+		}
+		
+		
+		return (this.username.equals(that.username) &&
+				this.password.equals(that.password));
+
 	}
 
 	@Override

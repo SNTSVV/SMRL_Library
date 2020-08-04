@@ -250,18 +250,22 @@ public class WebInputCrawlJax extends Input{
 		}
 		
 		Account loginAccount = null;
+		boolean changed = false;
 		for(Action act:actions()) {
 			if(Operations.isLogin(act)){
 				loginAccount = (Account) act.getUser();
-				if(loginAccount!=null) {
+				if(loginAccount!=null &&
+						!(loginAccount.getUsername().equals(user2.getUsername()) &&		//will not change if user2 and loginAccount have the same username and password
+						  loginAccount.getPassword().equals(user2.getPassword()))) {
 					loginAccount.setUsername(user2.getUsername());
 					loginAccount.setPassword(user2.getPassword());
+					changed = true;
 					break;
 				}
 			}
 		}
 		
-		if(loginAccount==null) {
+		if(loginAccount==null || changed==false) {
 			return null;
 		}
 		

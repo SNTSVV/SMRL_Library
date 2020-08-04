@@ -518,7 +518,7 @@ public class WebOperationsProvider implements OperationsProvider {
 	 */
 	@Override
 	public smrl.mr.language.Output Output(Input input, int pos) {
-		if(pos<0){
+		if(input==null || pos<0){
 			return null;
 		}
 		
@@ -554,6 +554,7 @@ public class WebOperationsProvider implements OperationsProvider {
 	@Override
 	public Output Output(Input input) {
 		if(outputCache.containsKey(input)){
+			System.out.println("get from cache: " +input);
 			return (WebOutputSequence) outputCache.get(input);
 		}
 		

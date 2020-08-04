@@ -234,8 +234,9 @@ public class WebOutputCleaned {
 				Elements allOptions = sec.children();
 				if(allOptions!=null) {
 					for(Element op:allOptions) {
-						if(op.tagName().toLowerCase().equals("option")) {
-							values.add(op.text());
+						if(op.tagName().toLowerCase().equals("option") &&
+								!CollectionOfConcepts.isIgnoredConcept(op.text())) {
+							values.add(op.text().trim());
 						}
 					}
 				}
