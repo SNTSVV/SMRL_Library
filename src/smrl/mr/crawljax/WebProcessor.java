@@ -2981,7 +2981,7 @@ public class WebProcessor {
 
 	public boolean isError(Object output) {
 		if(!(output instanceof WebOutputSequence)){
-			return false;
+			return true;
 		}
 		
 		return ((WebOutputSequence)output).isError();
