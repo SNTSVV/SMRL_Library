@@ -459,7 +459,7 @@ public class WebOutputSequence implements Output {
 	@Override
 	public CollectionOfConcepts listOfTags(String key) {
 		List<CollectionOfConcepts> tagsList = listsOfTags();
-		if(tagsList==null || tagsList.size()<1) {
+		if(tagsList==null || tagsList.size()<1 || key==null) {
 			return new CollectionOfConcepts();
 		}
 		
@@ -469,7 +469,7 @@ public class WebOutputSequence implements Output {
 			}
 		}
 		
-		return null;
+		return new CollectionOfConcepts();
 	}
 
 
