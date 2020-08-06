@@ -23,22 +23,24 @@ public class CollectionOfConcepts {
 
 	@Override
 	public boolean equals(Object obj) {
+		if(obj==null) {
+			return false;
+		}
+		
 		if(!(obj instanceof CollectionOfConcepts)) {
 			return false;
 		}
 		
 		CollectionOfConcepts that = (CollectionOfConcepts) obj;
 		
-		if(this.isEmpty() && ((CollectionOfConcepts)obj).isEmpty()) {
+		if(this.isEmpty() && that.isEmpty()) {
 			return true;
 		}
 		
-		if(this.concepts!=null && that.concepts!=null &&
+		return (this.concepts!=null && 
+				that.concepts!=null &&
 				this.concepts.size()==that.concepts.size() &&
-				this.concepts.containsAll(that.concepts)) {
-			return true;
-		}
-		return false;
+				this.concepts.containsAll(that.concepts));
 	}
 
 	@Override
