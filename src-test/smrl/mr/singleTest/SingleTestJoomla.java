@@ -50,7 +50,7 @@ public class SingleTestJoomla extends MRBaseTest {
 		String configFile = "./testData/Joomla/joomlaSysConfig.json";
 		
 		provider = new WebOperationsProvider(configFile);
-		provider.setKeepCache(true);
+//		provider.setKeepCache(true);
 	}
 
 	@Before
@@ -64,20 +64,21 @@ public class SingleTestJoomla extends MRBaseTest {
     }   
 	
 	@Test
+	//Done: all
 	public void test_CheckTags() {
-//		provider.setKeepCache(true);
+		provider.setKeepCache(true);
 		super.test(provider,CheckTags.class);
-//		provider.setKeepCache(false);
+		provider.setKeepCache(false);
 	}
 	
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_AUTHN_004() {
 		super.test(provider,OTG_AUTHN_004.class);
 	}
 	
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_AUTHN_010() {
 		super.test(provider,OTG_AUTHN_010.class);
 	}
@@ -88,13 +89,13 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 
 	@Test
-	//Done: full
+	//Done: all
 	public void test_OTG_AUTHZ_002() {
 		super.test(provider,OTG_AUTHZ_002.class);
 	}
 	
 	@Test
-//	Done:full
+//	Done: all
 	public void test_OTG_AUTHZ_002a() {
 		super.test(provider,OTG_AUTHZ_002a.class);
 	}
@@ -105,6 +106,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+	//Not execute, because Joomla do not have a dedicated login interface
 	public void test_OTG_AUTHZ_002c() {
 		super.test(provider,OTG_AUTHZ_002c.class);
 	}
@@ -120,7 +122,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
-	//Done: full -> rerun
+	//Done: all
 	public void test_OTG_INPVAL_004() {
 		super.test(provider,OTG_INPVAL_004.class);
 	}
@@ -138,17 +140,13 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
-	public void test_OTG_AUTHZ_001b2() {
-		super.test(provider,OTG_AUTHZ_001b2.class);
-	}
-	
-	@Test
 //	Done: all
 	public void test_OTG_AUTHN_001() {
 		super.test(provider,OTG_AUTHN_001.class);
 	}
 	
 	@Test
+	//Done: all
 	public void test_OTG_AUTHZ_003() {
 		super.test(provider,OTG_AUTHZ_003.class);
 	}
@@ -171,6 +169,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+	//Done: all
 	public void test_OTG_CRYPST_004() {
 		super.test(provider,OTG_CRYPST_004.class);
 	}
@@ -182,12 +181,14 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+	//Not execute because there is not any URL dedicated to log out action
+	//all action in Joomla based on parameters in Post-Data, not on URL
 	public void test_OTG_SESS_006() {
 		super.test(provider,OTG_SESS_006.class);
 	}
 	
 	@Test
-//	Done:full
+//	Done: all
 	public void test_OTG_SESS_007() {
 		super.test(provider,OTG_SESS_007.class);
 	}
