@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import smrl.mr.crawljax.WebOperationsProvider;
@@ -16,7 +17,6 @@ import smrl.mr.owasp.OTG_AUTHN_004;
 import smrl.mr.owasp.OTG_AUTHN_010;
 import smrl.mr.owasp.OTG_AUTHZ_001a;
 import smrl.mr.owasp.OTG_AUTHZ_001b;
-import smrl.mr.owasp.OTG_AUTHZ_001b2;
 import smrl.mr.owasp.OTG_AUTHZ_002;
 import smrl.mr.owasp.OTG_AUTHZ_002a;
 import smrl.mr.owasp.OTG_AUTHZ_002b;
@@ -39,7 +39,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	
 	private static WebOperationsProvider provider;
 	
-	private static String system = "joomla";
+//	private static String system = "joomla";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -100,11 +100,14 @@ public class SingleTestJoomla extends MRBaseTest {
 		super.test(provider,OTG_AUTHZ_002a.class);
 	}
 	
+	@Ignore
 	@Test
+	//Not execute, because Joomla do not have a dedicated login interface
 	public void test_OTG_AUTHZ_002b() {
 		super.test(provider,OTG_AUTHZ_002b.class);
 	}
 	
+	@Ignore
 	@Test
 	//Not execute, because Joomla do not have a dedicated login interface
 	public void test_OTG_AUTHZ_002c() {
@@ -116,7 +119,9 @@ public class SingleTestJoomla extends MRBaseTest {
 		super.test(provider,OTG_AUTHZ_002d.class);
 	}
 	
+	@Ignore
 	@Test
+	//Not execute, because Joomla do not have a dedicated login interface
 	public void test_OTG_AUTHZ_002e() {
 		super.test(provider,OTG_AUTHZ_002e.class);
 	}
@@ -175,11 +180,13 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+	//Done: all
 	//Run with proxy
 	public void test_OTG_INPVAL_003() {
 		super.test(provider,OTG_INPVAL_003.class);
 	}
 	
+	@Ignore
 	@Test
 	//Not execute because there is not any URL dedicated to log out action
 	//all action in Joomla based on parameters in Post-Data, not on URL
