@@ -157,6 +157,82 @@ public class ResultCounting {
 		}
 	}
 	
+	@Test
+	public void countLogSess008() {
+//		String fileName = "/Users/xuanphu.mai/PhD/EDLAH2/Bitbucket-EDLAH2/Software/SMRL_Framework_Blind/testData/Jenkins/Logs/Log-SESS_008_2020_01_21_full.txt";
+//		String fileName = "/Users/xuanphu.mai/PhD/EDLAH2/Bitbucket-EDLAH2/Software/SMRL_Framework_Blind/testData/Jenkins/Logs/crawljax/Log-SESS_008_2020_01_22_crawljax.txt";
+//		String fileName = "/Users/xuanphu.mai/PhD/EDLAH2/Bitbucket-EDLAH2/Software/SMRL_Framework_Blind/testData/Joomla/Logs/Log-SESS_008_2020_08_26_full.txt";
+		String fileName = "/Users/xuanphu.mai/PhD/EDLAH2/Bitbucket-EDLAH2/Software/SMRL_Framework_Blind/testData/Joomla/Logs/crawljax/Log-SESS_008_2020_08_28_crawljax.txt";
+		
+		File f = new File(fileName);
+		if (!f.exists()) {
+			System.out.println("File not found: " + fileName);
+			return;
+		}
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(f));
+
+			int failure = 0;
+
+			String line1 = br.readLine();
+			System.out.println("Run time: --> " +line1);
+			String line2 = br.readLine();
+			String line3 = br.readLine();
+			String line4 = br.readLine();
+
+			if(line3.contains("FAILURE:")) {
+				failure++;
+			}
+			
+			
+			int followUpInput = 0;
+			//		int actions = 0;
+			int input3 = 0;
+			
+
+			while (line4 != null) {
+				if(line4.contains("FAILURE:")) {
+					failure++;
+				}
+				if(line4.contains("Starting ChromeDriver") ||
+						line4.contains("- Action") ||
+						line4.contains("Input(3)")) {
+					if(line1.startsWith("Starting ChromeDriver") &&
+							line2.contains("- Action") &&
+							line3.contains("- Action") &&
+							!line4.contains("- Action")
+							) {
+						followUpInput++;
+					}
+					if(line4.contains("Input(3)")){
+						input3++;
+					}
+					
+					line1 = line2;
+					line2 = line3;
+					line3 = line4;
+					
+				}
+				if(line4.contains("MR tested with") ||
+						line4.contains("***")) {
+					System.out.println("Run time: --> " +line4);
+				}
+				line4 = br.readLine();
+				
+			}
+			br.close();
+			
+			System.out.println("Failures: " + failure);
+			System.out.println("Follow-up inputs: " + followUpInput);
+			System.out.println("Actions of follow-up inputs: " + followUpInput*2);
+			System.out.println("Input(3): " + input3);
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static int count(String input,String v) {
 		int index = input.indexOf(v);
 		int count = 0;

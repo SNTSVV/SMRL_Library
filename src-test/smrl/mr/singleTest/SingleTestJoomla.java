@@ -15,7 +15,7 @@ import smrl.mr.owasp.CheckTags;
 import smrl.mr.owasp.OTG_AUTHN_001;
 import smrl.mr.owasp.OTG_AUTHN_004;
 import smrl.mr.owasp.OTG_AUTHN_010;
-import smrl.mr.owasp.OTG_AUTHZ_001a;
+import smrl.mr.owasp.OTG_AUTHZ_001;
 import smrl.mr.owasp.OTG_AUTHZ_001b;
 import smrl.mr.owasp.OTG_AUTHZ_002;
 import smrl.mr.owasp.OTG_AUTHZ_002a;
@@ -141,7 +141,7 @@ public class SingleTestJoomla extends MRBaseTest {
 		
 	@Test
 	public void test_OTG_AUTHZ_001a() {
-		super.test(provider,OTG_AUTHZ_001a.class);
+		super.test(provider,OTG_AUTHZ_001.class);
 	}
 	
 	@Test
@@ -201,6 +201,7 @@ public class SingleTestJoomla extends MRBaseTest {
 	}
 	
 	@Test
+//	Done: all
 	public void test_OTG_SESS_008() {
 		super.test(provider,OTG_SESS_008.class);
 	}

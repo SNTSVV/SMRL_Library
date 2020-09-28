@@ -13,7 +13,7 @@ import smrl.mr.language.MRBaseTest;
 import smrl.mr.owasp.OTG_AUTHN_001;
 import smrl.mr.owasp.OTG_AUTHN_004;
 import smrl.mr.owasp.OTG_AUTHN_010;
-import smrl.mr.owasp.OTG_AUTHZ_001a;
+import smrl.mr.owasp.OTG_AUTHZ_001;
 import smrl.mr.owasp.OTG_AUTHZ_001b;
 import smrl.mr.owasp.OTG_AUTHZ_001b2;
 import smrl.mr.owasp.OTG_AUTHZ_002;
@@ -153,7 +153,7 @@ public class SingleTest extends MRBaseTest {
 	@Test
 	//Done: all
 	public void test_OTG_AUTHZ_001a() {
-		super.test(provider,OTG_AUTHZ_001a.class);
+		super.test(provider,OTG_AUTHZ_001.class);
 	}
 	
 	@Test
