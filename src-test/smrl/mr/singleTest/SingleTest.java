@@ -46,7 +46,7 @@ public class SingleTest extends MRBaseTest {
 		System.out.println("*** Starting time: " + getCurrentTime() +" ***");
 		
 		//by default, the SUT is the Jenkins
-		String configFile = "./testData/Jenkins/jenkinsSysConfig.json";
+		String configFile = "./testData/Jenkins/jenkinsSysConfigDEMO.json";
 //		String configFile = "./testData/Jenkins/jenkinsSysConfig_withProxy.json";
 //		String configFile = "./testData/Jenkins/jenkinsSysConfig_trying.json";
 		

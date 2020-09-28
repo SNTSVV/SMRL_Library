@@ -70,7 +70,7 @@ public class ICSE2020DemoTest extends MRBaseTest {
 	
 	@Test
 	/**
-	  *This test case should detect CVE-2018-1999004"
+	  *This test case should detect CVE-2018-1999004". A malicious user can start an agent.
 	  */
 	public void test_OTG_AUTHZ_002() {
 		super.test(provider,OTG_AUTHZ_002.class);
