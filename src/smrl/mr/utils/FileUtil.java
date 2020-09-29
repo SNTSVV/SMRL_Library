@@ -32,4 +32,16 @@ public class FileUtil {
 		return content;
 	}
 	
+	public static boolean isFile(String fileName) {
+		File f = new File(fileName);
+		boolean result = false;
+		try {
+			result = f.isFile();
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		return result;
+	}
+	
 }

@@ -3,6 +3,9 @@ package smrl.mr.results;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
+
+import smrl.mr.utils.FileUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,11 +18,18 @@ public class IdentifyFilePaths {
 		String line;
 		
 		HashSet<String> visited = new HashSet<>();
+		HashSet<String> result = new HashSet<>();
 		while ( ( line = r.readLine() ) != null ) {
+//			if (!FileUtil.isFile(line)) {
+//				continue;
+//			}
 			if ( line.endsWith(".jar") ) {
 				continue;
 			}
 			if ( line.endsWith(".png") ) {
+				continue;
+			}
+			if ( line.endsWith(".gif") ) {
 				continue;
 			}
 			if ( line.endsWith(".js") ) {
@@ -46,19 +56,33 @@ public class IdentifyFilePaths {
 			if ( line.endsWith(".html") ) {
 				continue;
 			}
+			if ( line.endsWith(".php") ) {
+				continue;
+			}
 			int pos = line.lastIndexOf('/');
 			if ( pos > 0 ) {
 				String f = line.substring(pos);
 				if ( visited.contains(f) ) {
 					continue;
 				}
-				visited.add(f);
+				// if f is a file (containing ".")
+				if(f.contains(".")) {
+					visited.add(f);
+					result.add(line);
+				}
 			}
-			line = line.replace("plugins/", "plugin/");
-			System.out.println(line);
+//			line = line.replace("plugins/", "plugin/");
+//			System.out.println(line);
 		}
 		
 		r.close();
+		
+//		System.out.println(result);
+		
+		for (String l:result) {
+			System.out.println(l);
+		}
+			
 		
 		
 	}

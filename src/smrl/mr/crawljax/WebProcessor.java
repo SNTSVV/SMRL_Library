@@ -68,7 +68,6 @@ import smrl.mr.language.Action.ActionType;
 import smrl.mr.language.CookieSession;
 import smrl.mr.language.LoginParam;
 import smrl.mr.language.MR;
-import smrl.mr.language.NoMoreInputsException;
 import smrl.mr.language.Operations;
 import smrl.mr.language.SystemConfig;
 import smrl.mr.language.actions.AlertAction;
@@ -122,7 +121,8 @@ public class WebProcessor {
 	
 	private Account admin;
 	private ArrayList<String> randomAdminFilePath;
-	private boolean headless=false;
+//	private boolean headless=false;
+	private boolean headless=true;
 	private boolean backToRightPageBeforeAction=true;
 	private boolean checkStatusCode=false;
 	private static HashSet<String> visibleWithoutLogin;
