@@ -26,4 +26,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src-gen</name>
+			<type>2</type>
+			<location>/Users/fabrizio.pastore/SVV-GIT/edlah2/Software/SMRL_testWorkspace/ASE2019/src-gen</location>
+		</link>
+	</linkedResources>
 </projectDescription>
