@@ -6,4 +6,4 @@ A compiled version of the libray is available under releases/icst2020
 
 See LICENSE.txt for license information.
 
-For more information https://github.com/SNTSVV/SRML
+For more information https://sntsvv.github.io/SMRL/
