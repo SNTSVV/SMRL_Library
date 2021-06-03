@@ -56,5 +56,7 @@ public class MRData implements Cloneable {
 		return id;
 	}
 	
-	
+	public boolean isFollowUp() {
+		return reassignments.size() > 0;
+	}
 }

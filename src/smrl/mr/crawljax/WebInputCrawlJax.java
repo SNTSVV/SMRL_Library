@@ -23,6 +23,7 @@ import smrl.mr.language.Action;
 import smrl.mr.language.Input;
 import smrl.mr.language.LoginParam;
 import smrl.mr.language.Operations;
+import smrl.mr.language.PrintUtil;
 import smrl.mr.language.actions.AlertAction;
 import smrl.mr.language.actions.StandardAction;
 
@@ -214,6 +215,20 @@ public class WebInputCrawlJax extends Input{
 	
 	@Override
 	public String toString() {
+		
+		if ( PrintUtil.USER_FRIENDLY_TO_STRING ) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("[\n");
+			for (Action a : actions ) {
+				sb.append("\t");
+				sb.append(a);
+				sb.append("\n");
+			}
+			sb.append("]");
+
+			return sb.toString();
+		}
+		
 		return actions.toString();
 	}
 

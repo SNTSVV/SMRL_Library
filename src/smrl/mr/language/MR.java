@@ -237,6 +237,9 @@ public abstract class MR {
 	}
 	
 	boolean FAILED=false;
+
+	public static boolean PRINT_EXECUTED_MRS = false;
+	
 	private void iterateMR(List<MrDataDB> sortedDBs, int i) {
 //		System.out.println("!!!iterateMR executions="+executions+" i="+i);
 		
@@ -266,7 +269,10 @@ public abstract class MR {
 			
 			
 			String msg = extractExecutionInformation(false);
-			System.out.println("Executed with: "+msg);
+			
+			if ( PRINT_EXECUTED_MRS ) {
+				System.out.println("Executed with: "+msg);
+			}
 			
 			executions++;
 			
@@ -406,11 +412,14 @@ public abstract class MR {
 		}
 		
 		failures.add(msg);
-		System.out.println("FAILURE: "+msg);
+		System.out.println("FAILURE: \n"+msg);
 	}
 	
 	private String extractExecutionInformation(boolean performFiltring) {
 		String msg = "";
+		
+		String lastInputStrs[] = new String[lastInputs.size()];
+		int lastPosStrs[] = new int[lastInputPos.size()];
 		
 		for ( MrDataDB db : sortedDBs ){
 			HashMap<String, Object> inputsMap = db.getProcessedInputs();
@@ -438,15 +447,54 @@ public abstract class MR {
 					}
 				}
 				
-				msg += i.getKey()+": "+i.toString()+"\n";
+				String followUp = "[SOURCE INPUT]";
+				Object input = i.getValue();
+				if ( input instanceof MRData ) {
+					if ( ((MRData) input).isFollowUp() ) {
+						followUp = "[FOLLOW-UP INPUT]";
+					}
+				}
+				
+				
+				for ( int j = 0; j < lastInputs.size(); j++ ) {
+					Input linput = lastInputs.get(j);
+				
+					if ( input == linput ) {
+						lastInputStrs[j] = i.getKey();
+						lastPosStrs[j] = lastInputPos.get(j);
+					}
+					
+					//+lastInputStr+"";	
+				}
+				
+				
+				
+				
+				PrintUtil.USER_FRIENDLY_TO_STRING = true;
+				msg += i.getKey()+ " "+ followUp +" : \n"+i.toString()+"\n";
+				PrintUtil.USER_FRIENDLY_TO_STRING = false;
 			}	
 		}
 		
-		msg += " [Last input processed: "+lastInput+" position: "+lastInputPos+"] "+"[Last equal: "+lastEqual+"]";
+			
 		
-		lastInput = null;
-		lastInputPos = -1;
-		lastEqual = null;
+		msg += "\n **Inputs processed: ";
+		
+		
+		for ( int j=0; j<lastInputStrs.length; j++ ) {
+			msg += "\n"+lastInputStrs[j]+" (action position: "+lastPosStrs[j]+")";
+		}
+		
+		msg += "\n **** ";
+		
+//		msg += "\n**[Last equal: "+lastEqualA+" ="+lastEqualBStr+"]";
+//		
+//		msg += "\n**[Last equal: "+lastEqual+"]";
+		
+		lastInputs = new ArrayList<Input>();
+		lastInputPos = new ArrayList<Integer>();
+		lastEqualA = null;
+		lastEqualB = null;
 		
 //		HashMap<String, I> inputsMap = inputsDB.getProcessedInputs();
 //		String msg = "";
@@ -743,6 +791,9 @@ public abstract class MR {
 			MEexecutedAtLeastOnce = true;
 		}
 		lineOfFirstME = -1;
+		
+		lastInputPos = new ArrayList<Integer>();
+		lastInputs = new ArrayList<Input>();
 	}
 	
 	private void resetIfBocksCounter() {
@@ -754,10 +805,14 @@ public abstract class MR {
 	int lineOfLastME=-1;
 	int ifBlocksCounter = 0;
 
-	private int lastInputPos;
-	private String lastInput;
+	private List<Integer> lastInputPos = new ArrayList<>();
+	private List<Input> lastInputs = new ArrayList();
 
 	private String lastEqual;
+
+	private Object lastEqualA;
+
+	private Object lastEqualB;
 	
 	public void ifThenBlock() {
 		StackTraceElement[] st = Thread.currentThread().getStackTrace();
@@ -810,14 +865,15 @@ public abstract class MR {
 
 
 	public void setLastInputProcessed(Input input, int pos) {
-		this.lastInput = input.toString();
-		this.lastInputPos = pos;
+		this.lastInputs.add( input );
+		this.lastInputPos.add( pos );
 	}
 
 
 	public void setLastEQUAL(Object a, Object b) {
-		// TODO Auto-generated method stub
-		lastEqual = " "+a+ ", "+b;
+//		lastEqual = " "+ a + " = "+b;
+//		lastEqualA = a;
+//		lastEqualB = b;
 	}
 
 
