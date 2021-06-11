@@ -336,18 +336,44 @@ public abstract class MR {
 
 	//Kill all running chromedriver (and Google Chrome)
 	private void killChromeDriver() {
+		
+		boolean windows = isWindows();
+		
+		
 		int runCode = 0;
 		while(runCode==0) {
 			try {
 				runCode = 1;
-				runCode = (Runtime.getRuntime().exec("killall chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
-				runCode = (Runtime.getRuntime().exec("killall Google Chrome").waitFor()==0 || runCode==0) ? 0 : 1;
-				runCode = (Runtime.getRuntime().exec("pkill chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
-				runCode = (Runtime.getRuntime().exec("pkill Google Chrome").waitFor()==0 || runCode==0) ? 0 : 1;
+
+				if ( ! windows ) {
+					runCode = (Runtime.getRuntime().exec("killall chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
+					runCode = (Runtime.getRuntime().exec("killall Google Chrome").waitFor()==0 || runCode==0) ? 0 : 1;
+					runCode = (Runtime.getRuntime().exec("pkill chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
+					runCode = (Runtime.getRuntime().exec("pkill Google Chrome").waitFor()==0 || runCode==0) ? 0 : 1;
+				} else {
+					runCode = (Runtime.getRuntime().exec("taskkill /f /im chrome.exe").waitFor()==0 || runCode==0) ? 0 : 1;
+					runCode = (Runtime.getRuntime().exec("taskkill /f /im chromedriver").waitFor()==0 || runCode==0) ? 0 : 1;
+				}
 			} catch (IOException | InterruptedException e1) {
 				e1.printStackTrace();
 			}
 		}
+	}
+
+
+	private Boolean _WINDOWS;
+	private boolean isWindows() {
+		if ( _WINDOWS != null ) {
+			return _WINDOWS;
+		}
+		
+		_WINDOWS = Boolean.FALSE;
+		String os = System.getProperty("os.name");
+		if ( os.contains("Windows") ) {
+			_WINDOWS = Boolean.TRUE;
+		}
+		
+		return _WINDOWS;
 	}
 
 

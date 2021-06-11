@@ -605,6 +605,14 @@ public class WebProcessor {
 		
 		//call web browser
 		String exePath = "/usr/local/bin/chromedriver";
+		
+		File exeFile = new File ( exePath );
+		if ( ! exeFile.exists() ) {
+			exeFile = new File (Paths.get(".").toFile(),"chromedriver.exe");
+			exePath = exeFile.getAbsolutePath();
+			System.out.println("CHROMEDRIVER: "+exePath);
+		}
+		
 		System.setProperty("webdriver.chrome.driver", exePath);
 		ChromeDriver driver = null;
 		
